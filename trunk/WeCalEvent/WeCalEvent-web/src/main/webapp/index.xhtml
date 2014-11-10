@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Start Page</title>
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </h:head>
+    <h:body>
+        <h1>Hello World!</h1>
+        <h:form>
+            <h:inputText value="#{testBean.person.name}"></h:inputText>
+            <h:commandButton value="Save" action="#{testBean.save}"></h:commandButton>
+            <h:messages></h:messages>
+            <p:outputLabel value="Selams:)"></p:outputLabel>
+        </h:form>
+        <p:menubar>
+            <p:submenu label="File" icon="ui-icon-document">
+                <p:submenu label="New" icon="ui-icon-contact">
+                    <p:menuitem value="Project" url="#" />
+                    <p:menuitem value="Other" url="#" />
+                </p:submenu>
+                <p:menuitem value="Open" url="#" />
+                <p:separator />
+                <p:menuitem value="Quit" url="#" />
+            </p:submenu>
+        </p:menubar>
+    </h:body>
+
+</html>
