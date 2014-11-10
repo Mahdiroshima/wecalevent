@@ -8,15 +8,13 @@
         <title>Start Page</title>
         <h:outputStylesheet name="css/jsfcrud.css"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+            .paneltest tr, .paneltest td, .paneltest table, .paneltest tbody {
+                border-style: hidden !important;
+            }
+        </style>
     </h:head>
     <h:body>
-        <h1>Hello World!</h1>
-        <h:form>
-            <h:inputText value="#{testBean.person.name}"></h:inputText>
-            <h:commandButton value="Save" action="#{testBean.save}"></h:commandButton>
-            <h:messages></h:messages>
-            <p:outputLabel value="Selams:)"></p:outputLabel>
-        </h:form>
         <p:menubar>
             <p:submenu label="File" icon="ui-icon-document">
                 <p:submenu label="New" icon="ui-icon-contact">
@@ -28,6 +26,17 @@
                 <p:menuitem value="Quit" url="#" />
             </p:submenu>
         </p:menubar>
+        <h1>Hello World!</h1>
+        <h:form>
+            <p:panelGrid columns="2" class="paneltest">
+                <p:outputLabel value="Name of the person"></p:outputLabel>
+                <p:inputText value="#{testBean.person.name}"></p:inputText>
+                <p:growl id="growl" showDetail="true" sticky="true" />  
+                <p:commandButton style="float: right" value="Save" action="#{testBean.save}" update="growl"></p:commandButton>
+            </p:panelGrid>
+        </h:form>
+        <p:outputLabel value="Sample output label from primefaces 5.1"></p:outputLabel>
+
     </h:body>
 
 </html>
