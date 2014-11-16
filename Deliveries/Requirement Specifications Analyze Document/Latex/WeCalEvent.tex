@@ -1,0 +1,85 @@
+\documentclass[12pt,openany]{book}
+
+\usepackage{amsmath,amsthm}
+\usepackage[T2A]{fontenc}
+\usepackage[cp1251]{inputenc}
+\usepackage{amsfonts}
+\usepackage{latexsym}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage[usenames]{color}
+\newcommand{\glossaryentry}[2]{\par #1}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage{geometry} \geometry{verbose,a4paper,tmargin=2cm,bmargin=2cm,lmargin=3cm,rmargin=1.5cm}
+%\makeglossary
+\usepackage{setspace}
+\newcounter{pr}[section]
+
+\newenvironment{probl}{\trivlist\refstepcounter{pr}\item[\hspace{\labelsep}%
+\hspace{\parindent}\thepr]}{\endtrivlist}% \bf влияет только на нумерацию при постановке задач
+\tolerance 500
+\setcounter{section}{0}
+\renewcommand{\thesection}{\arabic{section}}
+\setcounter{secnumdepth}{3}\setcounter{tocdepth}{3}
+\textwidth180mm%115mm%180%120%
+\textheight260mm%178mm%190mm%270%165%
+\oddsidemargin -1.1cm\evensidemargin -1.1cm \topmargin -23mm\footskip 20pt \pagestyle{myheadings} \markboth{} {}
+\begin{document}
+\begin{titlepage} % начало титульной страницы
+\begin{figure}[tbh]
+  \begin{center}
+    \includegraphics[width=50mm]{logo}
+  \end{center}
+\end{figure}
+\begin{center} % включить выравнивание по центру
+\Huge WeCalEvent \\
+
+
+\Huge\textbf { Requirements Analysis \\
+				and\\
+				Specification Document\\[0.5cm]
+}
+\Large Software Engineering 2
+\begin{flushleft}\large
+\makebox[55.5em]{Authors:  }\\
+\makebox[60.5em]{Mert Ergun}\\
+\makebox[65.5em]{Mohamed Mehdi Kaabi}\\
+\makebox[62.5em]{Nazrin Javadova}
+
+\end{flushleft}
+\vfill % заполнить всё доступное ниже пространство
+
+\large Milano -- 2014 \\ % вывести логотип LaTeX
+{\large \LaTeX}
+\end{center} % закончить выравнивание по центру
+
+\thispagestyle{empty} % не нумеровать страницу
+\end{titlepage} % конец титульной страницы
+\setcounter{section}{0}
+\renewcommand{\thesection}{\arabic{section}}
+\setcounter{secnumdepth}{3}\setcounter{tocdepth}{3}
+%\begin{document}
+%\input macros.tex
+\pagestyle{plain}
+	
+\newpage
+\tableofcontents
+	
+
+\input intro.tex
+\input Overall.tex
+\input Requirements.tex
+\input datamd.tex
+\input planning.tex
+\input conclusion.tex
+\input appendixes.tex
+
+
+%\input tables.tex
+%\input temppart.tex
+
+
+
+
+
+\end{document}
