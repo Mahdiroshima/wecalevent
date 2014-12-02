@@ -40,29 +40,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"),
     @NamedQuery(name = "Event.findByEventId", query = "SELECT e FROM Event e WHERE e.eventId = :eventId"),
     @NamedQuery(name = "Event.findByEventName", query = "SELECT e FROM Event e WHERE e.eventName = :eventName"),
+    @NamedQuery(name = "Event.findByEventType", query = "SELECT e FROM Event e WHERE e.eventType = :eventType"),
+    @NamedQuery(name = "Event.findByDesiredWeather", query = "SELECT e FROM Event e WHERE e.desiredWeather = :desiredWeather"),
+    @NamedQuery(name = "Event.findByVisibility", query = "SELECT e FROM Event e WHERE e.visibility = :visibility"),
     @NamedQuery(name = "Event.findByLocationCity", query = "SELECT e FROM Event e WHERE e.locationCity = :locationCity"),
     @NamedQuery(name = "Event.findByStartingDate", query = "SELECT e FROM Event e WHERE e.startingDate = :startingDate"),
-    @NamedQuery(name = "Event.findByEndingDate", query = "SELECT e FROM Event e WHERE e.endingDate = :endingDate"),
-    @NamedQuery(name = "Event.findByVisibility", query = "SELECT e FROM Event e WHERE e.visibility = :visibility")})
+    @NamedQuery(name = "Event.findByEndingDate", query = "SELECT e FROM Event e WHERE e.endingDate = :endingDate")})
 public class Event implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
-    @Column(name = "event_type")
-    private String eventType;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 100)
-    @Column(name = "desired_weather")
-    private String desiredWeather;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
-    @Column(name = "visibility")
-    private String visibility;
-    @JoinColumn(name = "weather_id", referencedColumnName = "weather_id")
-    @ManyToOne(optional = false)
-    private Weather weatherId;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,7 +55,7 @@ public class Event implements Serializable {
     private Integer eventId;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 100)
     @Column(name = "event_name")
     private String eventName;
     @Basic(optional = false)
@@ -82,12 +66,31 @@ public class Event implements Serializable {
     private String eventDescription;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 10)
+    @Column(name = "event_type")
+    private String eventType;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
+    @Column(name = "desired_weather")
+    private String desiredWeather;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "visibility")
+    private String visibility;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "location_city")
     private String locationCity;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "starting_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date startingDate;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "ending_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date endingDate;
@@ -96,7 +99,7 @@ public class Event implements Serializable {
         @JoinColumn(name = "user_id", referencedColumnName = "user_id")})
     @ManyToMany
     private List<User> userList;
-    @JoinTable(name = "invited", joinColumns = {
+    @JoinTable(name = "intived", joinColumns = {
         @JoinColumn(name = "event_id", referencedColumnName = "event_id")}, inverseJoinColumns = {
         @JoinColumn(name = "user_id", referencedColumnName = "user_id")})
     @ManyToMany
@@ -104,6 +107,9 @@ public class Event implements Serializable {
     @JoinColumn(name = "creator_id", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
     private User creatorId;
+    @JoinColumn(name = "weather_id", referencedColumnName = "weather_id")
+    @ManyToOne(optional = false)
+    private Weather weatherId;
 
     public Event() {
     }
@@ -112,12 +118,16 @@ public class Event implements Serializable {
         this.eventId = eventId;
     }
 
-    public Event(Integer eventId, String eventName, String eventDescription, String locationCity, String visibility) {
+    public Event(Integer eventId, String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventDescription = eventDescription;
-        this.locationCity = locationCity;
+        this.eventType = eventType;
+        this.desiredWeather = desiredWeather;
         this.visibility = visibility;
+        this.locationCity = locationCity;
+        this.startingDate = startingDate;
+        this.endingDate = endingDate;
     }
 
     public Integer getEventId() {
@@ -144,6 +154,30 @@ public class Event implements Serializable {
         this.eventDescription = eventDescription;
     }
 
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
+    public String getDesiredWeather() {
+        return desiredWeather;
+    }
+
+    public void setDesiredWeather(String desiredWeather) {
+        this.desiredWeather = desiredWeather;
+    }
+
+    public String getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
+
     public String getLocationCity() {
         return locationCity;
     }
@@ -167,7 +201,6 @@ public class Event implements Serializable {
     public void setEndingDate(Date endingDate) {
         this.endingDate = endingDate;
     }
-
 
     @XmlTransient
     public List<User> getUserList() {
@@ -195,6 +228,14 @@ public class Event implements Serializable {
         this.creatorId = creatorId;
     }
 
+    public Weather getWeatherId() {
+        return weatherId;
+    }
+
+    public void setWeatherId(Weather weatherId) {
+        this.weatherId = weatherId;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -218,38 +259,6 @@ public class Event implements Serializable {
     @Override
     public String toString() {
         return "com.se2.wecalevent.entities.Event[ eventId=" + eventId + " ]";
-    }
-
-    public String getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
-
-    public String getDesiredWeather() {
-        return desiredWeather;
-    }
-
-    public void setDesiredWeather(String desiredWeather) {
-        this.desiredWeather = desiredWeather;
-    }
-
-    public String getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(String visibility) {
-        this.visibility = visibility;
-    }
-
-    public Weather getWeatherId() {
-        return weatherId;
-    }
-
-    public void setWeatherId(Weather weatherId) {
-        this.weatherId = weatherId;
     }
     
 }

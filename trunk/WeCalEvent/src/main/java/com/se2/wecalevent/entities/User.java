@@ -20,7 +20,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -38,39 +37,41 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
     @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.name = :name"),
     @NamedQuery(name = "User.findBySurname", query = "SELECT u FROM User u WHERE u.surname = :surname"),
-    @NamedQuery(name = "User.findByCalender", query = "SELECT u FROM User u WHERE u.calender = :calender"),
-    @NamedQuery(name = "User.findByPass", query = "SELECT u FROM User u WHERE u.pass = :pass")})
+    @NamedQuery(name = "User.findByPass", query = "SELECT u FROM User u WHERE u.pass = :pass"),
+    @NamedQuery(name = "User.findByCalendar", query = "SELECT u FROM User u WHERE u.calendar = :calendar")})
 public class User implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
-    @Column(name = "calender")
-    private String calender;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "user_id")
     private Integer userId;
-    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 100)
+    @Size(min = 1, max = 255)
     @Column(name = "email")
     private String email;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 20)
+    @Size(min = 1, max = 100)
     @Column(name = "name")
     private String name;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 20)
+    @Size(min = 1, max = 100)
     @Column(name = "surname")
     private String surname;
-    @Size(max = 20)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "pass")
     private String pass;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
+    @Column(name = "calendar")
+    private String calendar;
     @ManyToMany(mappedBy = "userList")
     private List<Event> eventList;
     @ManyToMany(mappedBy = "userList1")
@@ -85,12 +86,13 @@ public class User implements Serializable {
         this.userId = userId;
     }
 
-    public User(Integer userId, String email, String name, String surname, String calender) {
+    public User(Integer userId, String email, String name, String surname, String pass, String calendar) {
         this.userId = userId;
         this.email = email;
         this.name = name;
         this.surname = surname;
-        this.calender = calender;
+        this.pass = pass;
+        this.calendar = calendar;
     }
 
     public Integer getUserId() {
@@ -125,13 +127,20 @@ public class User implements Serializable {
         this.surname = surname;
     }
 
-
     public String getPass() {
         return pass;
     }
 
     public void setPass(String pass) {
         this.pass = pass;
+    }
+
+    public String getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(String calendar) {
+        this.calendar = calendar;
     }
 
     @XmlTransient
@@ -184,14 +193,6 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "com.se2.wecalevent.entities.User[ userId=" + userId + " ]";
-    }
-
-    public String getCalender() {
-        return calender;
-    }
-
-    public void setCalender(String calender) {
-        this.calender = calender;
     }
     
 }
