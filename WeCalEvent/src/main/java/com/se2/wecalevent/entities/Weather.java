@@ -40,8 +40,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Weather.findByCity", query = "SELECT w FROM Weather w WHERE w.city = :city"),
     @NamedQuery(name = "Weather.findByWeatherCondition", query = "SELECT w FROM Weather w WHERE w.weatherCondition = :weatherCondition")})
 public class Weather implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "weatherId")
-    private List<Event> eventList;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,14 +53,14 @@ public class Weather implements Serializable {
     private Date weatherDate;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 100)
     @Column(name = "city")
     private String city;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
+    @Size(max = 10)
     @Column(name = "weather_condition")
     private String weatherCondition;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "weatherId")
+    private List<Event> eventList;
 
     public Weather() {
     }
@@ -71,11 +69,10 @@ public class Weather implements Serializable {
         this.weatherId = weatherId;
     }
 
-    public Weather(Integer weatherId, Date weatherDate, String city, String weatherCondition) {
+    public Weather(Integer weatherId, Date weatherDate, String city) {
         this.weatherId = weatherId;
         this.weatherDate = weatherDate;
         this.city = city;
-        this.weatherCondition = weatherCondition;
     }
 
     public Integer getWeatherId() {
@@ -110,6 +107,15 @@ public class Weather implements Serializable {
         this.weatherCondition = weatherCondition;
     }
 
+    @XmlTransient
+    public List<Event> getEventList() {
+        return eventList;
+    }
+
+    public void setEventList(List<Event> eventList) {
+        this.eventList = eventList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -133,15 +139,6 @@ public class Weather implements Serializable {
     @Override
     public String toString() {
         return "com.se2.wecalevent.entities.Weather[ weatherId=" + weatherId + " ]";
-    }
-
-    @XmlTransient
-    public List<Event> getEventList() {
-        return eventList;
-    }
-
-    public void setEventList(List<Event> eventList) {
-        this.eventList = eventList;
     }
     
 }
