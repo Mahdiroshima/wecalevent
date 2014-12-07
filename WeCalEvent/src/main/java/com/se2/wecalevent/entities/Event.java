@@ -103,7 +103,7 @@ public class Event implements Serializable {
         @JoinColumn(name = "event_id", referencedColumnName = "event_id")}, inverseJoinColumns = {
         @JoinColumn(name = "user_id", referencedColumnName = "user_id")})
     @ManyToMany
-    private List<User> userList1;
+    private List<User> userList1;//TODO: refactor on the variable names
     @JoinColumn(name = "creator_id", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
     private User creatorId;
