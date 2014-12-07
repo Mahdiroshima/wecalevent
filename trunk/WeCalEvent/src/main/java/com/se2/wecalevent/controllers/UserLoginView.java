@@ -7,13 +7,14 @@ package com.se2.wecalevent.controllers;
 
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
+import java.io.IOException;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
 
 @ManagedBean
 @SessionScoped
@@ -23,8 +24,9 @@ public class UserLoginView {
     private sessionBeanRemote ejb;
 
     private String email;
-
     private String password;
+    private User theUser;
+    private boolean loggedIn;
 
     public String getEmail() {
         return email;
@@ -42,19 +44,57 @@ public class UserLoginView {
         this.password = password;
     }
 
+    public User getTheUser() {
+        return theUser;
+    }
+
+    public void setTheUser(User theUser) {
+        this.theUser = theUser;
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
     public String login() {
-        RequestContext context = RequestContext.getCurrentInstance();
         FacesMessage message = null;
-        User theUser = ejb.loginUser(email, password);
-        boolean loggedIn = theUser != null;
+        theUser = ejb.loginUser(email, password);
+        password = null;
+        loggedIn = theUser != null;
         if (loggedIn) {
             message = new FacesMessage("Hello", theUser.getName());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "home";
         }
         else {
-            message = new FacesMessage("I'm sorry :(");
+            message = new FacesMessage("Ciao","I'm sorry, can't let you in :(");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "index";
         }
-        FacesContext.getCurrentInstance().addMessage(null, message);
-        context.addCallbackParam("loggedIn", loggedIn);
-        return "home";
+        
     }
+    
+    public String logout() {
+        FacesMessage message = new FacesMessage("Byebye", theUser.getName());
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        theUser = null;
+        email = null;
+        loggedIn = false;
+        return "index";
+    }
+    
+    public void controlLogin(boolean status) throws IOException {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        System.out.println("hello");
+        if (status && !loggedIn)
+            context.redirect("index.xhtml");
+        if (!status && loggedIn)
+            context.redirect("home.xhtml");
+    }
+    
+    
 }
