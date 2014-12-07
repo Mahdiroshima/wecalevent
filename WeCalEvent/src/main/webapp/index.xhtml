@@ -3,9 +3,12 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
-
     <ui:define name="title"> Main Page </ui:define>
+    <ui:define name="head">
+
+    </ui:define>
     <ui:define name="content">
+        #{userLoginView.controlLogin(false)}
         <div class="alert alert-success" role="alert">
             <h3 style="text-align: center">Welcome to WeCalEvent - Please enter your acount credentials to access the site</h3>
         </div>
@@ -13,7 +16,7 @@
             <div class="col-md-4 col-md-offset-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Please sign in</h3>
+                        <h2 class="panel-title">Please sign in</h2>
                     </div>
                     <div class="panel-body">
                         <h:form role="form">
@@ -24,7 +27,7 @@
                                 <div class="form-group">
                                     <p:inputText class="form-control" placeholder="Password" type="password" value="#{userLoginView.password}"/>
                                 </div>
-                                <p:commandButton update=":growlLogin" class="btn btn-lg btn-success btn-block" ajax="false" value="Login" action="#{userLoginView.login()}"/>
+                                <p:commandButton update=":growlLogin" class="btn btn-lg btn-info btn-block" ajax="false" value="Login" action="#{userLoginView.login()}"/>
                             </fieldset>
                         </h:form>
                     </div>

@@ -3,9 +3,9 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
-
     <ui:define name="title"> Welcome </ui:define>
     <ui:define name="content">
+        #{userLoginView.controlLogin(true)}
         <div class="alert alert-success" role="alert">
             <h3 style="text-align: center">Welcome #{userLoginView.email}</h3>
         </div>
