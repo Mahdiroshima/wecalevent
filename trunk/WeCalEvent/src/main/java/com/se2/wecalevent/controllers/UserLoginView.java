@@ -27,7 +27,6 @@ public class UserLoginView {
     private String password;
     private User theUser;
     private boolean loggedIn;
-
     public String getEmail() {
         return email;
     }
@@ -84,6 +83,7 @@ public class UserLoginView {
         theUser = null;
         email = null;
         loggedIn = false;
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "index";
     }
     
