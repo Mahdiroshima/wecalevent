@@ -15,4 +15,5 @@ import javax.ejb.Remote;
 @Remote
 public interface sessionBeanRemote {
     public User loginUser(String email, String password);
+    public boolean register(String email, String password, String calendar, String name, String surname);
 }

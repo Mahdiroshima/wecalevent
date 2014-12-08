@@ -9,6 +9,7 @@ import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -35,14 +36,17 @@ public class sessionBean implements sessionBeanRemote {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-
-    
     @Override
     public boolean register(String email, String password, String calendar, String name, String surname) {
         Query query = entityManager.createNamedQuery("User.findByEmail");
         query.setParameter("email", email);
-        User loggedin = (User) query.getSingleResult();
-        if (loggedin != null) {
+        User userExists = null;
+        try {
+            userExists = (User) query.getSingleResult();
+        } catch (NoResultException e) {
+
+        }
+        if (userExists != null) {
             return false;
         }
         User newUser = new User();
