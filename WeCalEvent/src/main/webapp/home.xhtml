@@ -5,7 +5,7 @@
                 xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
     <ui:define name="title"> Welcome </ui:define>
     <ui:define name="content">
-        #{userLoginView.controlLogin(true)}
+        #{userLoginView.controlLogin(true,"index.xhtml")}
         <div class="alert alert-success" role="alert">
             <h3 style="text-align: center">Welcome #{userLoginView.theUser.name} #{userLoginView.theUser.surname}</h3>
         </div>

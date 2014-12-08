@@ -87,13 +87,14 @@ public class UserLoginView {
         return "index";
     }
     
-    public void controlLogin(boolean status) throws IOException {
+    public void controlLogin(boolean status, String link) throws IOException {
+        //if a page is only for not logged in users send false and the redirected link
+        //if a page is only for logged in users send true and the redirected link
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-        System.out.println("hello");
         if (status && !loggedIn)
-            context.redirect("index.xhtml");
+            context.redirect(link);
         if (!status && loggedIn)
-            context.redirect("home.xhtml");
+            context.redirect(link);
     }
     
     
