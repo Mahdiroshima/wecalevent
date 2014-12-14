@@ -11,7 +11,7 @@
             }
         </style>
     </ui:define>
-   <ui:define name="content">
+    <ui:define name="content">
         #{userLoginView.controlLogin(true, "index.xhtml")}
         <div class="panel panel-default">
             <div class="panel-body">
@@ -32,8 +32,8 @@
                             <!-- Event Description -->
                             <label class="control-label"  for="Even Description">Event Description</label>
                             <div class="controls">
-                               <p class="help-block">More the description is cool, More participant you will have !</p>
-                               <p:inputTextarea rows="5" cols="30" counter="display" maxlength="300" counterTemplate="{0} characters remaining." autoResize="false" required="true" requiredMessage="Event description must be specified" value="#{eventCreationView.eventDescription}" placeholder="Description" class="input-xlarge"/>
+                                <p class="help-block">More the description is cool, More participant you will have !</p>
+                                <p:inputTextarea rows="5" cols="30" counter="display" maxlength="300" counterTemplate="{0} characters remaining." autoResize="false" required="true" requiredMessage="Event description must be specified" value="#{eventCreationView.eventDescription}" placeholder="Description" class="input-xlarge"/>
                                 <h:outputText id="display" />
                             </div>
                         </div>
@@ -41,8 +41,8 @@
                             <!-- Event Location City -->
                             <label class="control-label"  for="Location City">Location City</label>
                             <div class="controls">
-                                <p:inputText required="true" requiredMessage="Event place must be specified" type="text" value="#{eventCreationView.locationCity}" placeholder="eventPlace" class="input-xlarge"/>
-                                <p class="help-block">The event place  is required </p>
+                                <p:inputText required="true" requiredMessage="Event place must be specified" type="text" value="#{eventCreationView.locationCity}" placeholder="eventPlace" class="input-xlarge"><p:ajax event="keyup" update=":growlLogin" listener="#{eventCreationView.handleKeyEvent}" /></p:inputText>
+                                <p class="help-block">The event place is required </p>
                             </div>
                             <div class="control-group">
                                 <!-- Visiblity -->
@@ -53,53 +53,55 @@
                                         <f:selectItem itemLabel="Private" itemValue="private" />
                                     </p:selectOneRadio>
                                 </div>
-                        <div class="control-group">
-                            <!-- Event Type -->
-                            <label class="control-label" for="Event">Event Type</label>
-                            <div class="controls selectRadio">
-                                <p:selectOneRadio required="true" requiredMessage="You should mention where your event will take place " id="eventtype" value="#{eventCreationView.eventType}">
-                                    <f:selectItem itemLabel="Indoor" itemValue="indoor" />
-                                    <f:selectItem itemLabel="Ourdoor" itemValue="outdoor" />
-                                </p:selectOneRadio>
+                                <div class="control-group">
+                                    <!-- Event Type -->
+                                    <label class="control-label" for="Event">Event Type</label>
+                                    <div class="controls selectRadio">
+                                        <p:selectOneRadio required="true" requiredMessage="You should mention where your event will take place " id="eventtype" value="#{eventCreationView.eventType}">
+                                            <f:selectItem itemLabel="Indoor" itemValue="indoor" />
+                                            <f:selectItem itemLabel="Ourdoor" itemValue="outdoor" />
+                                        </p:selectOneRadio>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <!-- Desired Weather -->
+                                    <label class="control-label" for="Event">Desired Weather</label>
+                                    <div class="controls selectRadio">
+                                        <p:selectOneRadio required="true" requiredMessage="You should select your desired weather"  id="desiredweather" value="#{eventCreationView.desiredWeather}">
+                                            <f:selectItem itemLabel="Sunny" itemValue="sunny" />
+                                            <f:selectItem itemLabel="Cloudy" itemValue="cloudy" />
+                                            <f:selectItem itemLabel="Rainy" itemValue="rainy" />
+                                            <f:selectItem itemLabel="Snowy" itemValue="snowy" />
+                                        </p:selectOneRadio>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <!-- Starting date -->
+                                    <label class="control-label"  for="startingdate">Event starting Time</label>
+                                    <div class="controls">
+                                        <p:calendar required="true" requiredMessage="Select a starting time" id="startingdate" value="#{eventCreationView.startingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !" valueChangeListener="#{eventCreationView.handleKeyEvent()}">
+                                        </p:calendar>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <!-- ending date -->
+                                    <label class="control-label"  for="startingdate">Event ending Time</label>
+                                    <div class="controls">
+                                        <p:calendar required="true" requiredMessage="Select an ending time" id="endingtime" value="#{eventCreationView.endingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !" valueChangeListener="#{eventCreationView.handleKeyEvent()}">
+                                        </p:calendar>
+                                    </div>
+                                </div>                       
+                                <div class="control-group">
+                                    <!-- Button -->
+                                    <div class="controls">
+                                        <p:commandButton ajax="false" value="Submit" action="#{eventCreationView.submit}"  class="btn btn-success"></p:commandButton>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="control-group">
-                            <!-- Desired Weather -->
-                            <label class="control-label" for="Event">Desired Weather</label>
-                            <div class="controls selectRadio">
-                                <p:selectOneRadio required="true" requiredMessage="You should select your desired weather"  id="desiredweather" value="#{eventCreationView.desiredWeather}">
-                                    <f:selectItem itemLabel="Sunny" itemValue="sunny" />
-                                    <f:selectItem itemLabel="Cloudy" itemValue="cloudy" />
-                                    <f:selectItem itemLabel="Rainy" itemValue="rainy" />
-                                    <f:selectItem itemLabel="Snowy" itemValue="snowy" />
-                                </p:selectOneRadio>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <!-- Starting date -->
-                            <label class="control-label"  for="startingdate">Event starting Time</label>
-                            <div class="controls">
-                                <p:calendar required="true" requiredMessage="Select a starting time" id="startingdate" value="#{eventCreationView.startingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <!-- ending date -->
-                            <label class="control-label"  for="startingdate">Event ending Time</label>
-                            <div class="controls">
-                                <p:calendar required="true" requiredMessage="Select an ending time" id="endingtime" value="#{eventCreationView.endingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !"/>
-                            </div>
-                        </div>                       
-                        <div class="control-group">
-                            <!-- Button -->
-                            <div class="controls">
-                                <p:commandButton ajax="false" value="Submit" action="#{eventCreationView.submit}"  class="btn btn-success"></p:commandButton>
-                            </div>
-                        </div>
-                        </div>
                         </div>        
                     </fieldset>
                 </h:form>
-                </div>
+            </div>
         </div>
-   </ui:define>>
- </ui:composition>
+    </ui:define>>
+</ui:composition>

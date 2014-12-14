@@ -111,14 +111,14 @@
                     </ul>-->
                     <p:panelGrid rendered="#{!userLoginView.loggedIn}">
                         <ul class="nav navbar-nav">
-                            <li><p:commandLink value="Home" action="index.xhtml" ajax="false"></p:commandLink></li>
+                            <li><p:commandLink value="Home" action="index.xhtml?faces-redirect=true" ajax="false"></p:commandLink></li>
                         </ul>
                     </p:panelGrid>
                     <p:panelGrid rendered="#{userLoginView.loggedIn}">
 
                         <ul class="nav navbar-nav">
-                            <li><p:commandLink value="Home" action="home.xhtml" ajax="false"></p:commandLink></li>
-                            <li><p:commandLink value="Create Event" action="eventcreation.xhtml" ajax="false"></p:commandLink></li>
+                            <li><p:commandLink value="Home" action="home.xhtml?faces-redirect=true" ajax="false"></p:commandLink></li>
+                            <li><p:commandLink value="Create Event" action="eventcreation.xhtml?faces-redirect=true" ajax="false"></p:commandLink></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li>

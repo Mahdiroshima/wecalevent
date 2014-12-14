@@ -13,6 +13,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -21,19 +22,18 @@ import javax.faces.context.FacesContext;
 @ManagedBean
 @RequestScoped
 public class EventCreationView {
-     @EJB
+
+    @EJB
     private sessionBeanRemote ejb;
-     
-  
+
     private String eventName = "Studying";
     private String eventDescription = "Nazrin will kill us if we don't wake up at 9";
     private String eventType = "indoor";
     private String desiredWeather = "rainy";
-    private String visibility = "private"; 
+    private String visibility = "private";
     private String locationCity = "milAn".toLowerCase();
     private Date startingDate;
     private Date endingDate;
-   
 
     public String getEventName() {
         return eventName;
@@ -98,7 +98,7 @@ public class EventCreationView {
     public void setEndingDate(Date endingDate) {
         this.endingDate = endingDate;
     }
-    
+
     public String submit() {
         boolean status = ejb.createevent(eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate);
         FacesMessage message = null;
@@ -111,5 +111,5 @@ public class EventCreationView {
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "eventcreation.xhtml";
         }
-}
+    }
 }
