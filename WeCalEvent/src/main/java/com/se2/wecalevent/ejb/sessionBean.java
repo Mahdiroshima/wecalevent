@@ -31,8 +31,14 @@ public class sessionBean implements sessionBeanRemote {
     public User loginUser(String email, String password) {
         Query query = entityManager.createNamedQuery("User.findByEmail");
         query.setParameter("email", email);
-        User loggedin = (User) query.getSingleResult();
-        if (loggedin.getPass().equals(password)) {
+        User loggedin = null;
+        
+        try {
+            loggedin = (User) query.getSingleResult();
+        } catch (NoResultException e) {
+
+        }
+        if (loggedin != null && loggedin.getPass().equals(password)) {
             user = loggedin;
             return loggedin;
         }
@@ -76,9 +82,8 @@ public class sessionBean implements sessionBeanRemote {
         } catch (NoResultException e) {
             
         }
-        
-        query = entityManager.createNamedQuery("Weather.findAll");
-        Weather w = (Weather) query.getSingleResult();
+        Weather theWeather = new Weather(null,startingDate, "rainy");
+        entityManager.persist(theWeather);
         Event NewEvent = new Event();
         NewEvent.setCreatorId(user);
         NewEvent.setEventName(eventName);
@@ -89,7 +94,7 @@ public class sessionBean implements sessionBeanRemote {
         NewEvent.setLocationCity(locationCity);
         NewEvent.setStartingDate(startingDate);
         NewEvent.setEndingDate(endingDate);
-        NewEvent.setWeatherId(w);
+        NewEvent.setWeatherId(theWeather);
         entityManager.persist(NewEvent);
         return true;
 
