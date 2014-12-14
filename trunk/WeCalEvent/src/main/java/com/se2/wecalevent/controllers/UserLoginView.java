@@ -60,6 +60,8 @@ public class UserLoginView {
     }
 
     public String login() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.getExternalContext().getFlash().setKeepMessages(true);
         FacesMessage message = null;
         theUser = ejb.loginUser(email, password);
         password = null;
@@ -67,12 +69,13 @@ public class UserLoginView {
         if (loggedIn) {
             message = new FacesMessage("Hello", theUser.getName());
             FacesContext.getCurrentInstance().addMessage(null, message);
-            return "home";
+            
+            return "home.xhtml?faces-redirect=true";
         }
         else {
             message = new FacesMessage("Ciao","I'm sorry, can't let you in :(");
             FacesContext.getCurrentInstance().addMessage(null, message);
-            return "index";
+            return "index.xhtml?faces-redirect=true";
         }
         
     }
@@ -84,7 +87,7 @@ public class UserLoginView {
         email = null;
         loggedIn = false;
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        return "index";
+        return "index.xhtml?faces-redirect=true";
     }
     
     public void controlLogin(boolean status, String link) throws IOException {

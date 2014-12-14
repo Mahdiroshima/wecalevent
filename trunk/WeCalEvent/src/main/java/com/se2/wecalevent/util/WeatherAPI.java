@@ -5,7 +5,10 @@
  */
 package com.se2.wecalevent.util;
 
+import com.sun.org.apache.xpath.internal.operations.*;
 import java.io.IOException;
+import java.lang.String;
+import java.util.Date;
 import org.bitpipeline.lib.owm.OwmClient;
 import org.bitpipeline.lib.owm.WeatherData;
 import org.bitpipeline.lib.owm.WeatherData.WeatherCondition;
@@ -36,6 +39,18 @@ public class WeatherAPI {
             }
         }
     }
-
+    public static boolean isCityExists(String city) {
+        return false;
+    }
+    
+    public static String getWeatherForecast(Date date, String city) {
+        
+        return "";
+    }
+    
+    public static boolean updateForecast(){
+       return false; 
+    }
+    
     
 }

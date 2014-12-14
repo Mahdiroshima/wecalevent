@@ -90,12 +90,12 @@ public class UserRegisterView {
         if (status) {
             message = new FacesMessage("Bravo", "You are now registered");
             FacesContext.getCurrentInstance().addMessage(null, message);
-            return "index.xhtml";
+            return "index.xhtml?faces-redirect=true";
         }
         else {
             message = new FacesMessage("Sorry", "This e-mail has been taken by another user");
             FacesContext.getCurrentInstance().addMessage(null, message);
-            return "register.xhtml";
+            return "register.xhtml?faces-redirect=true";
         }
     }
     
