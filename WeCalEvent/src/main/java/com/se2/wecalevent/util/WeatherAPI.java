@@ -5,9 +5,8 @@
  */
 package com.se2.wecalevent.util;
 
-import com.sun.org.apache.xpath.internal.operations.*;
+import com.se2.wecalevent.entities.Weather;
 import java.io.IOException;
-import java.lang.String;
 import java.util.Date;
 import org.bitpipeline.lib.owm.OwmClient;
 import org.bitpipeline.lib.owm.WeatherData;
@@ -48,7 +47,13 @@ public class WeatherAPI {
         return "";
     }
     
-    public static boolean updateForecast(){
+    
+    /**
+     * This method updates the forecast data for given weather object
+     * @param weather the object that is going to be updated
+     * @return true if the forecast has been changed, false otherwise
+     */
+    public static boolean updateForecast(Weather weather){
        return false; 
     }
     
