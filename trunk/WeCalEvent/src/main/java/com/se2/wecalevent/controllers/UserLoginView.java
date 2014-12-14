@@ -61,8 +61,6 @@ public class UserLoginView {
     }
 
     public String login() {
-        WeatherAPI.getWeatherForecast(null, "Milano");
-//        WeatherAPI.isCityExists("sjdfklsdjfsj");
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
         FacesMessage message = null;
