@@ -8,6 +8,8 @@ package com.se2.wecalevent.util;
 import com.se2.wecalevent.entities.Weather;
 import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bitpipeline.lib.owm.OwmClient;
 import org.bitpipeline.lib.owm.WeatherData;
 import org.bitpipeline.lib.owm.WeatherData.WeatherCondition;
@@ -39,6 +41,15 @@ public class WeatherAPI {
         }
     }
     public static boolean isCityExists(String city) {
+        try {
+            OwmClient owm = new OwmClient();
+            WeatherStatusResponse currentWeather = owm.currentWeatherAtCity(city);
+            return (currentWeather.hasWeatherStatus());
+        } catch (IOException ex) {
+            Logger.getLogger(WeatherAPI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(WeatherAPI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return false;
     }
     
