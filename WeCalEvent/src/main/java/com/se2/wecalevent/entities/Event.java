@@ -37,6 +37,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "event")
 @XmlRootElement
 @NamedQueries({
+    @NamedQuery(name = "Event.findOverlap", query =  "SELECT e FROM Event e where (:dateStarting < e.startingDate and e.startingDate < :dateEnding)"
+            + " or (:dateStarting < e.endingDate and e.endingDate < :dateEnding)"),
     @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"),
     @NamedQuery(name = "Event.findByEventId", query = "SELECT e FROM Event e WHERE e.eventId = :eventId"),
     @NamedQuery(name = "Event.findByEventName", query = "SELECT e FROM Event e WHERE e.eventName = :eventName"),
@@ -260,5 +262,5 @@ public class Event implements Serializable {
     public String toString() {
         return "com.se2.wecalevent.entities.Event[ eventId=" + eventId + " ]";
     }
-    
-}
+
+    }
