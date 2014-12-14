@@ -90,31 +90,45 @@
         <p:growl id="growlLogin" showDetail="true" showSummary="false"
                  globalOnly="yes" life="2000" />
         <nav class="navbar navbar-default navbar-static-top" role="navigation">
-            <div class="container">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">Link</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">One more separated link</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <p:panelGrid rendered="#{userLoginView.loggedIn}">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <h:form><p:commandButton ajax="false" style="margin-top: 10px" value="Logout" action="#{userLoginView.logout()}"></p:commandButton></h:form>
+            <h:form>
+                <div class="container">
+                    <!--
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                        <li><a href="#">Link</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">One more separated link</a></li>
+                            </ul>
                         </li>
-                    </ul>
-                </p:panelGrid>
-            </div>
+                    </ul>-->
+                    <p:panelGrid rendered="#{!userLoginView.loggedIn}">
+                        <ul class="nav navbar-nav">
+                            <li><p:commandLink value="Home" action="index.xhtml" ajax="false"></p:commandLink></li>
+                        </ul>
+                    </p:panelGrid>
+                    <p:panelGrid rendered="#{userLoginView.loggedIn}">
+
+                        <ul class="nav navbar-nav">
+                            <li><p:commandLink value="Home" action="home.xhtml" ajax="false"></p:commandLink></li>
+                            <li><p:commandLink value="Create Event" action="eventcreation.xhtml" ajax="false"></p:commandLink></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <p:commandButton ajax="false" style="margin-top: 10px" value="Logout" action="#{userLoginView.logout()}"></p:commandButton>
+                            </li>
+                        </ul>
+                    </p:panelGrid>
+
+                </div>
+            </h:form>
 
         </nav>
         <div class="container">
