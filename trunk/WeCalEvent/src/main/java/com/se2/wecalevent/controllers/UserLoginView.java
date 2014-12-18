@@ -7,7 +7,6 @@ package com.se2.wecalevent.controllers;
 
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
-import com.se2.wecalevent.util.WeatherAPI;
 import java.io.IOException;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
