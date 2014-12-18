@@ -21,16 +21,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Mert
+ * @author Mert Ergun <mert.rgun@gmail.com>
  */
 @Entity
 @Table(name = "user")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
     @NamedQuery(name = "User.findByUserId", query = "SELECT u FROM User u WHERE u.userId = :userId"),
@@ -145,7 +142,6 @@ public class User implements Serializable {
         this.calendar = calendar;
     }
 
-    @XmlTransient
     public List<Event> getEventList() {
         return eventList;
     }
@@ -154,7 +150,6 @@ public class User implements Serializable {
         this.eventList = eventList;
     }
 
-    @XmlTransient
     public List<Event> getEventList1() {
         return eventList1;
     }
@@ -163,7 +158,6 @@ public class User implements Serializable {
         this.eventList1 = eventList1;
     }
 
-    @XmlTransient
     public List<NotificationOwner> getNotificationOwnerList() {
         return notificationOwnerList;
     }
@@ -172,7 +166,6 @@ public class User implements Serializable {
         this.notificationOwnerList = notificationOwnerList;
     }
 
-    @XmlTransient
     public List<Event> getEventList2() {
         return eventList2;
     }

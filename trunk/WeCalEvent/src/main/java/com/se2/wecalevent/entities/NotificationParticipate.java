@@ -21,15 +21,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Mert
+ * @author Mert Ergun <mert.rgun@gmail.com>
  */
 @Entity
 @Table(name = "notification_participate")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "NotificationParticipate.findAll", query = "SELECT n FROM NotificationParticipate n"),
     @NamedQuery(name = "NotificationParticipate.findByNotifId", query = "SELECT n FROM NotificationParticipate n WHERE n.notifId = :notifId"),
