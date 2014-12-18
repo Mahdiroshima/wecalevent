@@ -28,18 +28,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Mert
+ * @author Mert Ergun <mert.rgun@gmail.com>
  */
 @Entity
 @Table(name = "event")
-@XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Event.findOverlap", query =  "SELECT e FROM Event e where (:dateStarting < e.startingDate and e.startingDate < :dateEnding)"
+    @NamedQuery(name = "Event.findOverlap", query = "SELECT e FROM Event e where (:dateStarting < e.startingDate and e.startingDate < :dateEnding)"
             + " or (:dateStarting < e.endingDate and e.endingDate < :dateEnding) or (:dateStarting >= e.startingDate and :dateEnding <= e.endingDate)"),
     @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"),
     @NamedQuery(name = "Event.findByEventId", query = "SELECT e FROM Event e WHERE e.eventId = :eventId"),
@@ -208,7 +205,6 @@ public class Event implements Serializable {
         this.endingDate = endingDate;
     }
 
-    @XmlTransient
     public List<User> getUserList() {
         return userList;
     }
@@ -217,7 +213,6 @@ public class Event implements Serializable {
         this.userList = userList;
     }
 
-    @XmlTransient
     public List<User> getUserList1() {
         return userList1;
     }
@@ -226,7 +221,6 @@ public class Event implements Serializable {
         this.userList1 = userList1;
     }
 
-    @XmlTransient
     public List<NotificationParticipate> getNotificationParticipateList() {
         return notificationParticipateList;
     }

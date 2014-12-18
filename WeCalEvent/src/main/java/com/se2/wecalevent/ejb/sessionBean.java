@@ -32,7 +32,7 @@ public class sessionBean implements sessionBeanRemote {
         Query query = entityManager.createNamedQuery("User.findByEmail");
         query.setParameter("email", email);
         User loggedin = null;
-         try {
+         try { 
             loggedin = (User) query.getSingleResult();
         } catch (NoResultException e) {
 
