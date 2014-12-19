@@ -34,13 +34,63 @@ import org.xml.sax.InputSource;
  * @author Mehdi
  */
 public class WeatherAPI {
-
-    public static boolean isCityExists(String city) {
-        return false;
-    }
+    /**
+     * Sample call:
+     * http://api.openweathermap.org/data/2.5/forecast/daily?q=London&mode=xml&units=metric&cnt=16
+     */
     
+    /**
+     * base url of 3 hour based weather forecast
+     */
+    private static String baseUrl3hour = "http://api.openweathermap.org/data/2.5/forecast?";
+    
+    /**
+     * * base url of daily based weather forecast
+     */
+    private static String baseUrl1day = "http://api.openweathermap.org/data/2.5/forecast/daily?";
+    /**
+     * This method checks with the weather api whether the given city exists or not
+     * @param city City name
+     * @return true if the city exists, false otherwise
+     */
+    public static boolean isCityExists(String city) {
+        String query = baseUrl1day + "q=" + city + "&mode=xml";
+        Document document = connect(query);
+        return WeatherXMLParser.isCityExists(document);
+    }
+    /**
+     * This method gets the necessary weather information from the API
+     * @param date The date on which the weather forecast is requested
+     * @param city City Name
+     * @return the weather forecast estimation
+     */
     public static String getWeatherForecast(Date date, String city) {
-        return "";
+        Date nowDate = new Date();
+        long differenceInMs = date.getTime() - nowDate.getTime();
+        //convert milliseconds to days
+        int days = (int)differenceInMs / (1000 * 60 * 60 * 24);
+        String query = "";
+        Document document = null;
+        String forecast = "";
+        /**
+         * This if statement never supposed to work , putted to prevent unwanted consequences
+         */
+        if (days < 0) {
+            query = baseUrl1day + "q=" + city + "&mode=xml";
+            document = connect(query);
+            forecast = WeatherXMLParser.getForecastFromDailyXML(document, nowDate);
+        } else if (days < 5) { // get 3-hour base forecast
+            query = baseUrl3hour + "q=" + city + "&mode=xml";
+            document = connect(query);
+            forecast = WeatherXMLParser.getForecastFromDailyXML(document, date);
+        } else if (days < 16){ // get daily forecast
+            query = baseUrl1day + "q=" + city + "&mode=xml&cnt=16";
+            document = connect(query);
+            forecast = WeatherXMLParser.getForecastFromDailyXML(document, date);
+        } else {
+            forecast = "unknown";
+        }
+        return forecast;
     }
     
     
@@ -50,33 +100,38 @@ public class WeatherAPI {
      * @return true if the forecast has been changed, false otherwise
      */
     public static boolean updateForecast(Weather weather){
+       //TODO: needs to be implemented
        return false; 
     }
     
     
-    public static Document connect(String url) {
+    private static Document connect(String url) {
+        //apache http client library element initializations
         HttpClient http = new DefaultHttpClient();
         HttpGet httpget = new HttpGet(url);
         HttpResponse response = null;
         try {
+            //connects to api and gets the results
             response = http.execute(httpget);
         } catch (IOException ex) {
             Logger.getLogger(WeatherAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        //Start reading the result
         InputStream contentStream = null;
         String responseBody = "";
         try {
             StatusLine statusLine = response.getStatusLine();
             if (statusLine == null) {
                 throw new IOException(
-                        String.format("Unable to get a response from OWM server"));
+                        String.format("Unable to get a response from server"));
             }
             int statusCode = statusLine.getStatusCode();
             if (statusCode < 200 && statusCode >= 300) {
                 throw new IOException(
-                        String.format("OWM server responded with status code %d: %s", statusCode, statusLine));
+                        String.format("Server responded with status code %d: %s", statusCode, statusLine));
             }
-            /* Read the response content */
+            // The data is good now read the response content
             HttpEntity responseEntity = response.getEntity();
             contentStream = responseEntity.getContent();
             Reader isReader = new InputStreamReader(contentStream);
@@ -90,6 +145,7 @@ public class WeatherAPI {
             while ((n = isReader.read(buffer)) != -1) {
                 strWriter.write(buffer, 0, n);
             }
+            //flush string
             responseBody = strWriter.toString();
             contentStream.close();
         } catch (IOException e) {
@@ -99,6 +155,7 @@ public class WeatherAPI {
             if (contentStream != null) {
             }
         }
+        // start building the xml document object
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder;
         try {

@@ -6,6 +6,7 @@
 package com.se2.wecalevent.controllers;
 
 import com.se2.wecalevent.remote.sessionBeanRemote;
+import com.se2.wecalevent.util.WeatherAPI;
 import java.util.Date;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -24,12 +25,12 @@ public class EventCreationView {
     @EJB
     private sessionBeanRemote ejb;
 
-    private String eventName = "Studying";
-    private String eventDescription = "Nazrin will kill us if we don't wake up at 9";
-    private String eventType = "indoor";
-    private String desiredWeather = "rainy";
-    private String visibility = "private";
-    private String locationCity = "milAn".toLowerCase();
+    private String eventName;
+    private String eventDescription;
+    private String eventType;
+    private String desiredWeather;
+    private String visibility;
+    private String locationCity;
     private Date startingDate;
     private Date endingDate;
 
@@ -96,6 +97,7 @@ public class EventCreationView {
     public void setEndingDate(Date endingDate) {
         this.endingDate = endingDate;
     }
+    
 
     public String submit() {
         boolean status = ejb.createevent(eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate);
@@ -109,5 +111,24 @@ public class EventCreationView {
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "eventcreation.xhtml";
         }
+    }
+    
+    public void handleKeyEvent() {
+        try {
+            Thread.sleep(1000);                 //1000 milliseconds is one second.
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        FacesMessage message = null;
+        boolean status = WeatherAPI.isCityExists(locationCity);
+        if (status) {
+            message = new FacesMessage(FacesMessage.SEVERITY_INFO,"", locationCity + " is OK.");
+        }
+        else {
+            message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", locationCity + " doesn't exist, try again");
+            locationCity = "";
+        }
+            
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
 }
