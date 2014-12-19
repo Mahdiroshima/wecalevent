@@ -13,15 +13,29 @@ import org.w3c.dom.Document;
  * @author Mert
  */
 public class WeatherXMLParser {
+    /**
+     * This function parses the document and checks whether the city name is valid or not
+     * @param document 
+     * @return true if city exists, false otherwise
+     */
     public static boolean isCityExists(Document document) {
-        return false;
+        //if the parsed document is null that means, an xml file is not 
+        //generated and therfore the ctiy does not exists
+        if (document == null) {
+            return false;
+        } else {
+            //TODO: need to be implemented
+            return true;
+        }
     }
     
     public static String getForecastFromDailyXML(Document document, Date date) {
-        return "";
+        //TODO: need to be implemented
+        return "cloudy";
     }
     
     public static String getForecastFrom3hourlyXML(Document document, Date date) {
-        return "";
+        //TODO: need to be implemented
+        return "cloudy";
     }
 }

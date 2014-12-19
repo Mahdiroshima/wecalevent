@@ -132,6 +132,10 @@
 
         </nav>
         <div class="container">
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                <p:graphicImage name="img/loading.gif" height="200" width="200"/>
+            </p:dialog>
             <ui:insert name="content"></ui:insert>
         </div>
     </h:body>

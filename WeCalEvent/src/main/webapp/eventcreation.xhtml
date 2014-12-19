@@ -25,15 +25,13 @@
                             <label class="control-label"  for="eventName">EventName</label>
                             <div class="controls">
                                 <p:inputText required="true" requiredMessage="Event name must be specified" type="text" value='#{eventCreationView.eventName}' placeholder="eventName" class="input-xlarge"/>
-                                <p class="help-block">The event name is required </p>
                             </div>
                         </div>
                         <div class="control-group">
                             <!-- Event Description -->
                             <label class="control-label"  for="Even Description">Event Description</label>
                             <div class="controls">
-                                <p class="help-block">More the description is cool, More participant you will have !</p>
-                                <p:inputTextarea rows="5" cols="30" counter="display" maxlength="300" counterTemplate="{0} characters remaining." autoResize="false" required="true" requiredMessage="Event description must be specified" value="#{eventCreationView.eventDescription}" placeholder="Description" class="input-xlarge"/>
+                                <p:inputTextarea rows="3" cols="30" counter="display" maxlength="300" counterTemplate="{0} characters remaining." autoResize="true" required="true" requiredMessage="Event description must be specified" value="#{eventCreationView.eventDescription}" placeholder="Description" class="input-xlarge"/>
                                 <h:outputText id="display" />
                             </div>
                         </div>
@@ -41,8 +39,9 @@
                             <!-- Event Location City -->
                             <label class="control-label"  for="Location City">Location City</label>
                             <div class="controls">
-                                <p:inputText required="true" requiredMessage="Event place must be specified" type="text" value="#{eventCreationView.locationCity}" placeholder="eventPlace" class="input-xlarge"><p:ajax event="keyup" update=":growlLogin" listener="#{eventCreationView.handleKeyEvent}" /></p:inputText>
-                                <p class="help-block">The event place is required </p>
+                                <p:inputText id="cityText" required="true" requiredMessage="Event place must be specified" type="text" value="#{eventCreationView.locationCity}" placeholder="Event Place" class="input-xlarge">
+                                    <p:ajax event="blur" update=":growlLogin @this" listener="#{eventCreationView.handleKeyEvent}" process="@this"  />
+                                </p:inputText>
                             </div>
                             <div class="control-group">
                                 <!-- Visiblity -->
