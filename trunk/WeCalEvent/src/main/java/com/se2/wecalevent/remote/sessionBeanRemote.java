@@ -20,5 +20,7 @@ public interface sessionBeanRemote {
     public User getUser();
     public User loginUser(String email, String password);
     public boolean register(String email, String password, String calendar, String name, String surname);
-    public boolean createevent (String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate);
+    public boolean createEvent (String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate);
+    public boolean updateEvent (Integer eventId,String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate);
+    public boolean updateUser(Integer userId, String email, String password, String calendar, String name, String surname);
 }

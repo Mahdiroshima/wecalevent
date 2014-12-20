@@ -100,7 +100,7 @@ public class EventCreationView {
     
 
     public String submit() {
-        boolean status = ejb.createevent(eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate);
+        boolean status = ejb.createEvent(eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate);
         FacesMessage message = null;
         if (status) {
             message = new FacesMessage("Hurry !!", "Your event have been created");
