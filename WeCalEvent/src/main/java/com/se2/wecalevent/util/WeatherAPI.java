@@ -42,12 +42,12 @@ public class WeatherAPI {
     /**
      * base url of 3 hour based weather forecast
      */
-    private static String baseUrl3hour = "http://api.openweathermap.org/data/2.5/forecast?";
+    private static final String baseUrl3hour = "http://api.openweathermap.org/data/2.5/forecast?";
     
     /**
      * * base url of daily based weather forecast
      */
-    private static String baseUrl1day = "http://api.openweathermap.org/data/2.5/forecast/daily?";
+    private static final String baseUrl1day = "http://api.openweathermap.org/data/2.5/forecast/daily?";
     /**
      * This method checks with the weather api whether the given city exists or not
      * @param city City name
@@ -64,7 +64,7 @@ public class WeatherAPI {
      * @param city City Name
      * @return the weather forecast estimation
      */
-    public static String getWeatherForecast(Date date, String city) {
+    public static Weather getWeatherForecast(Date date, String city) {
         Date nowDate = new Date();
         long differenceInMs = date.getTime() - nowDate.getTime();
         //convert milliseconds to days
@@ -90,7 +90,7 @@ public class WeatherAPI {
         } else {
             forecast = "unknown";
         }
-        return forecast;
+        return new Weather(null, date, city);
     }
     
     
