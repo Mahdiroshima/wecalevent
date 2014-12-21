@@ -52,13 +52,13 @@ public class WeatherXMLParser {
                 } else if ((s.contains("clear"))) {
                     ch = "sunny";
                 } else if ((s.contains("rain"))) {
-                    ch = "Rainy";
+                    ch = "rainy";
                 } else {
-                    ch = "Snowy";
+                    ch = "snowy";
                 }
 
             } else {
-                ch = "Uknown";
+                ch = "unknown";
             }
 
             temp++;
@@ -66,8 +66,6 @@ public class WeatherXMLParser {
         } while (nList.getLength() == temp);
 
         return ch;
-
-    }
     }
     
     public static String getForecastFrom3hourlyXML(Document document, Date date) {
