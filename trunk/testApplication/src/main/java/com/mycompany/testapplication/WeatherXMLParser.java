@@ -26,6 +26,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -46,6 +47,7 @@ public class WeatherXMLParser {
         String Datetosearch = formatter.format(date);
         do {
             Node nNode = nList.item(temp);
+            NamedNodeMap nnm = nNode.getAttributes();
             int x = nNode.getAttributes().getNamedItem("day").getNodeValue().compareTo(Datetosearch);
             if (x == 0) {
                 Element eElement = (Element) nNode;
