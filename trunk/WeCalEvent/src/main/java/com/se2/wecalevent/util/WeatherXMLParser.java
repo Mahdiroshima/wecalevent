@@ -18,9 +18,12 @@ import org.w3c.dom.NodeList;
  * @author Mert
  */
 public class WeatherXMLParser {
+
     /**
-     * This function parses the document and checks whether the city name is valid or not
-     * @param document 
+     * This function parses the document and checks whether the city name is
+     * valid or not
+     *
+     * @param document
      * @return true if city exists, false otherwise
      */
     public static boolean isCityExists(Document document) {
@@ -33,20 +36,20 @@ public class WeatherXMLParser {
             return true;
         }
     }
-    
+
     public static String getForecastFromDailyXML(Document document, Date date) {
         //TODO: need to be implemented
         NodeList nList = document.getDocumentElement().getElementsByTagName("time");
         int temp = 0;
         String ch = "";
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         String Datetosearch = formatter.format(date);
         do {
             Node nNode = nList.item(temp);
             int x = nNode.getNodeValue().compareTo(Datetosearch);
             if (x == 0) {
                 Element eElement = (Element) nNode;
-                String s = eElement.getElementsByTagName("symbol").item(temp).getAttributes().getNamedItem("name").getNodeValue();
+                String s = eElement.getElementsByTagName("symbol").item(0).getAttributes().getNamedItem("name").getNodeValue();
                 if (s.contains("cloud")) {
                     ch = "cloudy";
                 } else if ((s.contains("clear"))) {
@@ -56,18 +59,18 @@ public class WeatherXMLParser {
                 } else {
                     ch = "snowy";
                 }
-
+                break;
             } else {
                 ch = "unknown";
             }
 
             temp++;
 
-        } while (nList.getLength() == temp);
+        } while (nList.getLength() > temp);
 
         return ch;
     }
-    
+
     public static String getForecastFrom3hourlyXML(Document document, Date date) {
         //TODO: need to be implemented
         return "cloudy";
