@@ -49,6 +49,7 @@ public class WeatherXMLParser {
             Node nNode = nList.item(temp);
             NamedNodeMap nnm = nNode.getAttributes();
             int x = nNode.getAttributes().getNamedItem("day").getNodeValue().compareTo(Datetosearch);
+            System.out.println(nNode.getAttributes().getNamedItem("day").getNodeValue());
             if (x == 0) {
                 Element eElement = (Element) nNode;
                 System.out.println("Fuckoff");
