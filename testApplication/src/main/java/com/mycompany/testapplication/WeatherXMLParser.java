@@ -42,13 +42,14 @@ public class WeatherXMLParser {
         NodeList nList = document.getDocumentElement().getElementsByTagName("time");
         int temp = 0;
         String ch = "";
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         String Datetosearch = formatter.format(date);
         do {
             Node nNode = nList.item(temp);
-            int x = nNode.getNodeValue().compareTo(Datetosearch);
+            int x = nNode.getAttributes().getNamedItem("day").getNodeValue().compareTo(Datetosearch);
             if (x == 0) {
                 Element eElement = (Element) nNode;
+                System.out.println("Fuckoff");
                 String s = eElement.getElementsByTagName("symbol").item(temp).getAttributes().getNamedItem("name").getNodeValue();
                 if (s.contains("cloud")) {
                     ch = "cloudy";
@@ -61,7 +62,7 @@ public class WeatherXMLParser {
                 }
 
             } else {
-                ch = "unknown";
+                ch = "uknown";
             }
 
             temp++;
