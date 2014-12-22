@@ -32,13 +32,44 @@ public class WeatherXMLParser {
         if (document == null) {
             return false;
         } else {
-            //TODO: need to be implemented
             return true;
         }
     }
 
     public static String getForecastFromDailyXML(Document document, Date date) {
-        //TODO: need to be implemented
+        NodeList nList = document.getDocumentElement().getElementsByTagName("time");
+        int temp = 0;
+        String ch = "";
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String Datetosearch = formatter.format(date);
+        do {
+            Node nNode = nList.item(temp);
+            boolean x = nNode.getAttributes().getNamedItem("from").getNodeValue().contains(Datetosearch);
+            if (x == true) {
+                Element eElement = (Element) nNode;
+                String s = eElement.getElementsByTagName("symbol").item(0).getAttributes().getNamedItem("name").getNodeValue();
+                if (s.contains("cloud")) {
+                    ch = "cloudy";
+                } else if ((s.contains("clear"))) {
+                    ch = "sunny";
+                } else if ((s.contains("rain"))) {
+                    ch = "rainy";
+                } else {
+                    ch = "snowy";
+                }
+                break;
+            } else {
+                ch = "unknown";
+            }
+
+            temp++;
+
+        } while (nList.getLength() > temp);
+
+        return ch;
+    }
+
+    public static String getForecastFrom3hourlyXML(Document document, Date date) {
         NodeList nList = document.getDocumentElement().getElementsByTagName("time");
         int temp = 0;
         String ch = "";
@@ -69,10 +100,5 @@ public class WeatherXMLParser {
         } while (nList.getLength() > temp);
 
         return ch;
-    }
-
-    public static String getForecastFrom3hourlyXML(Document document, Date date) {
-        //TODO: need to be implemented
-        return "cloudy";
     }
 }
