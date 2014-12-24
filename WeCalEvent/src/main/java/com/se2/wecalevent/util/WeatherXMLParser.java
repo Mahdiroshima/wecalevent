@@ -75,11 +75,13 @@ public class WeatherXMLParser {
         String ch = "";
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         String Datetosearch = formatter.format(date);
-        do {
+                do {
             Node nNode = nList.item(temp);
-            int x = nNode.getNodeValue().compareTo(Datetosearch);
-            if (x == 0) {
+            boolean x = nNode.getAttributes().getNamedItem("from").getNodeValue().contains(Datetosearch);
+            System.out.println(nNode.getAttributes().getNamedItem("from").getNodeValue());
+            if (x == true) {
                 Element eElement = (Element) nNode;
+                System.out.println("test");
                 String s = eElement.getElementsByTagName("symbol").item(0).getAttributes().getNamedItem("name").getNodeValue();
                 if (s.contains("cloud")) {
                     ch = "cloudy";
@@ -92,7 +94,7 @@ public class WeatherXMLParser {
                 }
                 break;
             } else {
-                ch = "unknown";
+                ch = "uknown";
             }
 
             temp++;
@@ -101,4 +103,5 @@ public class WeatherXMLParser {
 
         return ch;
     }
+
 }
