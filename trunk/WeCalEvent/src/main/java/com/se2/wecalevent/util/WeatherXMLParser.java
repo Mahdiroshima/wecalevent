@@ -6,6 +6,7 @@
 package com.se2.wecalevent.util;
 
 import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.w3c.dom.Document;
@@ -69,17 +70,20 @@ public class WeatherXMLParser {
         return ch;
     }
 
-    public static String getForecastFrom3hourlyXML(Document document, Date date) {
+    public static String getForecastFrom3hourlyXML(Document document, Date date) throws ParseException {
         NodeList nList = document.getDocumentElement().getElementsByTagName("time");
         int temp = 0;
         String ch = "";
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String Datetosearch = formatter.format(date);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 do {
             Node nNode = nList.item(temp);
-            boolean x = nNode.getAttributes().getNamedItem("from").getNodeValue().contains(Datetosearch);
-            System.out.println(nNode.getAttributes().getNamedItem("from").getNodeValue());
-            if (x == true) {
+            String x = nNode.getAttributes().getNamedItem("from").getNodeValue().replace("T", " ");
+            String y = nNode.getAttributes().getNamedItem("to").getNodeValue().replace("T", " ");
+            Date fromdate = formatter.parse(x);
+            Date todate = formatter.parse(y);
+            int comp = fromdate.compareTo(date);
+            int comp1 = todate.compareTo(date);            
+            if (comp<=0 && comp1>0 ) {
                 Element eElement = (Element) nNode;
                 System.out.println("test");
                 String s = eElement.getElementsByTagName("symbol").item(0).getAttributes().getNamedItem("name").getNodeValue();
