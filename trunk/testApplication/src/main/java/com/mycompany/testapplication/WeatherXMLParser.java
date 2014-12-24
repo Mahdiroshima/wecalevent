@@ -45,15 +45,18 @@ public class WeatherXMLParser {
         String ch = "";
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         String Datetosearch = formatter.format(date);
+        Format formatter1 = new SimpleDateFormat("HH:mm:ss");
+        String timetosearch = formatter1.format(date);
+        System.out.println(Datetosearch);
+        System.out.println(timetosearch);
         do {
             Node nNode = nList.item(temp);
-            NamedNodeMap nnm = nNode.getAttributes();
-            int x = nNode.getAttributes().getNamedItem("day").getNodeValue().compareTo(Datetosearch);
-            System.out.println(nNode.getAttributes().getNamedItem("day").getNodeValue());
-            if (x == 0) {
+            boolean x = nNode.getAttributes().getNamedItem("from").getNodeValue().contains(Datetosearch);
+            System.out.println(nNode.getAttributes().getNamedItem("from").getNodeValue());
+            if (x == true) {
                 Element eElement = (Element) nNode;
-                System.out.println("Fuckoff");
-                String s = eElement.getElementsByTagName("symbol").item(temp).getAttributes().getNamedItem("name").getNodeValue();
+                System.out.println("test");
+                String s = eElement.getElementsByTagName("symbol").item(0).getAttributes().getNamedItem("name").getNodeValue();
                 if (s.contains("cloud")) {
                     ch = "cloudy";
                 } else if ((s.contains("clear"))) {
@@ -63,14 +66,14 @@ public class WeatherXMLParser {
                 } else {
                     ch = "snowy";
                 }
-
+break;
             } else {
                 ch = "uknown";
             }
 
             temp++;
 
-        } while (nList.getLength() == temp);
+        } while (nList.getLength() > temp) ;
 
         return ch;
     }

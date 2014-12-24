@@ -148,10 +148,10 @@ public class SendMailTLS {
     }
 
     public static void main(String[] args) throws ParseException {
-        String url = "http://api.openweathermap.org/data/2.5/forecast/daily?q=Milano&mode=xml&units=metric&cnt=16";
+        String url = "http://api.openweathermap.org/data/2.5/forecast/?q=milano&mode=xml&units=metric";
         Document document = connect(url);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = dateFormat.parse("2014-12-24");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = dateFormat.parse("2014-12-27 11:25:25");
         System.out.println(WeatherXMLParser.getForecastFromDailyXML(document, date));
     }
 }
