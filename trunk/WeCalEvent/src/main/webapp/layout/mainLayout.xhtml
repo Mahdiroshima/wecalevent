@@ -70,6 +70,35 @@
                 -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
                 box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
             }
+            #notifPanel {
+                float: left;
+                width: 23%;
+            }
+            
+            #eventPanel {
+                float: left;
+                width: 53%;
+                margin-left: 6px;
+                margin-right: 3px;
+            }
+            
+            #rightPanel {
+                float: right;
+                width: 23%;
+            }
+            
+            .commonPanel {
+                min-height: 500px;
+                padding: 10px 20px 10px 20px;
+            }
+            
+            .commonPanelPF {
+                min-height: 450px;
+            }
+            
+            .calendarStyle input {
+                width: 200px;
+            }
         </style>
         <script type="text/javascript">
             $(document).ready(function () {
@@ -89,7 +118,7 @@
     <h:body>
         <p:growl id="growlLogin" showDetail="true" showSummary="false"
                  globalOnly="yes" life="2000" />
-        <nav class="navbar navbar-default navbar-static-top" role="navigation">
+        <nav class="navbar navbar-default navbar-fixed-top navbar-static-top" role="navigation">
             <h:form>
                 <div class="container">
                     <!--
@@ -113,6 +142,7 @@
                         <ul class="nav navbar-nav">
                             <li><p:commandLink value="Home" action="index.xhtml?faces-redirect=true" ajax="false"></p:commandLink></li>
                         </ul>
+                        <p style="text-align: center; margin-top: 9px; font-size: 22px; font-style: oblique;"><ui:insert name="pageTitle"></ui:insert></p>
                     </p:panelGrid>
                     <p:panelGrid rendered="#{userLoginView.loggedIn}">
 
@@ -120,9 +150,12 @@
                             <li><p:commandLink value="Home" action="home.xhtml?faces-redirect=true" ajax="false"></p:commandLink></li>
                             <li><p:commandLink value="Create Event" action="eventcreation.xhtml?faces-redirect=true" ajax="false"></p:commandLink></li>
                         </ul>
+                        <div style="display: inline-block; width: 60%;">
+                            <p style="text-align: center !important; margin-top: 9px; font-size: 22px; font-style: oblique;"><ui:insert name="pageTitle"></ui:insert></p>
+                        </div>
                         <ul class="nav navbar-nav navbar-right">
                             <li>
-                                <p:commandButton ajax="false" style="margin-top: 10px" value="Logout" action="#{userLoginView.logout()}"></p:commandButton>
+                                <p:commandButton ajax="false" style="margin-top: 10px; float:right" value="Logout" action="#{userLoginView.logout()}"></p:commandButton>
                             </li>
                         </ul>
                     </p:panelGrid>
@@ -131,7 +164,7 @@
             </h:form>
 
         </nav>
-        <div class="container">
+        <div class="container" style="margin-top: 60px">
             <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
             <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
                 <p:graphicImage name="img/loading.gif" height="200" width="200"/>

@@ -11,6 +11,9 @@
             }
         </style>
     </ui:define>
+    <ui:define name="pageTitle">
+        Create your event
+    </ui:define>
     <ui:define name="content">
         #{userLoginView.controlLogin(true, "index.xhtml")}
         <div class="panel panel-default">
@@ -18,13 +21,13 @@
                 <h:form class="form-horizontal">
                     <fieldset>
                         <div id="legend">
-                            <legend class="">Event Creation</legend>
+                            <legend class="">Create Event</legend>
                         </div>
                         <div class="control-group">
                             <!-- Event Name -->
                             <label class="control-label"  for="eventName">EventName</label>
                             <div class="controls">
-                                <p:inputText required="true" requiredMessage="Event name must be specified" type="text" value='#{eventCreationView.eventName}' placeholder="eventName" class="input-xlarge"/>
+                                <p:inputText required="true" requiredMessage="Event name must be specified" type="text" value='#{eventCreationView.eventName}' placeholder="Event Name" class="input-xlarge"/>
                             </div>
                         </div>
                         <div class="control-group">
