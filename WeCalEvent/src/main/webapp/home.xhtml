@@ -1,14 +1,29 @@
-    <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                    xmlns:ui="http://java.sun.com/jsf/facelets"
-                    xmlns:h="http://java.sun.com/jsf/html"
-                    xmlns:f="http://java.sun.com/jsf/core"
-                    xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
-        <ui:define name="title"> Welcome </ui:define>
-        <ui:define name="content">
-            #{userLoginView.controlLogin(true,"index.xhtml")}
-            <div class="alert alert-success" role="alert">
-                <h3 style="text-align: center">Welcome #{userLoginView.theUser.name} #{userLoginView.theUser.surname}</h3>
-            </div>
-        </ui:define>
-    </ui:composition>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
+    <ui:define name="title"> Welcome </ui:define>
+    <ui:define name="pageTitle">#{userLoginView.theUser.name} #{userLoginView.theUser.surname}'s calendar</ui:define>
+    <ui:define name="content">
+        #{userLoginView.controlLogin(true,"index.xhtml")}
+        <div id="notifPanel" class="panel panel-warning commonPanel">
+            <p:panel header="Notifications" styleClass="commonPanelPF">
+
+            </p:panel>
+        </div>
+        <div id="eventPanel" class="panel panel-warning commonPanel">
+            <p:panel header="Upcoming Events" styleClass="commonPanelPF">
+
+            </p:panel>
+        </div>
+        <div id="rightPanel" class="panel panel-warning commonPanel">
+            <h:form>
+                <p:panel header="Options" styleClass="commonPanelPF">
+                    <p:calendar mode="inline" styleClass="calendarStyle"></p:calendar>
+                </p:panel>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
 
