@@ -8,6 +8,7 @@ package com.se2.wecalevent.controllers;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 
+
 /**
  *
  * @author Mert
