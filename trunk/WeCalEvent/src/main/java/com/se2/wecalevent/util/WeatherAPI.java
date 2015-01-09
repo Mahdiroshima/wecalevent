@@ -83,7 +83,7 @@ public class WeatherAPI {
         } else if (days < 5) { // get 3-hour base forecast
             query = baseUrl3hour + "q=" + city + "&mode=xml";
             document = connect(query);
-            forecast = WeatherXMLParser.getForecastFromDailyXML(document, date);
+            forecast = WeatherXMLParser.getForecastFrom3hourlyXML(document, date);
         } else if (days < 16){ // get daily forecast
             query = baseUrl1day + "q=" + city + "&mode=xml&cnt=16";
             document = connect(query);

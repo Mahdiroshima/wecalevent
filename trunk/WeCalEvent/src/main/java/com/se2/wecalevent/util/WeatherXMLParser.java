@@ -9,6 +9,8 @@ import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -70,38 +72,41 @@ public class WeatherXMLParser {
         return ch;
     }
 
-    public static String getForecastFrom3hourlyXML(Document document, Date date) throws ParseException {
+    public static String getForecastFrom3hourlyXML(Document document, Date date) {
         NodeList nList = document.getDocumentElement().getElementsByTagName("time");
         int temp = 0;
         String ch = "";
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                do {
-            Node nNode = nList.item(temp);
-            String x = nNode.getAttributes().getNamedItem("from").getNodeValue().replace("T", " ");
-            String y = nNode.getAttributes().getNamedItem("to").getNodeValue().replace("T", " ");
-            Date fromdate = formatter.parse(x);
-            Date todate = formatter.parse(y);
-            int comp = fromdate.compareTo(date);
-            int comp1 = todate.compareTo(date);            
-            if (comp<=0 && comp1>0 ) {
-                Element eElement = (Element) nNode;
-                System.out.println("test");
-                String s = eElement.getElementsByTagName("symbol").item(0).getAttributes().getNamedItem("name").getNodeValue();
-                if (s.contains("cloud")) {
-                    ch = "cloudy";
-                } else if ((s.contains("clear"))) {
-                    ch = "sunny";
-                } else if ((s.contains("rain"))) {
-                    ch = "rainy";
+        do {
+            try {
+                Node nNode = nList.item(temp);
+                String x = nNode.getAttributes().getNamedItem("from").getNodeValue().replace("T", " ");
+                String y = nNode.getAttributes().getNamedItem("to").getNodeValue().replace("T", " ");
+                Date fromdate = formatter.parse(x);
+                Date todate = formatter.parse(y);
+                int comp = fromdate.compareTo(date);
+                int comp1 = todate.compareTo(date);
+                if (comp<=0 && comp1>0 ) {
+                    Element eElement = (Element) nNode;
+                    System.out.println("test");
+                    String s = eElement.getElementsByTagName("symbol").item(0).getAttributes().getNamedItem("name").getNodeValue();
+                    if (s.contains("cloud")) {
+                        ch = "cloudy";
+                    } else if ((s.contains("clear"))) {
+                        ch = "sunny";
+                    } else if ((s.contains("rain"))) {
+                        ch = "rainy";
+                    } else {
+                        ch = "snowy";
+                    }
+                    break;
                 } else {
-                    ch = "snowy";
+                    ch = "uknown";
                 }
-                break;
-            } else {
-                ch = "uknown";
-            }
 
-            temp++;
+                temp++;
+            } catch (ParseException ex) {
+            }
 
         } while (nList.getLength() > temp);
 
