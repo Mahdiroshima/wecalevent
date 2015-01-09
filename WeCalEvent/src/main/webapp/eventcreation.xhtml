@@ -61,7 +61,7 @@
                                     <div class="controls selectRadio">
                                         <p:selectOneRadio required="true" requiredMessage="You should mention where your event will take place " id="eventtype" value="#{eventCreationView.eventType}">
                                             <f:selectItem itemLabel="Indoor" itemValue="indoor" />
-                                            <f:selectItem itemLabel="Ourdoor" itemValue="outdoor" />
+                                            <f:selectItem itemLabel="Outdoor" itemValue="outdoor" />
                                         </p:selectOneRadio>
                                     </div>
                                 </div>
@@ -69,12 +69,13 @@
                                     <!-- Desired Weather -->
                                     <label class="control-label" for="Event">Desired Weather</label>
                                     <div class="controls selectRadio">
-                                        <p:selectOneRadio required="true" requiredMessage="You should select your desired weather"  id="desiredweather" value="#{eventCreationView.desiredWeather}">
-                                            <f:selectItem itemLabel="Sunny" itemValue="sunny" />
-                                            <f:selectItem itemLabel="Cloudy" itemValue="cloudy" />
-                                            <f:selectItem itemLabel="Rainy" itemValue="rainy" />
-                                            <f:selectItem itemLabel="Snowy" itemValue="snowy" />
-                                        </p:selectOneRadio>
+                                        <p:outputLabel for="desiredweather" />
+                                        <p:selectManyCheckbox  required="true" requiredMessage="You should select your desired weather"  id="desiredweather" value="#{eventCreationView.selectedweather}">
+                                            <f:selectItem itemLabel="Sunny" itemValue="Sunny" />
+                                            <f:selectItem itemLabel="Cloudy" itemValue="Cloudy" />
+                                            <f:selectItem itemLabel="Rainy" itemValue="Rainy" />
+                                            <f:selectItem itemLabel="Snowy" itemValue="Snowy" />
+                                        </p:selectManyCheckbox>
                                     </div>
                                 </div>
                                 <div class="control-group">

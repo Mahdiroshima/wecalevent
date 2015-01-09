@@ -8,6 +8,7 @@ package com.se2.wecalevent.controllers;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import com.se2.wecalevent.util.WeatherAPI;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -33,7 +34,21 @@ public class EventCreationView {
     private String locationCity;
     private Date startingDate;
     private Date endingDate;
+    private String[] Selectedweather;
 
+    public String[] getSelectedweather() {
+        return Selectedweather;
+    }
+
+    public void setSelectedweather(String[] Selectedweather) {
+        this.Selectedweather = Selectedweather;
+        desiredWeather = "";
+        for (String s : Selectedweather) {
+            desiredWeather += s + "-";
+        }
+                   
+    }
+    
     public String getEventName() {
         return eventName;
     }
@@ -59,6 +74,7 @@ public class EventCreationView {
     }
 
     public String getDesiredWeather() {
+        
         return desiredWeather;
     }
 
