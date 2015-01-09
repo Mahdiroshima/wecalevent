@@ -45,7 +45,7 @@ public class WeatherXMLParser {
         String Datetosearch = formatter.format(date);
         do {
             Node nNode = nList.item(temp);
-            boolean x = nNode.getAttributes().getNamedItem("from").getNodeValue().contains(Datetosearch);
+            boolean x = nNode.getAttributes().getNamedItem("day").getNodeValue().contains(Datetosearch);
             if (x == true) {
                 Element eElement = (Element) nNode;
                 String s = eElement.getElementsByTagName("symbol").item(0).getAttributes().getNamedItem("name").getNodeValue();
