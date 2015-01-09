@@ -72,6 +72,7 @@ public class WeatherAPI {
         String query = "";
         Document document = null;
         String forecast = "";
+        Weather weather = new Weather(null, date, city);
         /**
          * This if statement never supposed to work , putted to prevent unwanted consequences
          */
@@ -90,7 +91,8 @@ public class WeatherAPI {
         } else {
             forecast = "unknown";
         }
-        return new Weather(null, date, city);
+        weather.setWeatherCondition(forecast);
+        return weather;
     }
     
     
