@@ -192,5 +192,32 @@ public class sessionBean implements sessionBeanRemote {
            
     }
     
+    public boolean updateForecast(Integer eventId, Integer weatherId) {
+        //Excute query to get all current event 
+        Query query = entityManager.createNamedQuery("Event.findAll");
+        //Create list of events
+        List<Event> res = query.getResultList();
+        //for each event
+        for (Event e : res) {
+            //Get the starting date of the event
+            Date stratingtime = e.getStartingDate();
+            //Get the Location of the event 
+            String city = e.getLocationCity();
+            //Call the Weather Forecast for the City and date 
+            Weather weather = getWeatherForecast(stratingtime, city);
+            //Get the stored weather condition
+            String storedweathercond = weather.getWeatherCondition();
+            //Get the current weather condition
+            String currentlyweathercond = e.getWeatherId().getWeatherCondition();
+            //Compare the stored and the current weather condition if differenet upadate the weather object
+            if (storedweathercond.compareTo(currentlyweathercond) > 0) {
+                e.getWeatherId().setWeatherCondition(storedweathercond);
+            }
+
+        }
+        return true;
+    }
+    
    
+            
 }
