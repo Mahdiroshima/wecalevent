@@ -10,7 +10,7 @@ import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.entities.Weather;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import com.se2.wecalevent.util.WeatherAPI;
-import static com.se2.wecalevent.util.WeatherAPI.getWeatherForecast;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -127,11 +127,47 @@ public class sessionBean implements sessionBeanRemote {
         NewEvent.setStartingDate(startingDate);
         NewEvent.setEndingDate(endingDate);
         NewEvent.setWeatherId(theWeather);
+        NewEvent.setUserList(new ArrayList<User>());
+        NewEvent.getUserList().add(user);
         //Save the event to the database
         entityManager.persist(NewEvent);
         return true;
     }
+    /**
+     * This method returns the list of events requested for the user
+     * @param user_id
+     * @return 
+     */
+    @Override
+    public List<Event> getEventsOfUser(int user_id) {
+        Query query = entityManager.createNamedQuery("User.findByUserId");
+        query.setParameter("userId", user_id);
+        User theUser = null;
+        try {
+            theUser = (User) query.getSingleResult();
+            if (theUser != null && user.getCalendar().equalsIgnoreCase("public")) {
+               theUser.getEventList().size();
+               return theUser.getEventList();
+            }
+        } catch (NoResultException e) {
 
+        }
+        return null;
+    }
+    
+    @Override
+    public User getUserById(int user_id) {
+        Query query = entityManager.createNamedQuery("User.findByUserId");
+        query.setParameter("userId", user_id);
+        User theUser = null;
+        try {
+            theUser = (User) query.getSingleResult();
+        } catch (NoResultException e) {
+            
+        }
+        return theUser;
+    }
+    
     /**
      * Get method for the User object, this method can be used to check 
      * whether the user is logged in or not
@@ -204,7 +240,7 @@ public class sessionBean implements sessionBeanRemote {
             //Get the Location of the event 
             String city = e.getLocationCity();
             //Call the Weather Forecast for the City and date 
-            Weather weather = getWeatherForecast(stratingtime, city);
+            Weather weather = WeatherAPI.getWeatherForecast(stratingtime, city);
             //Get the stored weather condition
             String storedweathercond = weather.getWeatherCondition();
             //Get the current weather condition

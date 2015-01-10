@@ -11,6 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -69,12 +70,21 @@ public class User implements Serializable {
     @Size(min = 1, max = 10)
     @Column(name = "calendar")
     private String calendar;
-    @ManyToMany(mappedBy = "userList")
+    /**
+     * participated
+     */
+    @ManyToMany(mappedBy = "userList", fetch = FetchType.EAGER)
     private List<Event> eventList;
+    /**
+     * invited
+     */
     @ManyToMany(mappedBy = "userList1")
     private List<Event> eventList1;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private List<NotificationOwner> notificationOwnerList;
+    /**
+     * owning events
+     */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "creatorId")
     private List<Event> eventList2;
 
