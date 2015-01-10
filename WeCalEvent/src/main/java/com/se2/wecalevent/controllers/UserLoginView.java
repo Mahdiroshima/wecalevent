@@ -8,6 +8,7 @@ package com.se2.wecalevent.controllers;
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import java.io.IOException;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -22,11 +23,30 @@ public class UserLoginView {
 
     @EJB
     private sessionBeanRemote ejb;
-
+    
     private String email;
     private String password;
     private User theUser;
     private boolean loggedIn;
+    private List<User> people;
+    private List<String> selectedPeople;
+    
+    public List<User> getPeople() {
+        return people;
+    }
+
+    public void setPeople(List<User> people) {
+        this.people = people;
+    }
+
+    public List<String> getSelectedPeople() {
+        return selectedPeople;
+    }
+
+    public void setSelectedPeople(List<String> selectedPeople) {
+        this.selectedPeople = selectedPeople;
+    }
+    
     public String getEmail() {
         return email;
     }

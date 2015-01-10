@@ -5,27 +5,34 @@
  */
 package com.se2.wecalevent.controllers;
 
+import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import com.se2.wecalevent.util.WeatherAPI;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 
 /**
  *
  * @author Mehdi
  */
-@ManagedBean
+@ManagedBean(name = "eventCreation")
 @RequestScoped
 public class EventCreationView {
 
     @EJB
     private sessionBeanRemote ejb;
-
+    
+    @ManagedProperty("#{userLoginView}")
+    private UserLoginView userLoginView;
     private String eventName;
     private String eventDescription;
     private String eventType;
@@ -36,6 +43,14 @@ public class EventCreationView {
     private Date endingDate;
     private String[] Selectedweather;
 
+    public UserLoginView getUserLoginView() {
+        return userLoginView;
+    }
+
+    public void setUserLoginView(UserLoginView userLoginView) {
+        this.userLoginView = userLoginView;
+    }
+    
     public String[] getSelectedweather() {
         return Selectedweather;
     }
@@ -114,18 +129,48 @@ public class EventCreationView {
         this.endingDate = endingDate;
     }
     
+    @PostConstruct
+    public void init() {
+        if (userLoginView.getPeople() == null) {
+            List<User> people = ejb.getAllUsers();
+            int index = people.indexOf(ejb.getUser());
+            if (index > -1) {
+                people.remove(index);
+            }
+            userLoginView.setPeople(people);
+            userLoginView.setSelectedPeople(new ArrayList<String>());
+        }
+    }
+    
+    public void viewPeople() {
+        RequestContext.getCurrentInstance().openDialog("dialogs/invitePeople");
+    }
+    
+    public void save() {/*
+        for (String s : selectedPeople) {
+            int id = Integer.parseInt(s);
+            for (User user : people) {
+                if (id==user.getUserId()) {
+                    
+                    break;
+                }
+            }
+        }*/
+        RequestContext.getCurrentInstance().closeDialog("dialogs/invitePeople");
+    }
 
     public String submit() {
         boolean status = ejb.createEvent(eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate);
         FacesMessage message = null;
         if (status) {
+            userLoginView.setPeople(null);
             message = new FacesMessage("Hurry !!", "Your event have been created");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "home.xhtml?faces-redirect=true";
         } else {
             message = new FacesMessage("Sorry", "You event cannot be created :( ");
             FacesContext.getCurrentInstance().addMessage(null, message);
-            return "eventcreation.xhtml?faces-redirect=true";
+            return "eventcreation.xhtml";
         }
     }
     

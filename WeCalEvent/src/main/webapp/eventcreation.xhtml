@@ -69,7 +69,6 @@
                                     <!-- Desired Weather -->
                                     <label class="control-label" for="Event">Desired Weather</label>
                                     <div class="controls selectRadio">
-                                        <p:outputLabel for="desiredweather" />
                                         <p:selectManyCheckbox  required="true" requiredMessage="You should select your desired weather"  id="desiredweather" value="#{eventCreationView.selectedweather}">
                                             <f:selectItem itemLabel="Sunny" itemValue="Sunny" />
                                             <f:selectItem itemLabel="Cloudy" itemValue="Cloudy" />
@@ -93,7 +92,8 @@
                                         <p:calendar required="true" requiredMessage="Select an ending time" id="endingtime" value="#{eventCreationView.endingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !" valueChangeListener="#{eventCreationView.handleKeyEvent()}">
                                         </p:calendar>
                                     </div>
-                                </div>                       
+                                </div>
+                                <p:commandButton immediate="true" style="margin: 10px 0px 10px 0px;" value="Invite People" icon="ui-icon-extlink" actionListener="#{eventCreation.viewPeople()}"></p:commandButton>
                                 <div class="control-group">
                                     <!-- Button -->
                                     <div class="controls">
@@ -101,7 +101,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>        
+                        </div>
                     </fieldset>
                 </h:form>
             </div>

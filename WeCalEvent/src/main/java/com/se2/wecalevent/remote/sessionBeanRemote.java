@@ -25,6 +25,7 @@ public interface sessionBeanRemote {
     public boolean createEvent (String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate);
     public List<Event> getEventsOfUser(int user_id);
     public User getUserById(int user_id);
+    public List<User> getAllUsers();
     public boolean updateEvent (Integer eventId,String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate);
     public boolean updateUser(Integer userId, String email, String password, String calendar, String name, String surname);
 }
