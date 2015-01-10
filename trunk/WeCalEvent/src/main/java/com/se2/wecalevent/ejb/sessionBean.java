@@ -10,7 +10,9 @@ import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.entities.Weather;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import com.se2.wecalevent.util.WeatherAPI;
+import static com.se2.wecalevent.util.WeatherAPI.getWeatherForecast;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -154,7 +156,19 @@ public class sessionBean implements sessionBeanRemote {
      */
     @Override
     public boolean updateEvent(Integer eventId, String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Event event = entityManager.find(Event.class, eventId);
+        event.setEventName(eventName);
+        event.setEventDescription(eventDescription);
+        event.setEventType(eventType);
+        event.setDesiredWeather(desiredWeather);
+        event.setVisibility(visibility);
+        event.setLocationCity(locationCity);
+        event.setStartingDate(startingDate);
+        event.setEndingDate(endingDate);
+        entityManager.persist(event);  
+        return true;
+             
+    
     }
     /**
      * TODO: update javadoc
@@ -168,6 +182,15 @@ public class sessionBean implements sessionBeanRemote {
      */
     @Override
     public boolean updateUser(Integer userId, String email, String password, String calendar, String name, String surname) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        User user = entityManager.find(User.class, userId);
+        user.setEmail(email);
+        user.setPass(password);
+        user.setSurname(surname);
+        user.setName(name);
+        entityManager.persist(user);
+        return true;
+           
     }
+    
+   
 }
