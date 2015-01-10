@@ -253,6 +253,14 @@ public class sessionBean implements sessionBeanRemote {
         }
         return true;
     }
+
+    @Override
+    public List<User> getAllUsers() {
+        Query query = entityManager.createNamedQuery("User.findAll");
+        //Create list of users
+        List<User> result = query.getResultList();
+        return result;
+    }
     
    
             
