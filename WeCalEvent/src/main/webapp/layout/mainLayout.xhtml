@@ -74,28 +74,23 @@
                 float: left;
                 width: 23%;
             }
-            
+
             #eventPanel {
                 float: left;
-                width: 47%;
+                width: 76%;
                 margin-left: 6px;
                 margin-right: 3px;
             }
-            
-            #rightPanel {
-                float: right;
-                width: 29%;
-            }
-            
+
             .commonPanel {
                 padding: 10px 20px 10px 20px;
             }
-            
+
             .commonPanelPF {
                 min-height: 450px;
                 margin-left: -10px;
             }
-            
+
             .calendarStyle input {
                 width: 200px;
             }
@@ -142,7 +137,8 @@
                         <ul class="nav navbar-nav">
                             <li><p:commandLink value="Home" action="index.xhtml?faces-redirect=true" ajax="false"></p:commandLink></li>
                         </ul>
-                        <p style="text-align: center; margin-top: 9px; font-size: 22px; font-style: oblique;"><ui:insert name="pageTitle"></ui:insert></p>
+                        <p:outputPanel id="pageTitle1">
+                            <p style="text-align: center; margin-top: 9px; font-size: 22px; font-style: oblique;"><ui:insert name="pageTitle"></ui:insert></p></p:outputPanel>
                     </p:panelGrid>
                     <p:panelGrid rendered="#{userLoginView.loggedIn}">
 
@@ -151,7 +147,8 @@
                             <li><p:commandLink value="Create Event" action="eventcreation.xhtml?faces-redirect=true" ajax="false"></p:commandLink></li>
                         </ul>
                         <div style="display: inline-block; width: 60%;">
-                            <p style="text-align: center !important; margin-top: 9px; font-size: 22px; font-style: oblique;"><ui:insert name="pageTitle"></ui:insert></p>
+                            <p:outputPanel id="pageTitle2">
+                                <p style="text-align: center !important; margin-top: 9px; font-size: 22px; font-style: oblique;"><ui:insert name="pageTitle"></ui:insert></p></p:outputPanel>
                         </div>
                         <ul class="nav navbar-nav navbar-right">
                             <li>

@@ -121,11 +121,11 @@ public class EventCreationView {
         if (status) {
             message = new FacesMessage("Hurry !!", "Your event have been created");
             FacesContext.getCurrentInstance().addMessage(null, message);
-            return "home.xhtml";
+            return "home.xhtml?faces-redirect=true";
         } else {
             message = new FacesMessage("Sorry", "You event cannot be created :( ");
             FacesContext.getCurrentInstance().addMessage(null, message);
-            return "eventcreation.xhtml";
+            return "eventcreation.xhtml?faces-redirect=true";
         }
     }
     
@@ -135,6 +135,7 @@ public class EventCreationView {
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
+        if (locationCity == null) return;
         FacesMessage message = null;
         boolean status = WeatherAPI.isCityExists(locationCity);
         if (status) {
