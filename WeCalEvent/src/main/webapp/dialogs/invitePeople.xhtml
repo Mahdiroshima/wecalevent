@@ -21,7 +21,7 @@
             <p:selectManyMenu style="width: 100%" id="advanced" value="#{userLoginView.selectedPeople}" filter="true" filterMatchMode="contains" showCheckbox="true">
                 <f:selectItems value="#{userLoginView.people}" var="person" itemLabel="#{person.name} #{person.surname}" itemValue="#{person.userId}"></f:selectItems>
             </p:selectManyMenu>
-            <p:commandButton value="Add to invitation list" ajax="false" style="float: right; margin-top: 10px" process="@this" actionListener="#{eventCreation.save}"></p:commandButton>
+            <p:commandButton value="Add to invitation list" ajax="false" style="float: right; margin-top: 10px" process="@this" actionListener="#{eventCreationView.save}"></p:commandButton>
         </h:form>
     </h:body>
 </html>

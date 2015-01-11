@@ -22,7 +22,11 @@ public interface sessionBeanRemote {
     public User getUser();
     public User loginUser(String email, String password);
     public boolean register(String email, String password, String calendar, String name, String surname);
-    public boolean createEvent (String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate);
+    public boolean createEvent(String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedList);
+    public boolean inviteUsers(Event event, List<User> users);
+    public boolean notifyInvitation(Event event, List<User> users);
+    public boolean notifyParticipant(Event event, List<User> users, String notice);
+    public boolean notifyOwner(Event event, User user, String notice);
     public List<Event> getEventsOfUser(int user_id);
     public User getUserById(int user_id);
     public List<User> getAllUsers();

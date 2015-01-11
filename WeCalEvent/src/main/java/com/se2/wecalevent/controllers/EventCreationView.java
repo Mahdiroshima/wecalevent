@@ -24,7 +24,7 @@ import org.primefaces.context.RequestContext;
  *
  * @author Mehdi
  */
-@ManagedBean(name = "eventCreation")
+@ManagedBean
 @RequestScoped
 public class EventCreationView {
 
@@ -146,21 +146,12 @@ public class EventCreationView {
         RequestContext.getCurrentInstance().openDialog("dialogs/invitePeople");
     }
     
-    public void save() {/*
-        for (String s : selectedPeople) {
-            int id = Integer.parseInt(s);
-            for (User user : people) {
-                if (id==user.getUserId()) {
-                    
-                    break;
-                }
-            }
-        }*/
+    public void save() {
         RequestContext.getCurrentInstance().closeDialog("dialogs/invitePeople");
     }
 
     public String submit() {
-        boolean status = ejb.createEvent(eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate);
+        boolean status = ejb.createEvent(eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate, getListOfSelectedUsers());
         FacesMessage message = null;
         if (status) {
             userLoginView.setPeople(null);
@@ -192,5 +183,19 @@ public class EventCreationView {
         }
             
         FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+    
+    private List<User> getListOfSelectedUsers() {
+        List<User> userList = new ArrayList<User>();
+        for (String s : userLoginView.getSelectedPeople()) {
+            int id = Integer.parseInt(s);
+            for (User user : userLoginView.getPeople()) {
+                if (id == user.getUserId()) {
+                    userList.add(user);
+                    break;
+                }
+            }
+        }
+        return userList;
     }
 }

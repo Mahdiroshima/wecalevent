@@ -23,13 +23,16 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Mert Ergun <mert.rgun@gmail.com>
+ * @author Mert
  */
 @Entity
 @Table(name = "weather")
+@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Weather.findAll", query = "SELECT w FROM Weather w"),
     @NamedQuery(name = "Weather.findByWeatherId", query = "SELECT w FROM Weather w WHERE w.weatherId = :weatherId"),
@@ -104,6 +107,7 @@ public class Weather implements Serializable {
         this.weatherCondition = weatherCondition;
     }
 
+    @XmlTransient
     public List<Event> getEventList() {
         return eventList;
     }
