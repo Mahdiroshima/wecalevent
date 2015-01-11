@@ -78,18 +78,20 @@ public class UpcomingEventsView {
     public void updateEventList() {
         if (ejb != null) {
             viewUser = ejb.getUser();
-            if (user_id == null) {
-                events = ejb.getEventsOfUser(viewUser.getUserId());
-            } else {
-                int id = Integer.parseInt(user_id);
-                events = ejb.getEventsOfUser(id);
+            if (viewUser != null) {
+                if (user_id == null) {
+                    events = ejb.getEventsOfUser(viewUser.getUserId());
+                } else {
+                    int id = Integer.parseInt(user_id);
+                    events = ejb.getEventsOfUser(id);
+                }
+                eventModel = new DefaultScheduleModel();
+                for (Event event : events) {
+                    ScheduleEvent se = new DefaultScheduleEvent(event.getEventName(), event.getStartingDate(), event.getEndingDate());
+                    eventModel.addEvent(se);
+                }
+                RequestContext.getCurrentInstance().update(":schedule");
             }
-            eventModel = new DefaultScheduleModel();
-            for (Event event : events) {
-                ScheduleEvent se = new DefaultScheduleEvent(event.getEventName(), event.getStartingDate(), event.getEndingDate());
-                eventModel.addEvent(se);
-            }
-            RequestContext.getCurrentInstance().update(":schedule");
         }
     }
 }

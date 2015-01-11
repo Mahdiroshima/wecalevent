@@ -6,16 +6,19 @@
 package com.se2.wecalevent.ejb;
 
 import com.se2.wecalevent.entities.Event;
+import com.se2.wecalevent.entities.Notification;
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.entities.Weather;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import com.se2.wecalevent.util.WeatherAPI;
+import com.se2.wecalevent.viewModels.NotificationViewModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -94,21 +97,26 @@ public class sessionBean implements sessionBeanRemote {
      * @param locationCity The place in which the event will be hosted, mandatory, required for forecast gathering
      * @param startingDate Starting date of the event
      * @param endingDate Ending date of the event
+     * @param invitedList The list of users who are invited
      * @return true if create operation is successful, false otherwise
      */
     @Override
-    public boolean createEvent(String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate) {
+    public boolean createEvent(String eventName, String eventDescription, String eventType, String desiredWeather,
+            String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedList) {
         //Creates an predefined SQL Query, which checks if there is an event which will occur in the given interval
         Query query = entityManager.createNamedQuery("Event.findOverlap");
         query.setParameter("dateStarting", startingDate);
         query.setParameter("dateEnding", endingDate);
-        Event samedate = null;
+        List<Event> samedate = null;
         try {
             //if NoResultException is checked, no problem
-            samedate = (Event) query.getSingleResult();
+            samedate = query.getResultList();
             //There is an event in the given interval, return false
-            return false;
+            if (samedate.size() > 0)
+                return false;
         } catch (NoResultException e) {
+            
+        } catch (NonUniqueResultException e) {
             
         }
         //Get weather forecast form the WeatherAPI class
@@ -131,6 +139,8 @@ public class sessionBean implements sessionBeanRemote {
         NewEvent.getUserList().add(user);
         //Save the event to the database
         entityManager.persist(NewEvent);
+        entityManager.flush();
+        inviteUsers(NewEvent, invitedList);
         return true;
     }
     /**
@@ -145,6 +155,7 @@ public class sessionBean implements sessionBeanRemote {
         User theUser = null;
         try {
             theUser = (User) query.getSingleResult();
+            entityManager.refresh(theUser);
             if (theUser != null && user.getCalendar().equalsIgnoreCase("public")) {
                theUser.getEventList().size();
                return theUser.getEventList();
@@ -261,7 +272,45 @@ public class sessionBean implements sessionBeanRemote {
         List<User> result = query.getResultList();
         return result;
     }
-    
-   
-            
+
+    @Override
+    public boolean inviteUsers(Event event, List<User> users) {
+        if (event.getUserList1() == null) {
+            event.setUserList1(users);
+        }
+        else {
+            event.getUserList1().addAll(users);
+        }
+        entityManager.merge(event);
+        entityManager.flush();
+        if (users != null) {
+            notifyInvitation(event, users);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean notifyInvitation(Event event, List<User> users) {
+        entityManager.refresh(event);
+        for (User user : users) {
+            Notification notification = new Notification();
+            notification.setNotifType(NotificationViewModel.NotificationType.Invitation.getValue());
+            notification.setUserId(user);
+            notification.setNotification("You are invited to the event: " +event.getEventName());
+            notification.setTs(new Date());
+            entityManager.persist(notification);
+        }
+        entityManager.flush();
+        return true;
+    }
+
+    @Override
+    public boolean notifyParticipant(Event event, List<User> users, String notice) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean notifyOwner(Event event, User user, String notice) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

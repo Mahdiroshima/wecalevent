@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,19 +21,21 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Mert Ergun <mert.rgun@gmail.com>
+ * @author Mert
  */
 @Entity
 @Table(name = "event")
+@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Event.findOverlap", query = "SELECT e FROM Event e where (:dateStarting < e.startingDate and e.startingDate < :dateEnding)"
             + " or (:dateStarting < e.endingDate and e.endingDate < :dateEnding) or (:dateStarting >= e.startingDate and :dateEnding <= e.endingDate)"),
@@ -105,8 +106,6 @@ public class Event implements Serializable {
         @JoinColumn(name = "user_id", referencedColumnName = "user_id")})
     @ManyToMany
     private List<User> userList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "eventId")
-    private List<NotificationParticipate> notificationParticipateList;
     @JoinColumn(name = "creator_id", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
     private User creatorId;
@@ -205,6 +204,7 @@ public class Event implements Serializable {
         this.endingDate = endingDate;
     }
 
+    @XmlTransient
     public List<User> getUserList() {
         return userList;
     }
@@ -213,20 +213,13 @@ public class Event implements Serializable {
         this.userList = userList;
     }
 
+    @XmlTransient
     public List<User> getUserList1() {
         return userList1;
     }
 
     public void setUserList1(List<User> userList1) {
         this.userList1 = userList1;
-    }
-
-    public List<NotificationParticipate> getNotificationParticipateList() {
-        return notificationParticipateList;
-    }
-
-    public void setNotificationParticipateList(List<NotificationParticipate> notificationParticipateList) {
-        this.notificationParticipateList = notificationParticipateList;
     }
 
     public User getCreatorId() {
