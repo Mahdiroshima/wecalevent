@@ -212,7 +212,8 @@ public class sessionBean implements sessionBeanRemote {
         event.setLocationCity(locationCity);
         event.setStartingDate(startingDate);
         event.setEndingDate(endingDate);
-        entityManager.persist(event);  
+        entityManager.merge(event);
+        entityManager.flush();
         return true;
              
     
@@ -234,7 +235,8 @@ public class sessionBean implements sessionBeanRemote {
         user.setPass(password);
         user.setSurname(surname);
         user.setName(name);
-        entityManager.persist(user);
+        entityManager.merge(user);
+        entityManager.flush();
         return true;
            
     }
@@ -306,11 +308,40 @@ public class sessionBean implements sessionBeanRemote {
 
     @Override
     public boolean notifyParticipant(Event event, List<User> users, String notice) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        entityManager.refresh(event);
+        for (User user : users) {
+            Notification notification = new Notification();
+            notification.setNotifType(NotificationViewModel.NotificationType.Forecast_change.getValue());
+            notification.setUserId(user);
+            notification.setNotification(notice);
+            notification.setTs(new Date());
+            entityManager.persist(notification);
+        }
+        entityManager.flush();
+        return true;
     }
 
     @Override
     public boolean notifyOwner(Event event, User user, String notice) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Notification notification = new Notification();
+        notification.setNotifType(NotificationViewModel.NotificationType.Postpone_suggestion.getValue());
+        notification.setUserId(user);
+        notification.setNotification(notice);
+        notification.setTs(new Date());
+        entityManager.persist(notification);
+        entityManager.flush();
+        return true;
+    }
+
+    @Override
+    public boolean removeEntity(Integer objectId, Class t) {
+        Object object = entityManager.find(t, objectId);
+        return removeEntity(object);
+    }
+
+    @Override
+    public boolean removeEntity(Object object) {
+        entityManager.detach(object);
+        return true;
     }
 }
