@@ -81,7 +81,7 @@
                                     <!-- Starting date -->
                                     <label class="control-label"  for="startingdate">Event starting Time</label>
                                     <div class="controls">
-                                        <p:calendar required="true" requiredMessage="Select a starting time" id="startingdate" value="#{eventCreationView.startingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !" valueChangeListener="#{eventCreationView.handleKeyEvent()}">
+                                        <p:calendar timeZone="GMT+1" required="true" requiredMessage="Select a starting time" id="startingdate" value="#{eventCreationView.startingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !" valueChangeListener="#{eventCreationView.handleKeyEvent()}">
                                         </p:calendar>
                                     </div>
                                 </div>
@@ -89,7 +89,7 @@
                                     <!-- ending date -->
                                     <label class="control-label"  for="startingdate">Event ending Time</label>
                                     <div class="controls">
-                                        <p:calendar required="true" requiredMessage="Select an ending time" id="endingtime" value="#{eventCreationView.endingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !" valueChangeListener="#{eventCreationView.handleKeyEvent()}">
+                                        <p:calendar timeZone="GMT+1" required="true" requiredMessage="Select an ending time" id="endingtime" value="#{eventCreationView.endingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !" valueChangeListener="#{eventCreationView.handleKeyEvent()}">
                                         </p:calendar>
                                     </div>
                                 </div>

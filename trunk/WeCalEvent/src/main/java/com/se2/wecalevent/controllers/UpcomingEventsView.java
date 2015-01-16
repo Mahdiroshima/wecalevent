@@ -26,13 +26,15 @@ import org.primefaces.model.ScheduleModel;
 @RequestScoped
 @ManagedBean
 public class UpcomingEventsView {
+
     @EJB
     private sessionBeanRemote ejb;
-    
+
     private String user_id;
     private List<Event> events = null;
     private User viewUser = null;
     private ScheduleModel eventModel;
+    private Event newParticipantEvent = null;
 
     public ScheduleModel getEventModel() {
         return eventModel;
@@ -41,7 +43,7 @@ public class UpcomingEventsView {
     public void setEventModel(ScheduleModel eventModel) {
         this.eventModel = eventModel;
     }
-    
+
     public User getViewUser() {
         return viewUser;
     }
@@ -49,7 +51,7 @@ public class UpcomingEventsView {
     public void setViewUser(User viewUser) {
         this.viewUser = viewUser;
     }
-    
+
     public List<Event> getEvents() {
         return events;
     }
@@ -57,8 +59,7 @@ public class UpcomingEventsView {
     public void setEvents(List<Event> events) {
         this.events = events;
     }
-    
-    
+
     public String getUser_id() {
         return user_id;
     }
@@ -67,31 +68,69 @@ public class UpcomingEventsView {
         this.user_id = user_id;
         updateEventList();
     }
-    
+
+    public Event getNewParticipantEvent() {
+        return newParticipantEvent;
+    }
+
+    public void setNewParticipantEvent(Event newParticipantEvent) {
+        this.newParticipantEvent = newParticipantEvent;
+        //if new event should be added and if I am viewing the calendar of myself
+        if (newParticipantEvent != null && viewUser != null && viewUser.getUserId().equals(ejb.getUser().getUserId())) {
+            if (events != null && events.indexOf(newParticipantEvent) < 0) { //if the event is not already included
+                updateEventList();
+            }
+        }
+    }
+
     /**
      * Creates a new instance of UpcomingEventsView
      */
     public UpcomingEventsView() {
     }
-    
+
     @PostConstruct
     public void updateEventList() {
+        boolean viewSomeOneElse = false;
         if (ejb != null) {
-            viewUser = ejb.getUser();
-            if (viewUser != null) {
-                if (user_id == null) {
+            if (user_id == null) {
+                viewUser = ejb.getUser();
+                if (viewUser != null) {
                     events = ejb.getEventsOfUser(viewUser.getUserId());
                 } else {
-                    int id = Integer.parseInt(user_id);
-                    events = ejb.getEventsOfUser(id);
+                    return;
                 }
-                eventModel = new DefaultScheduleModel();
-                for (Event event : events) {
+            } else {
+                int id = Integer.parseInt(user_id);
+                viewUser = ejb.getUserById(id);
+                events = ejb.getEventsOfUser(id);
+                viewSomeOneElse = true;
+            }
+            eventModel = new DefaultScheduleModel();
+            /**
+             * Manage event privacy here
+             */
+            for (Event event : events) {
+                if (viewSomeOneElse) {
+                    //If the calendar is public, all users are able to see the calendar content with details
+                    if (viewUser.getCalendar().contains("public")) {
+                        if (event.getVisibility().contains("public")) {
+                            ScheduleEvent se = new DefaultScheduleEvent(event.getEventName(), event.getStartingDate(), event.getEndingDate());
+                            eventModel.addEvent(se);
+                        } else { //unless the event is private TODO: and I am not a participant
+                            ScheduleEvent se = new DefaultScheduleEvent("Private Event", event.getStartingDate(), event.getEndingDate());
+                            eventModel.addEvent(se);
+                        }
+                    } else { // The calendar is private, you cannot see the details
+                        ScheduleEvent se = new DefaultScheduleEvent("Private", event.getStartingDate(), event.getEndingDate());
+                        eventModel.addEvent(se);
+                    }
+                } else { // I view my calendar, show me everything
                     ScheduleEvent se = new DefaultScheduleEvent(event.getEventName(), event.getStartingDate(), event.getEndingDate());
                     eventModel.addEvent(se);
                 }
-                RequestContext.getCurrentInstance().update(":schedule");
             }
+            RequestContext.getCurrentInstance().update(":schedule");
         }
     }
 }

@@ -38,6 +38,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Notification.findByNotifType", query = "SELECT n FROM Notification n WHERE n.notifType = :notifType"),
     @NamedQuery(name = "Notification.findByTs", query = "SELECT n FROM Notification n WHERE n.ts = :ts")})
 public class Notification implements Serializable {
+    @JoinColumn(name = "related_to", referencedColumnName = "event_id")
+    @ManyToOne(optional = false)
+    private Event relatedTo;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -137,6 +140,14 @@ public class Notification implements Serializable {
     @Override
     public String toString() {
         return "com.se2.wecalevent.entities.Notification[ notifId=" + notifId + " ]";
+    }
+
+    public Event getRelatedTo() {
+        return relatedTo;
+    }
+
+    public void setRelatedTo(Event relatedTo) {
+        this.relatedTo = relatedTo;
     }
     
 }
