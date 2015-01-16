@@ -14,12 +14,22 @@
         
         <div id="notifPanel" class="panel panel-warning commonPanel">
             <p:panel header="Notifications" styleClass="commonPanelPF">
-                
+                <p:dataScroller id="notifPanell" value="#{notificationView.notifications}" var="notification" >
+                    <div style="display: inline-block">
+                        <h:form style="float:left; width: 20px; height: 20px; margin-right: 10px">
+                            <p:commandButton actionListener="#{notificationView.viewNotification(notification)}" icon="ui-icon-extlink" style="width: 20px; height: 20px;">
+                                <p:ajax event="dialogReturn" listener="#{upcomingEventsView.newParticipantEvent}" update=":notifPanell :schedule" />
+                            </p:commandButton>
+                        </h:form>
+                        <p:outputLabel value="#{notification.notification}" style="display: inline"></p:outputLabel>
+                    </div>
+                    <p:separator></p:separator>
+                </p:dataScroller>
             </p:panel>
         </div>
         <div id="eventPanel" class="panel panel-warning commonPanel">
             <p:panel header="Upcoming Events" styleClass="commonPanelPF">
-                <p:schedule id="schedule" value="#{upcomingEventsView.eventModel}" draggable="false" resizable="false" tooltip="true"  widgetVar="myschedule"></p:schedule>
+                <p:schedule timeZone="GMT+1" id="schedule" value="#{upcomingEventsView.eventModel}" draggable="false" resizable="false" tooltip="true"  widgetVar="myschedule"></p:schedule>
             </p:panel>
         </div>
     </ui:define>

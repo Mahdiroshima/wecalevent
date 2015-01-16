@@ -109,6 +109,9 @@ public class UserLoginView {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "index.xhtml?faces-redirect=true";
     }
+    public void invalidate() {
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+    }
     
     public void controlLogin(boolean status, String link) throws IOException {
         //if a page is only for not logged in users send false and the redirected link

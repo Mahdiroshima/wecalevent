@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,6 +22,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -49,6 +51,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Event.findByStartingDate", query = "SELECT e FROM Event e WHERE e.startingDate = :startingDate"),
     @NamedQuery(name = "Event.findByEndingDate", query = "SELECT e FROM Event e WHERE e.endingDate = :endingDate")})
 public class Event implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "relatedTo")
+    private List<Notification> notificationList;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -261,6 +265,15 @@ public class Event implements Serializable {
     @Override
     public String toString() {
         return "com.se2.wecalevent.entities.Event[ eventId=" + eventId + " ]";
+    }
+
+    @XmlTransient
+    public List<Notification> getNotificationList() {
+        return notificationList;
+    }
+
+    public void setNotificationList(List<Notification> notificationList) {
+        this.notificationList = notificationList;
     }
     
 }

@@ -10,6 +10,7 @@ import com.se2.wecalevent.entities.Notification;
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.entities.Weather;
 import com.se2.wecalevent.remote.sessionBeanRemote;
+import com.se2.wecalevent.util.HelperMethods;
 import com.se2.wecalevent.util.WeatherAPI;
 import com.se2.wecalevent.viewModels.NotificationViewModel;
 import java.util.ArrayList;
@@ -78,9 +79,8 @@ public class sessionBean implements sessionBeanRemote {
         User newUser = new User();
         newUser.setEmail(email);
         //Prettier name and surname
-        name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
-        newUser.setName(name);
-        newUser.setSurname(surname);
+        newUser.setName(HelperMethods.prettifyName(name));
+        newUser.setSurname(HelperMethods.prettifyName(surname));
         newUser.setPass(password);
         newUser.setCalendar(calendar);
         //Save the user to the database
@@ -176,7 +176,7 @@ public class sessionBean implements sessionBeanRemote {
         } catch (NoResultException e) {
             
         }
-        return theUser;
+        return theUser; 
     }
     
     /**
@@ -233,14 +233,19 @@ public class sessionBean implements sessionBeanRemote {
         User user = entityManager.find(User.class, userId);
         user.setEmail(email);
         user.setPass(password);
-        user.setSurname(surname);
-        user.setName(name);
+        user.setSurname(HelperMethods.prettifyName(surname));
+        user.setName(HelperMethods.prettifyName(name));
         entityManager.merge(user);
         entityManager.flush();
         return true;
            
     }
-    
+    /**
+     * This method will be called every 12 hours to update the forecast
+     * @param eventId
+     * @param weatherId
+     * @return 
+     */
     public boolean updateForecast(Integer eventId, Integer weatherId) {
         //Excute query to get all current event 
         Query query = entityManager.createNamedQuery("Event.findAll");
@@ -259,7 +264,8 @@ public class sessionBean implements sessionBeanRemote {
             //Get the current weather condition
             String currentlyweathercond = e.getWeatherId().getWeatherCondition();
             //Compare the stored and the current weather condition if differenet upadate the weather object
-            if (storedweathercond.compareTo(currentlyweathercond) > 0) {
+            if (storedweathercond.compareTo(currentlyweathercond) != 0) {
+                //TODO NOTIFICATION
                 e.getWeatherId().setWeatherCondition(storedweathercond);
             }
 
@@ -299,6 +305,7 @@ public class sessionBean implements sessionBeanRemote {
             notification.setNotifType(NotificationViewModel.NotificationType.Invitation.getValue());
             notification.setUserId(user);
             notification.setNotification("You are invited to the event: " +event.getEventName());
+            notification.setRelatedTo(event);
             notification.setTs(new Date());
             entityManager.persist(notification);
         }
@@ -314,6 +321,7 @@ public class sessionBean implements sessionBeanRemote {
             notification.setNotifType(NotificationViewModel.NotificationType.Forecast_change.getValue());
             notification.setUserId(user);
             notification.setNotification(notice);
+            notification.setRelatedTo(event);
             notification.setTs(new Date());
             entityManager.persist(notification);
         }
@@ -327,6 +335,7 @@ public class sessionBean implements sessionBeanRemote {
         notification.setNotifType(NotificationViewModel.NotificationType.Postpone_suggestion.getValue());
         notification.setUserId(user);
         notification.setNotification(notice);
+        notification.setRelatedTo(event);
         notification.setTs(new Date());
         entityManager.persist(notification);
         entityManager.flush();
@@ -336,12 +345,41 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public boolean removeEntity(Integer objectId, Class t) {
         Object object = entityManager.find(t, objectId);
-        return removeEntity(object);
+        entityManager.remove(object);
+        return true;
     }
 
     @Override
-    public boolean removeEntity(Object object) {
-        entityManager.detach(object);
-        return true;
+    public List<Notification> getNotifications() {
+        if (user != null) {
+            user.getNotificationList().size();
+            return user.getNotificationList();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean acceptInvitation(Notification notification) {
+        if (user != null) {
+            Event event = entityManager.find(Event.class, notification.getRelatedTo().getEventId());
+            event.getUserList().size();
+            event.getUserList().add(user);
+            notification = entityManager.find(Notification.class, notification.getNotifId());
+            entityManager.remove(notification);
+            entityManager.flush();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean rejectInvitation(Notification notification) {
+        if (user != null) {
+            notification = entityManager.find(Notification.class, notification.getNotifId());
+            entityManager.remove(notification);
+            entityManager.flush();
+            return true;
+        }
+        return false;
     }
 }
