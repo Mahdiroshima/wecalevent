@@ -25,7 +25,7 @@
                         </div>
                         <div class="control-group">
                             <!-- Event Name -->
-                            <label class="control-label"  for="eventName">EventName</label>
+                            <label class="control-label"  for="eventName">Event Name</label>
                             <div class="controls">
                                 <p:inputText required="true" requiredMessage="Event name must be specified" type="text" value='#{eventCreationView.eventName}' placeholder="Event Name" class="input-xlarge"/>
                             </div>
@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="control-group">
                                     <!-- Starting date -->
-                                    <label class="control-label"  for="startingdate">Event starting Time</label>
+                                    <label class="control-label"  for="startingdate">Event Starting Time</label>
                                     <div class="controls">
                                         <p:calendar timeZone="GMT+1" required="true" requiredMessage="Select a starting time" id="startingdate" value="#{eventCreationView.startingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !" valueChangeListener="#{eventCreationView.handleKeyEvent()}">
                                         </p:calendar>
@@ -87,7 +87,7 @@
                                 </div>
                                 <div class="control-group">
                                     <!-- ending date -->
-                                    <label class="control-label"  for="startingdate">Event ending Time</label>
+                                    <label class="control-label"  for="startingdate">Event Ending Time</label>
                                     <div class="controls">
                                         <p:calendar timeZone="GMT+1" required="true" requiredMessage="Select an ending time" id="endingtime" value="#{eventCreationView.endingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !" valueChangeListener="#{eventCreationView.handleKeyEvent()}">
                                         </p:calendar>
