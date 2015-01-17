@@ -151,6 +151,7 @@ public class sessionBean implements sessionBeanRemote {
      */
     @Override
     public List<Event> getEventsOfUser(int user_id) {
+        if (user == null) return null;
         Query query = entityManager.createNamedQuery("User.findByUserId");
         query.setParameter("userId", user_id);
         User theUser = null;
