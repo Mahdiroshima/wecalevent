@@ -16,6 +16,7 @@ import com.se2.wecalevent.viewModels.NotificationViewModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -204,6 +205,26 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public boolean updateEvent(Integer eventId, String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate) {
         Event event = entityManager.find(Event.class, eventId);
+        //Creates an predefined SQL Query, which checks if there is an event which will occur in the given interval
+        Query query = entityManager.createNamedQuery("Event.findOverlap");
+        query.setParameter("dateStarting", startingDate);
+        query.setParameter("dateEnding", endingDate);
+        List<Event> samedate = null;
+        try {
+            //if NoResultException is checked, no problem
+            samedate = query.getResultList();
+            //There is an event in the given interval, return false
+            if (samedate.size() == 1 && samedate.get(0).getEventId().equals(eventId)) {
+                //no problem
+            }
+            else if (samedate.size() > 0) {
+                return false;
+            }
+        } catch (NoResultException e) {
+
+        } catch (NonUniqueResultException e) {
+
+        }
         event.setEventName(eventName);
         event.setEventDescription(eventDescription);
         event.setEventType(eventType);
@@ -240,13 +261,8 @@ public class sessionBean implements sessionBeanRemote {
         return true;
            
     }
-    /**
-     * This method will be called every 12 hours to update the forecast
-     * @param eventId
-     * @param weatherId
-     * @return 
-     */
-    public boolean updateForecast(Integer eventId, Integer weatherId) {
+    //@Schedule(hour= "0",minute ="*" ,second="10") 
+    public void update12hoursForecast( ) /*throws Exception*/ {
         //Excute query to get all current event 
         Query query = entityManager.createNamedQuery("Event.findAll");
         //Create list of events
@@ -256,7 +272,7 @@ public class sessionBean implements sessionBeanRemote {
             //Get the starting date of the event
             Date stratingtime = e.getStartingDate();
             //Get the Location of the event 
-            String city = e.getLocationCity();
+            String city = e.getLocationCity() ;
             //Call the Weather Forecast for the City and date 
             Weather weather = WeatherAPI.getWeatherForecast(stratingtime, city);
             //Get the stored weather condition
@@ -270,7 +286,10 @@ public class sessionBean implements sessionBeanRemote {
             }
 
         }
-        return true;
+        //throw new Exception("    "
+               // + "Please work"); 
+        
+        
     }
 
     @Override
@@ -280,7 +299,7 @@ public class sessionBean implements sessionBeanRemote {
         List<User> result = query.getResultList();
         return result;
     }
-
+    
     @Override
     public boolean inviteUsers(Event event, List<User> users) {
         if (event.getUserList1() == null) {
@@ -296,7 +315,7 @@ public class sessionBean implements sessionBeanRemote {
         }
         return true;
     }
-
+    
     @Override
     public boolean notifyInvitation(Event event, List<User> users) {
         entityManager.refresh(event);
@@ -312,7 +331,7 @@ public class sessionBean implements sessionBeanRemote {
         entityManager.flush();
         return true;
     }
-
+    
     @Override
     public boolean notifyParticipant(Event event, List<User> users, String notice) {
         entityManager.refresh(event);
@@ -328,7 +347,7 @@ public class sessionBean implements sessionBeanRemote {
         entityManager.flush();
         return true;
     }
-
+            
     @Override
     public boolean notifyOwner(Event event, User user, String notice) {
         Notification notification = new Notification();
@@ -340,7 +359,7 @@ public class sessionBean implements sessionBeanRemote {
         entityManager.persist(notification);
         entityManager.flush();
         return true;
-    }
+}
 
     @Override
     public boolean removeEntity(Integer objectId, Class t) {
