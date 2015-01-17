@@ -5,9 +5,11 @@
  */
 package com.se2.wecalevent.controllers;
 
+import com.se2.wecalevent.entities.Event;
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import com.se2.wecalevent.util.WeatherAPI;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +19,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
@@ -30,7 +33,7 @@ public class EventCreationView {
 
     @EJB
     private sessionBeanRemote ejb;
-    
+
     @ManagedProperty("#{userLoginView}")
     private UserLoginView userLoginView;
     private String eventName;
@@ -42,15 +45,24 @@ public class EventCreationView {
     private Date startingDate;
     private Date endingDate;
     private String[] Selectedweather;
+    private String event_id;
 
     public UserLoginView getUserLoginView() {
         return userLoginView;
     }
 
+    public String getEvent_id() {
+        return event_id;
+    }
+
+    public void setEvent_id(String event_id) {
+        this.event_id = event_id;
+    }
+
     public void setUserLoginView(UserLoginView userLoginView) {
         this.userLoginView = userLoginView;
     }
-    
+
     public String[] getSelectedweather() {
         return Selectedweather;
     }
@@ -61,9 +73,9 @@ public class EventCreationView {
         for (String s : Selectedweather) {
             desiredWeather += s + "-";
         }
-                   
+
     }
-    
+
     public String getEventName() {
         return eventName;
     }
@@ -89,7 +101,7 @@ public class EventCreationView {
     }
 
     public String getDesiredWeather() {
-        
+
         return desiredWeather;
     }
 
@@ -128,7 +140,7 @@ public class EventCreationView {
     public void setEndingDate(Date endingDate) {
         this.endingDate = endingDate;
     }
-    
+
     @PostConstruct
     public void init() {
         if (userLoginView.getPeople() == null) {
@@ -140,14 +152,35 @@ public class EventCreationView {
             userLoginView.setPeople(people);
             userLoginView.setSelectedPeople(new ArrayList<String>());
         }
+        if (event_id != null) {
+            int uid = ejb.getUser().getUserId();
+            List<Event> events = ejb.getEventsOfUser(uid);
+            int eid = Integer.parseInt(event_id);
+
+            for (Event event : events) {
+                if (event.getEventId() == eid) {
+                    this.eventDescription = event.getEventDescription();
+                    this.eventName = event.getEventName();
+                    this.eventType = event.getEventType();
+                    this.desiredWeather = event.getDesiredWeather();
+                    this.visibility = event.getVisibility();
+                    this.locationCity = event.getLocationCity();
+                    this.startingDate = event.getStartingDate();
+                    this.endingDate = event.getEndingDate();
+
+                    break;
+                }
+            }
+
+        }
     }
-    
+
     public void viewPeople() {
         RequestContext.getCurrentInstance().openDialog("dialogs/invitePeople");
     }
-    
+
     public void save() {
-        RequestContext.getCurrentInstance().closeDialog("dialogs/invitePeople");
+        RequestContext.getCurrentInstance().closeDialog(null);
     }
 
     public String submit() {
@@ -164,27 +197,44 @@ public class EventCreationView {
             return "eventcreation.xhtml";
         }
     }
-    
+
+    public String update() {
+        int eid = Integer.parseInt(event_id);
+        boolean status = ejb.updateEvent(eid, eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate, getListOfSelectedUsers());
+        FacesMessage message = null;
+        if (status) {
+            userLoginView.setPeople(null);
+            message = new FacesMessage("Your event have been updated ");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "home.xhtml?faces-redirect=true";
+        } else {
+            message = new FacesMessage("Sorry, Your event is not updated :( ");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "eventcreation.xhtml";
+        }
+    }
+
     public void handleKeyEvent() {
         try {
             Thread.sleep(1000);                 //1000 milliseconds is one second.
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
-        if (locationCity == null) return;
+        if (locationCity == null) {
+            return;
+        }
         FacesMessage message = null;
         boolean status = WeatherAPI.isCityExists(locationCity);
         if (status) {
-            message = new FacesMessage(FacesMessage.SEVERITY_INFO,"", locationCity + " is OK.");
-        }
-        else {
+            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "", locationCity + " is OK.");
+        } else {
             message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", locationCity + " doesn't exist, try again");
             locationCity = "";
         }
-            
+
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
-    
+
     private List<User> getListOfSelectedUsers() {
         List<User> userList = new ArrayList<User>();
         for (String s : userLoginView.getSelectedPeople()) {
@@ -197,5 +247,28 @@ public class EventCreationView {
             }
         }
         return userList;
+    }
+
+    public void check() throws IOException {
+        if (event_id == null) {
+            ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+            context.redirect("home.xhtml");
+        } else {
+            int uid = ejb.getUser().getUserId();
+            List<Event> events = ejb.getEventsOfUser(uid);
+            boolean flag = false;
+            for (Event event : events) {
+                if (event.getCreatorId().getUserId().equals(uid)) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag) {
+                ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+                FacesMessage message = new FacesMessage("Sorry", "You are not authorized to update this event");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                context.redirect("home.xhtml");
+            }
+        }
     }
 }
