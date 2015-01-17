@@ -203,7 +203,7 @@ public class sessionBean implements sessionBeanRemote {
      * @return 
      */
     @Override
-    public boolean updateEvent(Integer eventId, String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate) {
+    public boolean updateEvent(Integer eventId, String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate, List<User> getListOfSelectedUsers) {
         Event event = entityManager.find(Event.class, eventId);
         //Creates an predefined SQL Query, which checks if there is an event which will occur in the given interval
         Query query = entityManager.createNamedQuery("Event.findOverlap");
@@ -233,6 +233,7 @@ public class sessionBean implements sessionBeanRemote {
         event.setLocationCity(locationCity);
         event.setStartingDate(startingDate);
         event.setEndingDate(endingDate);
+       
         entityManager.merge(event);
         entityManager.flush();
         return true;
