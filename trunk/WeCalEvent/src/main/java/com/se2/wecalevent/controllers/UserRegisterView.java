@@ -97,6 +97,8 @@ public class UserRegisterView {
     }
     
     public String register() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.getExternalContext().getFlash().setKeepMessages(true);
         boolean status = ejb.register(email,password,calendarVisibility ,name, surname);
         FacesMessage message = null;
         if (status) {

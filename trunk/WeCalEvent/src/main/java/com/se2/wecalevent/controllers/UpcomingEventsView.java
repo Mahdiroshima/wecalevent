@@ -8,12 +8,20 @@ package com.se2.wecalevent.controllers;
 import com.se2.wecalevent.entities.Event;
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
@@ -23,7 +31,7 @@ import org.primefaces.model.ScheduleModel;
  *
  * @author Mert
  */
-@RequestScoped
+@ViewScoped
 @ManagedBean
 public class UpcomingEventsView {
 
@@ -35,6 +43,7 @@ public class UpcomingEventsView {
     private User viewUser = null;
     private ScheduleModel eventModel;
     private Event newParticipantEvent = null;
+    private Properties eventDictionary = new Properties();
 
     public ScheduleModel getEventModel() {
         return eventModel;
@@ -117,20 +126,42 @@ public class UpcomingEventsView {
                         if (event.getVisibility().contains("public")) {
                             ScheduleEvent se = new DefaultScheduleEvent(event.getEventName(), event.getStartingDate(), event.getEndingDate());
                             eventModel.addEvent(se);
+                            eventDictionary.put(se.getId(), event);
                         } else { //unless the event is private TODO: and I am not a participant
                             ScheduleEvent se = new DefaultScheduleEvent("Private Event", event.getStartingDate(), event.getEndingDate());
                             eventModel.addEvent(se);
+                            eventDictionary.put(se.getId(), event);
                         }
                     } else { // The calendar is private, you cannot see the details
                         ScheduleEvent se = new DefaultScheduleEvent("Private", event.getStartingDate(), event.getEndingDate());
                         eventModel.addEvent(se);
+                        eventDictionary.put(se.getId(), event);
+                        
                     }
                 } else { // I view my calendar, show me everything
                     ScheduleEvent se = new DefaultScheduleEvent(event.getEventName(), event.getStartingDate(), event.getEndingDate());
                     eventModel.addEvent(se);
+                    eventDictionary.put(se.getId(), event);
                 }
             }
             RequestContext.getCurrentInstance().update(":schedule");
         }
+    }
+    
+    public void onEventSelect(SelectEvent selectEvent) {
+        ScheduleEvent event = (ScheduleEvent) selectEvent.getObject();
+        Event selectedEvent = (Event)eventDictionary.get(event.getId());
+        FacesMessage message = null;
+        if (selectedEvent == null) {
+            message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Internal error","Event is no more");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        } else {
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("updateEvent.xhtml?id=" + selectedEvent.getEventId());
+            } catch (IOException ex) {
+                Logger.getLogger(UpcomingEventsView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
     }
 }

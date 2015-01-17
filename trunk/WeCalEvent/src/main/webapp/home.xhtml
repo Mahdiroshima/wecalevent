@@ -29,7 +29,9 @@
         </div>
         <div id="eventPanel" class="panel panel-warning commonPanel">
             <p:panel header="Upcoming Events" styleClass="commonPanelPF">
-                <p:schedule timeZone="GMT+1" id="schedule" value="#{upcomingEventsView.eventModel}" draggable="false" resizable="false" tooltip="true"  widgetVar="myschedule"></p:schedule>
+                <p:schedule timeZone="GMT+1" id="schedule" value="#{upcomingEventsView.eventModel}" draggable="false" resizable="false" tooltip="true"  widgetVar="myschedule">
+                    <p:ajax event="eventSelect" listener="#{upcomingEventsView.onEventSelect}" update=":growlLogin"/>
+                </p:schedule>
             </p:panel>
         </div>
     </ui:define>
