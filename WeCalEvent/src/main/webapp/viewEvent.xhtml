@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
+    <ui:define name="title"> Event Update </ui:define>
+    <ui:define name="head">
+        <style>
+            .selectRadio label {
+                margin-right: 30px;
+            }
+        </style>
+        <f:metadata>
+            <f:viewParam name="id" value="#{eventCreationView.event_id}" />
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitle">
+        Update your event
+    </ui:define>
+    <ui:define name="content">
+        #{userLoginView.controlLogin(true, "index.xhtml")}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                
+            </div>
+        </div>
+    </ui:define>>
+</ui:composition>
