@@ -1,0 +1,114 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
+    <ui:define name="title"> Event Update </ui:define>
+    <ui:define name="head">
+        <style>
+            .selectRadio label {
+                margin-right: 30px;
+            }
+        </style>
+        <f:metadata>
+            <f:viewParam name="id" value="#{eventCreationView.event_id}" />
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitle">
+        Update your event
+    </ui:define>
+    <ui:define name="content">
+        #{userLoginView.controlLogin(true, "index.xhtml")}
+        #{eventCreationView.check()}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h:form>
+                    <fieldset>
+                        <div id="legend">
+                            <legend class="">Update Event</legend>
+                        </div>
+                        <div class="control-group">
+                            <!-- Event Name -->
+                            <label class="control-label"  for="eventName">EventName</label>
+                            <div class="controls">
+                                <p:inputText required="true" requiredMessage="Event name must be specified" type="text" value='#{eventCreationView.eventName}' placeholder="Event Name" class="input-xlarge"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <!-- Event Description -->
+                            <label class="control-label"  for="Even Description">Event Description</label>
+                            <div class="controls">
+                                <p:inputTextarea rows="3" cols="30" counter="display" maxlength="300" counterTemplate="{0} characters remaining." autoResize="true" required="true" requiredMessage="Event description must be specified" value="#{eventCreationView.eventDescription}" placeholder="Description" class="input-xlarge"/>
+                                <h:outputText id="display" />
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <!-- Event Location City -->
+                            <label class="control-label"  for="Location City">Location City</label>
+                            <div class="controls">
+                                <p:inputText id="cityText" required="true" requiredMessage="Event place must be specified" type="text" value="#{eventCreationView.locationCity}" placeholder="Event Place" class="input-xlarge">
+                                    <p:ajax event="blur" update=":growlLogin @this" listener="#{eventCreationView.handleKeyEvent}" process="@this"  />
+                                </p:inputText>
+                            </div>
+                            <div class="control-group">
+                                <!-- Visiblity -->
+                                <label class="control-label" for="visibity">Event Visibility</label>
+                                <div class="controls selectRadio">
+                                    <p:selectOneRadio required="true" requiredMessage="Event visibility must be specified" id="Eventvisibilty" value="#{eventCreationView.visibility}">
+                                        <f:selectItem itemLabel="Public" itemValue="public" />
+                                        <f:selectItem itemLabel="Private" itemValue="private" />
+                                    </p:selectOneRadio>
+                                </div>
+                                <div class="control-group">
+                                    <!-- Event Type -->
+                                    <label class="control-label" for="Event">Event Type</label>
+                                    <div class="controls selectRadio">
+                                        <p:selectOneRadio required="true" requiredMessage="You should mention where your event will take place " id="eventtype" value="#{eventCreationView.eventType}">
+                                            <f:selectItem itemLabel="Indoor" itemValue="indoor" />
+                                            <f:selectItem itemLabel="Outdoor" itemValue="outdoor" />
+                                        </p:selectOneRadio>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <!-- Desired Weather -->
+                                    <label class="control-label" for="Event">Desired Weather</label>
+                                    <div class="controls selectRadio">
+                                        <p:selectManyCheckbox  required="true" requiredMessage="You should select your desired weather"  id="desiredweather" value="#{eventCreationView.selectedweather}">
+                                            <f:selectItem itemLabel="Sunny" itemValue="Sunny" />
+                                            <f:selectItem itemLabel="Cloudy" itemValue="Cloudy" />
+                                            <f:selectItem itemLabel="Rainy" itemValue="Rainy" />
+                                            <f:selectItem itemLabel="Snowy" itemValue="Snowy" />
+                                        </p:selectManyCheckbox>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <!-- Starting date -->
+                                    <label class="control-label"  for="startingdate">Event starting Time</label>
+                                    <div class="controls">
+                                        <p:calendar required="true" requiredMessage="Select a starting time" id="startingdate" value="#{eventCreationView.startingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !" valueChangeListener="#{eventCreationView.handleKeyEvent()}">
+                                        </p:calendar>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <!-- ending date -->
+                                    <label class="control-label"  for="startingdate">Event ending Time</label>
+                                    <div class="controls">
+                                        <p:calendar required="true" requiredMessage="Select an ending time" id="endingtime" value="#{eventCreationView.endingDate}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Click here !" valueChangeListener="#{eventCreationView.handleKeyEvent()}">
+                                        </p:calendar>
+                                    </div>
+                                </div>
+                                <p:commandButton immediate="true" style="margin: 10px 0px 10px 0px;" value="Invite People" icon="ui-icon-extlink" actionListener="#{eventCreation.viewPeople()}"></p:commandButton>
+                                <div class="control-group">
+                                    <!-- Button -->
+                                    <div class="controls">
+                                        <p:commandButton ajax="false" value="Submit" action="#{eventCreationView.update()}"  class="btn btn-success"></p:commandButton>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>          
+                </h:form>
+            </div>
+        </div>
+    </ui:define>>
+</ui:composition>
