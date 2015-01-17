@@ -34,7 +34,7 @@ public interface sessionBeanRemote {
     public User getUserById(int user_id);
     public List<User> getAllUsers();
     public List<Notification> getNotifications();
-    public boolean updateEvent (Integer eventId,String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate, List<User> getListOfSelectedUsers);
+    public boolean updateEvent (Integer eventId,String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedUsers);
     public boolean updateUser(Integer userID,String email, String password, String calendarVisibility, String name, String surname);
     public boolean removeEntity (Integer objectId, Class t);
 }

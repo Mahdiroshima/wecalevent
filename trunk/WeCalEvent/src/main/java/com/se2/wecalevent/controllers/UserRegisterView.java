@@ -5,7 +5,9 @@
  */
 package com.se2.wecalevent.controllers;
 
+import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -35,7 +37,17 @@ public class UserRegisterView {
     private String password;
     private String passwordAgain;
     private String calendarVisibility; 
+    private String userID;
 
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+  
     public String getName() {
         return name;
     }
@@ -98,5 +110,28 @@ public class UserRegisterView {
             return "register.xhtml?faces-redirect=true";
         }
     }
-    
+    public String updateprofile() {
+        int uid = Integer.parseInt(userID);
+        boolean status = ejb.updateUser(uid,email, password, calendarVisibility, name, surname);
+        FacesMessage message = null;
+        if (status) {
+            message = new FacesMessage("Your profile is updated");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "index.xhtml?faces-redirect=true";
+        } else {
+            message = new FacesMessage("Sorry", "your profile is not upadated");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "home.xhtml?faces-redirect=true";
+        }
+    }
+    @PostConstruct
+    public void init() {
+            User user = ejb.getUser();
+            this.email = user.getEmail();
+            this.name = user.getName();
+            this.surname = user.getSurname();
+            this.password = user.getPass();
+            this.calendarVisibility = user.getCalendar();
+    }
+      
 }
