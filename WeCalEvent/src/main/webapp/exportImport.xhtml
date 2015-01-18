@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
+    <ui:define name="title"> Event Update </ui:define>
+    <ui:define name="head">
+        <style>
+            .selectRadio label {
+                margin-right: 30px;
+            }
+        </style>
+        <f:metadata>
+            <f:viewParam name="id" value="#{eventCreationView.event_id}" />
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitle">
+        Update your event
+    </ui:define>
+    <ui:define name="content">
+        #{userLoginView.controlLogin(true, "index.xhtml")}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <p:panel header="Export Your Events">
+                    <h:form>
+                        <p:dataTable id="tbl" value="#{exportImportController.myEvents}" var="event">
+                            <f:facet name="header">
+                                My Events
+                            </f:facet>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.eventName}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Description"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.eventDescription}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="City"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.locationCity}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Privacy"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.visibility}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Starting Date"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.startingDate}">
+                                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Ending Date"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.endingDate}">
+                                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+                        <p:outputPanel style="height: 50px">
+                            <p:outputPanel rendered="#{notificationView.selectedNotification.notifType != 0}" style="float: right; margin-top: 10px">    
+                                <p:commandButton icon="ui-icon-arrowthick-1-ne" value="Export Events" ajax="true" process="@this">
+                                    <p:dataExporter type="xls" target="tbl" fileName="events" />
+                                </p:commandButton>
+                                <h:commandLink id="excel" value="Export">
+                                    <p:dataExporter type="xls" target="tbl" fileName="events" />
+                                </h:commandLink>
+                            </p:outputPanel>
+                        </p:outputPanel>
+                    </h:form>
+                </p:panel>
+                <p:panel header="Import Your Events">
+                    <h:form style="height: 150px">
+                        <p:fileUpload></p:fileUpload>
+                        <p:outputPanel rendered="#{notificationView.selectedNotification.notifType != 0}" style="float: right; margin-top: 10px">    
+                            <p:commandButton icon="ui-icon-arrowthick-1-sw" value="Import Events" ajax="true" process="@this" actionListener="#{exportImportController.importEvents()}"></p:commandButton>
+                        </p:outputPanel>
+                    </h:form>
+                </p:panel>
+            </div>
+        </div>
+    </ui:define>>
+</ui:composition>
