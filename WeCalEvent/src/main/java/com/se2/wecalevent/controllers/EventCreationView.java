@@ -213,6 +213,8 @@ public class EventCreationView implements Serializable {
     }
 
     public String update() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.getExternalContext().getFlash().setKeepMessages(true);
         int eid = Integer.parseInt(event_id);
         boolean status = ejb.updateEvent(eid, eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate, getListOfSelectedUsers());
         FacesMessage message = null;
@@ -275,12 +277,13 @@ public class EventCreationView implements Serializable {
             List<Event> events = ejb.getEventsOfUser(uid);
             boolean flag = false;
             for (Event event : events) {
+                
                 if (event.getCreatorId().getUserId().equals(uid)) {
                     flag = true;
                     break;
                 }
             }
-            if (!flag) {
+            if (flag == false) {
                 ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
                 FacesMessage message = new FacesMessage("Sorry", "You are not authorized to update this event");
                 FacesContext.getCurrentInstance().addMessage(null, message);

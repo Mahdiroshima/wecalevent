@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
@@ -30,6 +31,8 @@ public class UserRegisterView {
      */
     public UserRegisterView() {
     }
+    @ManagedProperty("#{userLoginView}")
+    private UserLoginView userLoginView;
     private String name;
     private String surname;
     private String email;
@@ -37,13 +40,21 @@ public class UserRegisterView {
     private String passwordAgain;
     private String calendarVisibility;
     private String userID;
+    
+    public UserLoginView getUserLoginView() {
+        return userLoginView;
+    }
 
+    public void setUserLoginView(UserLoginView userLoginView) {
+        this.userLoginView = userLoginView;
+    }
     public String getUserID() {
         return userID;
     }
 
     public void setUserID(String userID) {
         this.userID = userID;
+        init(); 
     }
 
     public String getName() {
@@ -111,24 +122,26 @@ public class UserRegisterView {
     }
 
     public String updateprofile() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.getExternalContext().getFlash().setKeepMessages(true);
         int uid = Integer.parseInt(userID);
         boolean status = ejb.updateUser(uid, email, password, calendarVisibility, name, surname);
         FacesMessage message = null;
         if (status) {
             message = new FacesMessage("Your profile is updated");
             FacesContext.getCurrentInstance().addMessage(null, message);
-            return "index.xhtml?faces-redirect=true";
-        } else {
-            message = new FacesMessage("Sorry", "your profile is not upadated");
-            FacesContext.getCurrentInstance().addMessage(null, message);
             return "home.xhtml?faces-redirect=true";
+        } else {
+            message = new FacesMessage("Sorry", "this email is already taken");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "updateProfile.xhtml?faces-redirect=true";
         }
     }
 
     @PostConstruct
     public void init() {
         User user = ejb.getUser();
-        if (user != null) {
+        if (user != null && userLoginView.isLoggedIn() == true) {
             this.email = user.getEmail();
             this.name = user.getName();
             this.surname = user.getSurname();

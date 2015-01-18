@@ -165,7 +165,7 @@ public class UpcomingEventsView {
                     message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Internal error", "Event has passed");
                     FacesContext.getCurrentInstance().addMessage(null, message);
                 }
-                else FacesContext.getCurrentInstance().getExternalContext().redirect("viewEvent.xhtml?id=" + selectedEvent.getEventId());
+                else FacesContext.getCurrentInstance().getExternalContext().redirect("updateEvent.xhtml?id=" + selectedEvent.getEventId());
             } catch (IOException ex) {
                 Logger.getLogger(UpcomingEventsView.class.getName()).log(Level.SEVERE, null, ex);
             }
