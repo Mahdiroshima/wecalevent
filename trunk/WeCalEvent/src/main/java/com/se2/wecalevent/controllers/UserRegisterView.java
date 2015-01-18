@@ -134,7 +134,7 @@ public class UserRegisterView {
         } else {
             message = new FacesMessage("Sorry", "this email is already taken");
             FacesContext.getCurrentInstance().addMessage(null, message);
-            return "updateProfile.xhtml?faces-redirect=true";
+            return "updateProfile.xhtml?id=" + uid + "&faces-redirect=true";
         }
     }
 

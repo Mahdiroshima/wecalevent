@@ -191,6 +191,9 @@ public class sessionBean implements sessionBeanRemote {
      */
     @Override
     public User getUser() {
+        if (user != null) {
+            user = entityManager.find(User.class, user.getUserId());
+        }
         return user;
     }
     /**
@@ -258,21 +261,23 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public boolean updateUser(Integer userId, String email, String password, String calendar, String name, String surname) {
         // Create a predefined query to check the e-mail exists or not
-        Query query = entityManager.createNamedQuery("User.findByEmail");
-        query.setParameter("email", email);
-        User userExists = null;
-        try {
-            userExists = (User) query.getSingleResult();
-            return false;
-        } catch (NoResultException e) {
-
-        }
-        //if this variable is null then the e-mail address doesn't exists in the database
-        if (userExists != null) {
-            return false;
-        }
-        
         User user = entityManager.find(User.class, userId);
+        if (!user.getEmail().equals(email)) {
+            Query query = entityManager.createNamedQuery("User.findByEmail");
+            query.setParameter("email", email);
+            User userExists = null;
+            try {
+                userExists = (User) query.getSingleResult();
+                
+
+            } catch (NoResultException e) {
+
+            }
+            //if this variable is null then the e-mail address doesn't exists in the database
+            if (userExists != null) {
+                return false;
+            }
+        }
         user.setEmail(email);
         user.setPass(password);
         user.setCalendar(calendar);
