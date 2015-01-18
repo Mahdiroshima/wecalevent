@@ -14,8 +14,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-
-
 /**
  *
  * @author Mert
@@ -23,9 +21,10 @@ import javax.faces.context.FacesContext;
 @ManagedBean
 @ViewScoped
 public class UserRegisterView {
+
     @EJB
     private sessionBeanRemote ejb;
-    
+
     /**
      * Creates a new instance of UserRegisterView
      */
@@ -36,7 +35,7 @@ public class UserRegisterView {
     private String email;
     private String password;
     private String passwordAgain;
-    private String calendarVisibility; 
+    private String calendarVisibility;
     private String userID;
 
     public String getUserID() {
@@ -47,7 +46,6 @@ public class UserRegisterView {
         this.userID = userID;
     }
 
-  
     public String getName() {
         return name;
     }
@@ -95,26 +93,26 @@ public class UserRegisterView {
     public void setCalendarVisibility(String calendarVisibility) {
         this.calendarVisibility = calendarVisibility;
     }
-    
+
     public String register() {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
-        boolean status = ejb.register(email,password,calendarVisibility ,name, surname);
+        boolean status = ejb.register(email, password, calendarVisibility, name, surname);
         FacesMessage message = null;
         if (status) {
             message = new FacesMessage("Bravo", "You are now registered");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "index.xhtml?faces-redirect=true";
-        }
-        else {
+        } else {
             message = new FacesMessage("Sorry", "This e-mail has been taken by another user");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "register.xhtml?faces-redirect=true";
         }
     }
+
     public String updateprofile() {
         int uid = Integer.parseInt(userID);
-        boolean status = ejb.updateUser(uid,email, password, calendarVisibility, name, surname);
+        boolean status = ejb.updateUser(uid, email, password, calendarVisibility, name, surname);
         FacesMessage message = null;
         if (status) {
             message = new FacesMessage("Your profile is updated");
@@ -126,14 +124,17 @@ public class UserRegisterView {
             return "home.xhtml?faces-redirect=true";
         }
     }
+
     @PostConstruct
     public void init() {
-            User user = ejb.getUser();
+        User user = ejb.getUser();
+        if (user != null) {
             this.email = user.getEmail();
             this.name = user.getName();
             this.surname = user.getSurname();
             this.password = user.getPass();
             this.calendarVisibility = user.getCalendar();
+        }
     }
-      
+
 }
