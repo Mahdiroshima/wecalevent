@@ -104,6 +104,9 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public boolean createEvent(String eventName, String eventDescription, String eventType, String desiredWeather,
             String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedList) {
+        if (startingDate.after(endingDate)){
+            return false;
+        }
         //Creates an predefined SQL Query, which checks if there is an event which will occur in the given interval
         Query query = entityManager.createNamedQuery("Event.findOverlap");
         query.setParameter("dateStarting", startingDate);
@@ -254,9 +257,25 @@ public class sessionBean implements sessionBeanRemote {
      */
     @Override
     public boolean updateUser(Integer userId, String email, String password, String calendar, String name, String surname) {
+        // Create a predefined query to check the e-mail exists or not
+        Query query = entityManager.createNamedQuery("User.findByEmail");
+        query.setParameter("email", email);
+        User userExists = null;
+        try {
+            userExists = (User) query.getSingleResult();
+            return false;
+        } catch (NoResultException e) {
+
+        }
+        //if this variable is null then the e-mail address doesn't exists in the database
+        if (userExists != null) {
+            return false;
+        }
+        
         User user = entityManager.find(User.class, userId);
         user.setEmail(email);
         user.setPass(password);
+        user.setCalendar(calendar);
         user.setSurname(HelperMethods.prettifyName(surname));
         user.setName(HelperMethods.prettifyName(name));
         entityManager.merge(user);
