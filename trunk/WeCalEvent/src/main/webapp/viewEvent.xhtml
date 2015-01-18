@@ -15,14 +15,57 @@
         </f:metadata>
     </ui:define>
     <ui:define name="pageTitle">
-        Update your event
+        View event
     </ui:define>
     <ui:define name="content">
         #{userLoginView.controlLogin(true, "index.xhtml")}
         <div class="panel panel-default">
             <div class="panel-body">
-                
+
             </div>
+            <h3>Event details</h3> 
+            <h:form>
+            <p:commandButton ajax="false" icon="ui-icon-pencil" value="" action="#{eventCreationView.editProfile()}"></p:commandButton>
+            </h:form>
+            <p:layout style="">
+                <p:layoutUnit position="west" resizable="true" size="300" minSize="300" maxSize="400">
+                    <p:outputPanel style="">
+                        <p:panelGrid columns="2" >
+                            <h:outputText value="Name:" />
+                            <h:outputText value="#{eventCreationView.eventName}" />
+
+                            <h:outputText value="Description" />
+                            <h:outputText value="#{eventCreationView.eventDescription   }" />
+
+                            <h:outputText value="Location" />
+                            <h:outputText value="#{eventCreationView.locationCity}" />
+
+                            <h:outputText value="Visiblity" />
+                            <h:outputText value="#{eventCreationView.visibility}" />
+
+                            <h:outputText value="Type" />
+                            <h:outputText value="#{eventCreationView.eventType}" />
+
+                            <h:outputText value="Desired weather" />
+                            <h:outputText value="#{eventCreationView.desiredWeather}" />
+
+                            <h:outputText value="Starting date" />
+                            <h:outputText value="#{eventCreationView.startingDate}" />
+
+                            <h:outputText value="Ending date" />
+                            <h:outputText value="#{eventCreationView.endingDate}" />
+                        </p:panelGrid> 
+                    </p:outputPanel>>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center">
+                    <p:dataList value="#{eventCreationView.peopleAlreadyParticipate}" var="user">
+                        <h:outputText value="#{user.name}"></h:outputText>
+                                
+                    </p:dataList>
+                </p:layoutUnit>
+            </p:layout>
+            
         </div>
     </ui:define>>
 </ui:composition>

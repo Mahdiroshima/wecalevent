@@ -48,7 +48,16 @@ public class EventCreationView implements Serializable {
     private Date endingDate;
     private String[] Selectedweather;
     private String event_id;
+    private List<User> peopleAlreadyParticipate = new ArrayList<User>();
 
+    public List<User> getPeopleAlreadyParticipate() {
+        return peopleAlreadyParticipate;
+    }
+
+    public void setPeopleAlreadyParticipate(List<User> peopleAlreadyParticipate) {
+        this.peopleAlreadyParticipate = peopleAlreadyParticipate;
+    }
+    
     public UserLoginView getUserLoginView() {
         return userLoginView;
     }
@@ -150,9 +159,9 @@ public class EventCreationView implements Serializable {
             int uid = ejb.getUser().getUserId();
             List<Event> events = ejb.getEventsOfUser(uid);
             int eid = Integer.parseInt(event_id);
+            peopleAlreadyParticipate = ejb.getParticipantsOfEvent(eid);
             if (userLoginView.getPeople() == null) {
                 List<User> people = ejb.getAllUsers();
-                List<User> peopleAlreadyParticipate = new ArrayList<User>();
                 peopleAlreadyParticipate = ejb.getParticipantsOfEvent(eid);
                 int sizePeople = people.size();
                 int sizeParticipate = peopleAlreadyParticipate.size();
@@ -266,6 +275,10 @@ public class EventCreationView implements Serializable {
             }
         }
         return userList;
+    }
+    
+    public String editProfile() {
+        return "updateEvent.xhtml?id=" +event_id+ "&faces-redirect=true";
     }
 
     public void check() throws IOException {
