@@ -181,6 +181,9 @@ public class sessionBean implements sessionBeanRemote {
         } catch (NoResultException e) {
             
         }
+        theUser.getEventList().size();
+        theUser.getEventList1().size();
+        theUser.getEventList2().size();
         return theUser; 
     }
     
