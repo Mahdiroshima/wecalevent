@@ -269,25 +269,27 @@ public class EventCreationView implements Serializable {
     }
 
     public void check() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.getExternalContext().getFlash().setKeepMessages(true);
         if (event_id == null) {
-            ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-            context.redirect("home.xhtml");
+            FacesMessage message = new FacesMessage("Sorry", "You are not authorized to update this event");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
         } else {
-            int uid = ejb.getUser().getUserId();
-            List<Event> events = ejb.getEventsOfUser(uid);
+            User user = ejb.getUserById(ejb.getUser().getUserId());
+            List<Event> events = user.getEventList2();
             boolean flag = false;
+            int eid = Integer.parseInt(event_id);
             for (Event event : events) {
-                
-                if (event.getCreatorId().getUserId().equals(uid)) {
+                if (event.getEventId().equals(eid)) {
                     flag = true;
                     break;
                 }
             }
             if (flag == false) {
-                ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
                 FacesMessage message = new FacesMessage("Sorry", "You are not authorized to update this event");
                 FacesContext.getCurrentInstance().addMessage(null, message);
-                context.redirect("home.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
             }
         }
     }
