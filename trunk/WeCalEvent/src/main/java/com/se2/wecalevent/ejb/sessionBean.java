@@ -161,14 +161,14 @@ public class sessionBean implements sessionBeanRemote {
         try {
             theUser = (User) query.getSingleResult();
             entityManager.refresh(theUser);
-            if (theUser != null && user.getCalendar().equalsIgnoreCase("public")) {
+            if (theUser != null) {
                theUser.getEventList().size();
                return theUser.getEventList();
             }
         } catch (NoResultException e) {
 
         }
-        return null;
+        return new ArrayList<Event>();
     }
     
     @Override
