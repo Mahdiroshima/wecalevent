@@ -123,5 +123,9 @@ public class UserLoginView {
             context.redirect(link);
     }
     
+    public String editProfile() {
+        return "updateProfile.xhtml?id="+ theUser.getUserId() + "&faces-redirect=true";
+    }
+    
     
 }
