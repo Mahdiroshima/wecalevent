@@ -10,6 +10,7 @@ import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import com.se2.wecalevent.util.WeatherAPI;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
@@ -28,8 +30,8 @@ import org.primefaces.context.RequestContext;
  * @author Mehdi
  */
 @ManagedBean
-@RequestScoped
-public class EventCreationView {
+@ViewScoped
+public class EventCreationView implements Serializable{
 
     @EJB
     private sessionBeanRemote ejb;
@@ -157,11 +159,10 @@ public class EventCreationView {
             int uid = ejb.getUser().getUserId();
             List<Event> events = ejb.getEventsOfUser(uid);
             int eid = Integer.parseInt(event_id);
-
             for (Event event : events) {
                 if (event.getEventId() == eid) {
-                    this.eventDescription = event.getEventDescription();
                     this.eventName = event.getEventName();
+                    this.eventDescription = event.getEventDescription();
                     this.eventType = event.getEventType();
                     this.desiredWeather = event.getDesiredWeather();
                     this.visibility = event.getVisibility();
@@ -169,7 +170,6 @@ public class EventCreationView {
                     this.startingDate = event.getStartingDate();
                     this.endingDate = event.getEndingDate();
                     this.Selectedweather = event.getDesiredWeather().split("-");
-
                     break;
                 }
             }
