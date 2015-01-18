@@ -57,6 +57,7 @@ public class EventCreationView {
 
     public void setEvent_id(String event_id) {
         this.event_id = event_id;
+        init();
     }
 
     public void setUserLoginView(UserLoginView userLoginView) {
@@ -167,6 +168,7 @@ public class EventCreationView {
                     this.locationCity = event.getLocationCity();
                     this.startingDate = event.getStartingDate();
                     this.endingDate = event.getEndingDate();
+                    this.Selectedweather = event.getDesiredWeather().split("-");
 
                     break;
                 }
