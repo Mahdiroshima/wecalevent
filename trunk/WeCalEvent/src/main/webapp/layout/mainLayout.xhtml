@@ -166,11 +166,14 @@
                             <li><p:commandLink value="Home" action="home.xhtml?faces-redirect=true" ajax="false"></p:commandLink></li>
                             <li><p:commandLink value="Create Event" action="eventcreation.xhtml?faces-redirect=true" ajax="false"></p:commandLink></li>
                         </ul>
-                        <div style="display: inline-block; width: 60%;">
+                        <div style="display: inline-block; width: 50%;">
                             <p:outputPanel id="pageTitle2">
                                 <p style="text-align: center !important; margin-top: 9px; font-size: 22px; font-style: oblique;"><ui:insert name="pageTitle"></ui:insert></p></p:outputPanel>
                         </div>
                         <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <p:commandButton ajax="false" icon="ui-icon-transfer-e-w" style="margin-top: 10px; float:right" value="Ex/Import" action="#{exportImportController.exportImport()}"></p:commandButton>
+                            </li>
                             <li>
                                 <p:commandButton ajax="false" icon="ui-icon-pencil" style="margin-top: 10px; float:right" value="Profile" action="#{userLoginView.editProfile()}"></p:commandButton>
                             </li>
