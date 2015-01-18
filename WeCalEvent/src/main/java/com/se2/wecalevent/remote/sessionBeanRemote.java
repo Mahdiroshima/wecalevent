@@ -31,6 +31,7 @@ public interface sessionBeanRemote {
     public boolean acceptInvitation(Notification notification);
     public boolean rejectInvitation(Notification notification);
     public List<Event> getEventsOfUser(int user_id);
+    public List<User> getParticipantsOfEvent(int event_id);
     public User getUserById(int user_id);
     public List<User> getAllUsers();
     public List<Notification> getNotifications();
