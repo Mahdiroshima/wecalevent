@@ -404,4 +404,11 @@ public class sessionBean implements sessionBeanRemote {
         }
         return false;
     }
+
+    @Override
+    public List<User> getParticipantsOfEvent(int event_id) {
+        Event event = entityManager.find(Event.class, event_id);
+        event.getUserList().size();
+        return event.getUserList();
+    }
 }

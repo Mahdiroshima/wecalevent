@@ -9,6 +9,7 @@ import com.se2.wecalevent.entities.Event;
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -86,7 +87,7 @@ public class UpcomingEventsView {
         this.newParticipantEvent = newParticipantEvent;
         //if new event should be added and if I am viewing the calendar of myself
         if (newParticipantEvent != null && viewUser != null && viewUser.getUserId().equals(ejb.getUser().getUserId())) {
-            if (events != null && events.indexOf(newParticipantEvent) < 0) { //if the event is not already included
+            if (events != null) { //if the event is not already included
                 updateEventList();
             }
         }
@@ -149,6 +150,8 @@ public class UpcomingEventsView {
     }
     
     public void onEventSelect(SelectEvent selectEvent) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.getExternalContext().getFlash().setKeepMessages(true);
         ScheduleEvent event = (ScheduleEvent) selectEvent.getObject();
         Event selectedEvent = (Event)eventDictionary.get(event.getId());
         FacesMessage message = null;
@@ -157,7 +160,12 @@ public class UpcomingEventsView {
             FacesContext.getCurrentInstance().addMessage(null, message);
         } else {
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("updateEvent.xhtml?id=" + selectedEvent.getEventId());
+                Date now = new Date();
+                if (selectedEvent.getStartingDate().compareTo(now) < 0) {
+                    message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Internal error", "Event has passed");
+                    FacesContext.getCurrentInstance().addMessage(null, message);
+                }
+                else FacesContext.getCurrentInstance().getExternalContext().redirect("viewEvent.xhtml?id=" + selectedEvent.getEventId());
             } catch (IOException ex) {
                 Logger.getLogger(UpcomingEventsView.class.getName()).log(Level.SEVERE, null, ex);
             }

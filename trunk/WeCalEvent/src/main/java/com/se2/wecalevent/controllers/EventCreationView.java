@@ -31,7 +31,7 @@ import org.primefaces.context.RequestContext;
  */
 @ManagedBean
 @ViewScoped
-public class EventCreationView implements Serializable{
+public class EventCreationView implements Serializable {
 
     @EJB
     private sessionBeanRemote ejb;
@@ -146,19 +146,31 @@ public class EventCreationView implements Serializable{
 
     @PostConstruct
     public void init() {
-        if (userLoginView.getPeople() == null) {
-            List<User> people = ejb.getAllUsers();
-            int index = people.indexOf(ejb.getUser());
-            if (index > -1) {
-                people.remove(index);
-            }
-            userLoginView.setPeople(people);
-            userLoginView.setSelectedPeople(new ArrayList<String>());
-        }
-        if (event_id != null) {
+        if (event_id != null && ejb != null && ejb.getUser() != null) {
             int uid = ejb.getUser().getUserId();
             List<Event> events = ejb.getEventsOfUser(uid);
             int eid = Integer.parseInt(event_id);
+            if (userLoginView.getPeople() == null) {
+                List<User> people = ejb.getAllUsers();
+                List<User> peopleAlreadyParticipate = new ArrayList<User>();
+                peopleAlreadyParticipate = ejb.getParticipantsOfEvent(eid);
+                int sizePeople = people.size();
+                int sizeParticipate = peopleAlreadyParticipate.size();
+                for (int i = 0; i < sizePeople; i++) {
+
+                    User currentOne = people.get(i);
+                    for (int j = 0; j < sizeParticipate; j++) {
+                        if (currentOne.getUserId().equals(peopleAlreadyParticipate.get(j).getUserId())) {
+                            people.remove(i);
+                            i--;
+                            sizePeople--;
+                            break;
+                        }
+                    }
+                }
+                userLoginView.setPeople(people);
+                userLoginView.setSelectedPeople(new ArrayList<String>());
+            }
             for (Event event : events) {
                 if (event.getEventId() == eid) {
                     this.eventName = event.getEventName();
@@ -239,12 +251,15 @@ public class EventCreationView implements Serializable{
 
     private List<User> getListOfSelectedUsers() {
         List<User> userList = new ArrayList<User>();
-        for (String s : userLoginView.getSelectedPeople()) {
-            int id = Integer.parseInt(s);
-            for (User user : userLoginView.getPeople()) {
-                if (id == user.getUserId()) {
-                    userList.add(user);
-                    break;
+        List<String> selList = userLoginView.getSelectedPeople();
+        if (selList != null) {
+            for (String s : selList) {
+                int id = Integer.parseInt(s);
+                for (User user : userLoginView.getPeople()) {
+                    if (id == user.getUserId()) {
+                        userList.add(user);
+                        break;
+                    }
                 }
             }
         }
