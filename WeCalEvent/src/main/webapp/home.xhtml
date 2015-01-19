@@ -11,8 +11,14 @@
     <ui:define name="pageTitle">#{upcomingEventsView.viewUser.name} #{upcomingEventsView.viewUser.surname}'s calendar</ui:define>
     <ui:define name="content">
         #{userLoginView.controlLogin(true,"index.xhtml")}
-        
         <div id="notifPanel" class="panel panel-warning commonPanel">
+            <p:panel header="Search User" style="margin-left: -10px">
+                <h:form>
+                    <p:autoComplete forceSelection="true" placeholder="Type a name" id="acSimple" value="#{userLoginView.txt1}" completeMethod="#{userLoginView.completeText}">
+                        <p:ajax event="itemSelect" listener="#{userLoginView.onItemSelect}"/>
+                    </p:autoComplete>
+                </h:form>
+            </p:panel>
             <p:panel header="Notifications" styleClass="commonPanelPF">
                 <p:dataScroller id="notifPanell" value="#{notificationView.notifications}" var="notification" >
                     <div style="display: inline-block">

@@ -8,13 +8,19 @@ package com.se2.wecalevent.controllers;
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.SelectEvent;
 
 
 @ManagedBean
@@ -23,13 +29,15 @@ public class UserLoginView {
 
     @EJB
     private sessionBeanRemote ejb;
-    
+    private String txt1;
     private String email;
     private String password;
     private User theUser;
     private boolean loggedIn;
+    private List<User> allPeople;
     private List<User> people;
     private List<String> selectedPeople;
+    private Properties acDict = new Properties();
     
     public List<User> getPeople() {
         return people;
@@ -55,6 +63,14 @@ public class UserLoginView {
         this.email = email;
     }
 
+    public String getTxt1() {
+        return txt1;
+    }
+
+    public void setTxt1(String txt1) {
+        this.txt1 = txt1;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -78,7 +94,10 @@ public class UserLoginView {
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
     }
-
+    @PostConstruct
+    public void init() {
+        allPeople = ejb.getAllUsers();
+    }
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
@@ -127,5 +146,31 @@ public class UserLoginView {
         return "updateProfile.xhtml?id="+ theUser.getUserId() + "&faces-redirect=true";
     }
     
+    public List<String> completeText(String query) {
+        List<String> results = new ArrayList<String>();
+        acDict = new Properties();
+        for (User user: allPeople) {
+            String fullName = user.getName() + " " + user.getSurname();
+            fullName = fullName.toLowerCase();
+            if (fullName.contains(query.toLowerCase())) {
+                results.add(user.getName() + " " + user.getSurname());
+                acDict.put(user.getName() + " " + user.getSurname(),user.getUserId());
+            }
+        }
+
+        return results;
+    }
+    
+    public void onItemSelect(SelectEvent event) {
+        String key = event.getObject().toString();
+        if (key != null) {
+            Integer value = (Integer) acDict.get(key);
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml?id=" + value);
+            } catch (IOException ex) {
+                Logger.getLogger(UserLoginView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
     
 }
