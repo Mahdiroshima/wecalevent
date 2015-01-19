@@ -57,7 +57,7 @@ public class EventCreationView implements Serializable {
     public void setPeopleAlreadyParticipate(List<User> peopleAlreadyParticipate) {
         this.peopleAlreadyParticipate = peopleAlreadyParticipate;
     }
-    
+
     public UserLoginView getUserLoginView() {
         return userLoginView;
     }
@@ -160,26 +160,24 @@ public class EventCreationView implements Serializable {
             List<Event> events = ejb.getEventsOfUser(uid);
             int eid = Integer.parseInt(event_id);
             peopleAlreadyParticipate = ejb.getParticipantsOfEvent(eid);
-            if (userLoginView.getPeople() == null) {
-                List<User> people = ejb.getAllUsers();
-                peopleAlreadyParticipate = ejb.getParticipantsOfEvent(eid);
-                int sizePeople = people.size();
-                int sizeParticipate = peopleAlreadyParticipate.size();
-                for (int i = 0; i < sizePeople; i++) {
+            List<User> people = ejb.getAllUsers();
+            peopleAlreadyParticipate = ejb.getParticipantsOfEvent(eid);
+            int sizePeople = people.size();
+            int sizeParticipate = peopleAlreadyParticipate.size();
+            for (int i = 0; i < sizePeople; i++) {
 
-                    User currentOne = people.get(i);
-                    for (int j = 0; j < sizeParticipate; j++) {
-                        if (currentOne.getUserId().equals(peopleAlreadyParticipate.get(j).getUserId())) {
-                            people.remove(i);
-                            i--;
-                            sizePeople--;
-                            break;
-                        }
+                User currentOne = people.get(i);
+                for (int j = 0; j < sizeParticipate; j++) {
+                    if (currentOne.getUserId().equals(peopleAlreadyParticipate.get(j).getUserId())) {
+                        people.remove(i);
+                        i--;
+                        sizePeople--;
+                        break;
                     }
                 }
-                userLoginView.setPeople(people);
-                userLoginView.setSelectedPeople(new ArrayList<String>());
             }
+            userLoginView.setPeople(people);
+            userLoginView.setSelectedPeople(new ArrayList<String>());
             for (Event event : events) {
                 if (event.getEventId() == eid) {
                     this.eventName = event.getEventName();
@@ -276,16 +274,16 @@ public class EventCreationView implements Serializable {
         }
         return userList;
     }
-    
+
     public String editProfile() {
-        return "updateEvent.xhtml?id=" +event_id+ "&faces-redirect=true";
+        return "updateEvent.xhtml?id=" + event_id + "&faces-redirect=true";
     }
 
     public void check() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
         if (event_id == null) {
-            
+
             FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
         } else {
             User user = ejb.getUserById(ejb.getUser().getUserId());
