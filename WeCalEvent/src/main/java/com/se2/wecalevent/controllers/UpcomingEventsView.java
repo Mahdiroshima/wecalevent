@@ -180,7 +180,7 @@ public class UpcomingEventsView {
                     FacesContext.getCurrentInstance().addMessage(null, message);
                     FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
                 } 
-                else FacesContext.getCurrentInstance().getExternalContext().redirect("updateEvent.xhtml?id=" + selectedEvent.getEventId());
+                else FacesContext.getCurrentInstance().getExternalContext().redirect("viewEvent.xhtml?id=" + selectedEvent.getEventId());
             } catch (IOException ex) {
                 Logger.getLogger(UpcomingEventsView.class.getName()).log(Level.SEVERE, null, ex);
             }
