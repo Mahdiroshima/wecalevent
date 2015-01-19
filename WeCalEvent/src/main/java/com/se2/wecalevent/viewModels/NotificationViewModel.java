@@ -10,6 +10,7 @@ package com.se2.wecalevent.viewModels;
  *
  * @author Mert
  */
+@Deprecated
 public class NotificationViewModel {
     private NotificationType type;
     public NotificationViewModel(NotificationType type) {
@@ -30,11 +31,6 @@ public class NotificationViewModel {
         }
     }
     
-    public String getText() {
-        String text = "This is a notification";
-        return text;
-    }
-
     public NotificationType getType() {
         return type;
     }

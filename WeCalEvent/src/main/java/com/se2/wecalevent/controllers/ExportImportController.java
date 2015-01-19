@@ -6,9 +6,13 @@
 package com.se2.wecalevent.controllers;
 
 import com.se2.wecalevent.entities.Event;
+import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
+import com.se2.wecalevent.util.WeatherAPI;
 import com.se2.wecalevent.util.XLSReader;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,29 +21,33 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import org.primefaces.event.FileUploadEvent;
 
 /**
  *
  * @author Mert
  */
-@Named(value = "exportImportController")
-@RequestScoped
-public class ExportImportController {
+@ManagedBean
+@SessionScoped
+public class ExportImportController implements Serializable {
 
     /**
      * Creates a new instance of ExportImportController
      */
     public ExportImportController() {
     }
-    
+
     @EJB
     private sessionBeanRemote ejb;
-    private List<Event> myEvents; 
+    private List<Event> myEvents;
     private List<Event> importedEvents;
-    
-    
+    private boolean[] result;
+    private boolean alreadyImported = false;
+
     public String exportImport() {
         return "exportImport.xhtml?faces-redirect=true";
     }
@@ -52,6 +60,14 @@ public class ExportImportController {
         this.myEvents = myEvents;
     }
 
+    public boolean isAlreadyImported() {
+        return alreadyImported;
+    }
+
+    public void setAlreadyImported(boolean alreadyImported) {
+        this.alreadyImported = alreadyImported;
+    }
+
     public List<Event> getImportedEvents() {
         return importedEvents;
     }
@@ -59,25 +75,50 @@ public class ExportImportController {
     public void setImportedEvents(List<Event> importedEvents) {
         this.importedEvents = importedEvents;
     }
-    
+
+    public boolean[] getResult() {
+        return result;
+    }
+
+    public void setResult(boolean[] result) {
+        this.result = result;
+    }
+
     @PostConstruct
     public void init() {
-        if (ejb!= null) {
+        if (ejb != null) {
             int user_id = ejb.getUser().getUserId();
             myEvents = ejb.getEventsOfUser(user_id);
         }
     }
-    
+
     public void exportEvents() {
-        
+
     }
-    
+
     public void importEvents() {
-        
+        if (importedEvents != null) {
+            result = new boolean[importedEvents.size()];
+            int i = 0;
+            for (Event event : importedEvents) {
+                boolean flag = true;
+                if (WeatherAPI.isCityExists(event.getLocationCity())) {
+                    flag = ejb.createEvent(event.getEventName(), event.getEventDescription(), event.getEventType(),
+                            event.getDesiredWeather(), event.getVisibility(), event.getLocationCity(), 
+                            event.getStartingDate(), event.getEndingDate(), new ArrayList<User>());
+                } else {
+                    flag = false;
+                }
+                result[i++] = flag;
+            }
+            alreadyImported = true;
+        }
     }
-    
+
     public void handleFileUpload(FileUploadEvent event) {
         try {
+            alreadyImported = false;
+            result = null;
             importedEvents = XLSReader.readXLS(event.getFile().getInputstream());
             FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
             FacesContext.getCurrentInstance().addMessage(null, message);
@@ -86,4 +127,17 @@ public class ExportImportController {
         }
     }
     
+    public boolean checkStatus(Event event) {
+        int index = 0;
+        for (Event theEvent: importedEvents) {
+            if (theEvent.getEventName().equals(event.getEventName()) &&
+                    theEvent.getEventDescription().equals(event.getEventDescription()) &&
+                            theEvent.getLocationCity().equals(event.getLocationCity())) {
+                return result[index];
+            }
+            index++;
+        }
+        return false;
+    }
+
 }

@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -32,11 +33,12 @@ public class XLSReader {
      * column list of the input file
      */
     private static final String[] columnList = new String[]{"Name", "Description", "City",
-        "Privacy", "Starting Date", "Ending Date"};
+        "Privacy","Type","Desired weather", "Starting Date", "Ending Date"};
 
     private static Date covertDate(String date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         try {
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+1"));
             return sdf.parse(date);
         } catch (ParseException ex) {
             Logger.getLogger(XLSReader.class.getName()).log(Level.SEVERE, null, ex);
@@ -85,11 +87,17 @@ public class XLSReader {
                         //Event Privacy
                         cell = row.getCell(3);
                         newEvent.setVisibility(cell.getStringCellValue());
-                        //Event Starting date
+                        //Event Type
                         cell = row.getCell(4);
+                        newEvent.setEventType(cell.getStringCellValue());
+                        //Event Privacy
+                        cell = row.getCell(5);
+                        newEvent.setDesiredWeather(cell.getStringCellValue());
+                        //Event Starting date
+                        cell = row.getCell(6);
                         newEvent.setStartingDate(covertDate(cell.getStringCellValue()));
                         //Event Ending date
-                        cell = row.getCell(5);
+                        cell = row.getCell(7);
                         newEvent.setEndingDate(covertDate(cell.getStringCellValue()));
                         events.add(newEvent);
                     }
