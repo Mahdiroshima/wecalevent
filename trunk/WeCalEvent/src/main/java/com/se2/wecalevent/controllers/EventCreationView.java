@@ -285,8 +285,7 @@ public class EventCreationView implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
         if (event_id == null) {
-            FacesMessage message = new FacesMessage("Sorry", "You are not authorized to update this event");
-            FacesContext.getCurrentInstance().addMessage(null, message);
+            
             FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
         } else {
             User user = ejb.getUserById(ejb.getUser().getUserId());

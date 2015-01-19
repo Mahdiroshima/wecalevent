@@ -22,9 +22,9 @@
                     <p:outputLabel value="Between:"></p:outputLabel>
                     <p:outputPanel>
                         <h:outputText value="#{notificationView.selectedNotification.relatedTo.startingDate}">
-                            <f:convertDateTime pattern="dd.MM.yyyy HH:mm" /></h:outputText> -
-                            <h:outputText value="#{notificationView.selectedNotification.relatedTo.endingDate}">
-                            <f:convertDateTime pattern="dd.MM.yyyy HH:mm" /></h:outputText>
+                            <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" /></h:outputText> -
+                        <h:outputText value="#{notificationView.selectedNotification.relatedTo.endingDate}">
+                            <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" /></h:outputText>
                     </p:outputPanel>
                 </p:panelGrid>
 
