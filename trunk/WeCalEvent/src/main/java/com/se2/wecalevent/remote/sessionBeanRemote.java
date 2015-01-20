@@ -30,6 +30,7 @@ public interface sessionBeanRemote {
     public boolean notifyOwner(Event event, User user, String notice);
     public boolean acceptInvitation(Notification notification);
     public boolean rejectInvitation(Notification notification);
+    public Event getEventById(Integer id);
     public List<Event> getEventsOfUser(int user_id);
     public List<User> getParticipantsOfEvent(int event_id);
     public User getUserById(int user_id);
@@ -38,4 +39,5 @@ public interface sessionBeanRemote {
     public boolean updateEvent (Integer eventId,String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedUsers);
     public boolean updateUser(Integer userID,String email, String password, String calendarVisibility, String name, String surname);
     public boolean removeEntity (Integer objectId, Class t);
+    public boolean logout();
 }

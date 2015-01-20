@@ -88,6 +88,7 @@ public class UpcomingEventsView {
         if (newParticipantEvent != null && viewUser != null && viewUser.getUserId().equals(ejb.getUser().getUserId())) {
             if (events != null) { //if the event is not already included
                 updateEventList();
+                RequestContext.getCurrentInstance().update(":schedule");
             }
         }
     }

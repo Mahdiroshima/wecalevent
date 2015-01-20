@@ -16,7 +16,6 @@ import com.se2.wecalevent.viewModels.NotificationViewModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -46,8 +45,8 @@ public class sessionBean implements sessionBeanRemote {
 
         }
         if (loggedin != null && loggedin.getPass().equals(password)) {
-            user = loggedin;
-            return loggedin;
+            user = entityManager.find(User.class, loggedin.getUserId());
+            return user; 
         }
         return null;
     }
@@ -347,6 +346,7 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public boolean inviteUsers(Event event, List<User> users) {
         if (users != null && event != null) {
+            System.out.println("Invite users to this event: " + event.getEventName() + "user count: " + users.size());
             if (event.getUserList1() == null) {
                 event.setUserList1(users);
             } else {
@@ -372,6 +372,7 @@ public class sessionBean implements sessionBeanRemote {
                 notification.setRelatedTo(event);
                 notification.setTs(new Date());
                 entityManager.persist(notification);
+                System.out.println("Create notif for this event: " + event.getEventName() + "user name: " + theUser.getName());
             }
             entityManager.flush();
             return true;
@@ -427,7 +428,6 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public List<Notification> getNotifications() {
         if (user != null) {
-            entityManager.refresh(user);
             entityManager.merge(user);
             user.getNotificationList().size();
             return user.getNotificationList();
@@ -467,5 +467,19 @@ public class sessionBean implements sessionBeanRemote {
         entityManager.merge(event);
         event.getUserList().size();
         return event.getUserList();
+    }
+
+    @Override
+    public Event getEventById(Integer id) {
+        if (id != null) {
+            return entityManager.find(Event.class, id);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean logout() {
+        this.user = null;
+        return true;
     }
 }

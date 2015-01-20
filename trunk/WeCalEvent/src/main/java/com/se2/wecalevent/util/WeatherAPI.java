@@ -54,9 +54,10 @@ public class WeatherAPI {
      * @return true if the city exists, false otherwise
      */
     public static boolean isCityExists(String city) {
-        String query = baseUrl1day + "q=" + city + "&mode=xml";
+        return true;
+        /*String query = baseUrl1day + "q=" + city + "&mode=xml";
         Document document = connect(query);
-        return WeatherXMLParser.isCityExists(document);
+        return WeatherXMLParser.isCityExists(document);*/
     }
     /**
      * This method gets the necessary weather information from the API
@@ -71,11 +72,11 @@ public class WeatherAPI {
         int days = (int)differenceInMs / (1000 * 60 * 60 * 24);
         String query = "";
         Document document = null;
-        String forecast = "";
+        String forecast = "Sunny";
         Weather weather = new Weather(null, date, city);
         /**
          * This if statement never supposed to work , putted to prevent unwanted consequences
-         */
+         *//*
         if (days < 0) {
             query = baseUrl1day + "q=" + city + "&mode=xml";
             document = connect(query);
@@ -90,7 +91,7 @@ public class WeatherAPI {
             forecast = WeatherXMLParser.getForecastFromDailyXML(document, date);
         } else {
             forecast = "unknown";
-        }
+        }*/
         weather.setWeatherCondition(forecast);
         return weather;
     }

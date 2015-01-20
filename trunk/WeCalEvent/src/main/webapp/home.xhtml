@@ -14,7 +14,7 @@
         <div id="notifPanel" class="panel panel-warning commonPanel">
             <p:panel header="Search User" style="margin-left: -10px">
                 <h:form>
-                    <p:autoComplete forceSelection="true" placeholder="Type a name" id="acSimple" value="#{userLoginView.txt1}" completeMethod="#{userLoginView.completeText}">
+                    <p:autoComplete forceSelection="true" placeholder="Type a name" id="acSimple" completeMethod="#{userLoginView.completeText}">
                         <p:ajax event="itemSelect" listener="#{userLoginView.onItemSelect}"/>
                     </p:autoComplete>
                 </h:form>
