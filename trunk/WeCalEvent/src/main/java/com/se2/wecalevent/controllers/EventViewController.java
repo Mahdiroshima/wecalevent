@@ -167,8 +167,8 @@ public class EventViewController implements Serializable {
             this.startingDate = theEvent.getStartingDate();
             this.endingDate = theEvent.getEndingDate();
             this.selectedWeather = theEvent.getDesiredWeather().split("-");
+            check();
         }
-        check();
     }
 
     private List<User> getListOfSelectedUsers() {
@@ -216,7 +216,7 @@ public class EventViewController implements Serializable {
         context.getExternalContext().getFlash().setKeepMessages(true);
         if (event_id == null) {
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml" + "?faces-redirect=true");
             } catch (IOException ex) {
                 Logger.getLogger(EventViewController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -232,11 +232,11 @@ public class EventViewController implements Serializable {
                     break;
                 }
             }
-            if (!flag && isPrivate) {
+            if (!flag || isPrivate) {
                 FacesMessage message = new FacesMessage("Sorry", "You are not authorized to view this event");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 try {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml" + "?faces-redirect=true");
                 } catch (IOException ex) {
                     Logger.getLogger(EventViewController.class.getName()).log(Level.SEVERE, null, ex);
                 }
