@@ -14,6 +14,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -21,7 +23,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -29,7 +30,7 @@ import org.primefaces.context.RequestContext;
  */
 @ManagedBean
 @ViewScoped
-public class EventCreationView implements Serializable {
+public class EventViewController implements Serializable {
 
     @EJB
     private sessionBeanRemote ejb;
@@ -153,122 +154,21 @@ public class EventCreationView implements Serializable {
 
     @PostConstruct
     public void init() {
-        //This is when a user wants to create an event
-        if (event_id == null && ejb != null && ejb.getUser() != null && userLoginView.getPeople() == null) {
-            int uid = ejb.getUser().getUserId();
-            List<Event> events = ejb.getEventsOfUser(uid);
-            List<User> people = ejb.getAllUsers();
-            //Remove myself from the partipant list
-            int myIndex = 0;
-            for (User oneUser : people) {
-                if (oneUser.getUserId().equals(uid)) {
-                    break;
-                }
-                myIndex++;
-            }
-            people.remove(myIndex);
-            userLoginView.setPeople(people);
-            userLoginView.setSelectedPeople(new ArrayList<String>());
-        } //This is the case when a user view an event or edit one
-        else if (event_id != null && ejb != null && ejb.getUser() != null) {
-            int uid = ejb.getUser().getUserId();
-            List<Event> events = ejb.getEventsOfUser(uid);
+        if (event_id != null && ejb != null && ejb.getUser() != null) {
             int eid = Integer.parseInt(event_id);
-            List<User> people = ejb.getAllUsers();
+            Event theEvent = ejb.getEventById(eid);
             peopleAlreadyParticipate = ejb.getParticipantsOfEvent(eid);
-            int sizePeople = people.size();
-            int sizeParticipate = peopleAlreadyParticipate.size();
-            for (int i = 0; i < sizePeople; i++) {
-                User currentOne = people.get(i);
-                for (int j = 0; j < sizeParticipate; j++) {
-                    if (currentOne.getUserId().equals(peopleAlreadyParticipate.get(j).getUserId())) {
-                        people.remove(i);
-                        i--;
-                        sizePeople--;
-                        break;
-                    }
-                }
-            }
-            userLoginView.setPeople(people);
-            userLoginView.setSelectedPeople(new ArrayList<String>());
-            for (Event event : events) {
-                if (event.getEventId() == eid) {
-                    this.eventName = event.getEventName();
-                    this.eventDescription = event.getEventDescription();
-                    this.eventType = event.getEventType();
-                    this.desiredWeather = event.getDesiredWeather();
-                    this.visibility = event.getVisibility();
-                    this.locationCity = event.getLocationCity();
-                    this.startingDate = event.getStartingDate();
-                    this.endingDate = event.getEndingDate();
-                    this.selectedWeather = event.getDesiredWeather().split("-");
-                    break;
-                }
-            }
-
+            this.eventName = theEvent.getEventName();
+            this.eventDescription = theEvent.getEventDescription();
+            this.eventType = theEvent.getEventType();
+            this.desiredWeather = theEvent.getDesiredWeather();
+            this.visibility = theEvent.getVisibility();
+            this.locationCity = theEvent.getLocationCity();
+            this.startingDate = theEvent.getStartingDate();
+            this.endingDate = theEvent.getEndingDate();
+            this.selectedWeather = theEvent.getDesiredWeather().split("-");
         }
-    }
-
-    public void viewPeople() {
-        RequestContext.getCurrentInstance().openDialog("dialogs/invitePeople");
-    }
-
-    public void save() {
-        RequestContext.getCurrentInstance().closeDialog("dialogs/invitePeople");
-    }
-
-    public String submit() {
-        boolean status = ejb.createEvent(eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate, getListOfSelectedUsers());
-        FacesMessage message = null;
-        if (status) {
-            userLoginView.setPeople(null);
-            message = new FacesMessage("Hurry !!", "Your event have been created");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            return "home.xhtml?faces-redirect=true";
-        } else {
-            message = new FacesMessage("Sorry", "You event cannot be created :( ");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            return "eventcreation.xhtml";
-        }
-    }
-
-    public String update() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        context.getExternalContext().getFlash().setKeepMessages(true);
-        int eid = Integer.parseInt(event_id);
-        boolean status = ejb.updateEvent(eid, eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate, getListOfSelectedUsers());
-        FacesMessage message = null;
-        if (status) {
-            userLoginView.setPeople(null);
-            message = new FacesMessage("Your event have been updated ");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            return "home.xhtml?faces-redirect=true";
-        } else {
-            message = new FacesMessage("Sorry, Your event is not updated :( ");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            return "eventcreation.xhtml";
-        }
-    }
-
-    public void handleKeyEvent() {
-        try {
-            Thread.sleep(1000);                 //1000 milliseconds is one second.
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-        if (locationCity == null) {
-            return;
-        }
-        FacesMessage message = null;
-        boolean status = WeatherAPI.isCityExists(locationCity);
-        if (status) {
-            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "", locationCity + " is OK.");
-        } else {
-            message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", locationCity + " doesn't exist, try again");
-            locationCity = "";
-        }
-
-        FacesContext.getCurrentInstance().addMessage(null, message);
+        check();
     }
 
     private List<User> getListOfSelectedUsers() {
@@ -311,15 +211,20 @@ public class EventCreationView implements Serializable {
         }
     }
 
-    public void check() throws IOException {
+    public void check() {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
         if (event_id == null) {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+            } catch (IOException ex) {
+                Logger.getLogger(EventViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             User user = ejb.getUserById(ejb.getUser().getUserId());
             List<Event> events = user.getEventList2();
             boolean flag = false;
+            boolean isPrivate = this.visibility.contains("private");
             int eid = Integer.parseInt(event_id);
             for (Event event : events) {
                 if (event.getEventId().equals(eid)) {
@@ -327,10 +232,14 @@ public class EventCreationView implements Serializable {
                     break;
                 }
             }
-            if (flag == false) {
-                FacesMessage message = new FacesMessage("Sorry", "You are not authorized to update this event");
+            if (!flag && isPrivate) {
+                FacesMessage message = new FacesMessage("Sorry", "You are not authorized to view this event");
                 FacesContext.getCurrentInstance().addMessage(null, message);
-                FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+                try {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+                } catch (IOException ex) {
+                    Logger.getLogger(EventViewController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
