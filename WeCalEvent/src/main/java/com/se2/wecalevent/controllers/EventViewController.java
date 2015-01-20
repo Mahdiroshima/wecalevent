@@ -8,7 +8,6 @@ package com.se2.wecalevent.controllers;
 import com.se2.wecalevent.entities.Event;
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
-import com.se2.wecalevent.util.WeatherAPI;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,13 +15,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -67,7 +66,6 @@ public class EventViewController implements Serializable {
 
     public void setEvent_id(String event_id) {
         this.event_id = event_id;
-        init();
     }
 
     public void setUserLoginView(UserLoginView userLoginView) {
@@ -152,11 +150,14 @@ public class EventViewController implements Serializable {
         this.endingDate = endingDate;
     }
 
-    @PostConstruct
     public void init() {
+        System.out.println("I'M WORKIIIIIIIIIIIIIIING: " + event_id + " :::::::");
         if (event_id != null && ejb != null && ejb.getUser() != null) {
+            System.out.println("I'M WORKIIIIIIIIIIIIIIING also");
+            
             int eid = Integer.parseInt(event_id);
             Event theEvent = ejb.getEventById(eid);
+            System.out.println("I'M WORKIIIIIIIIIIIIIIING also: " + theEvent.getEventName());
             peopleAlreadyParticipate = ejb.getParticipantsOfEvent(eid);
             this.eventName = theEvent.getEventName();
             this.eventDescription = theEvent.getEventDescription();
@@ -167,7 +168,6 @@ public class EventViewController implements Serializable {
             this.startingDate = theEvent.getStartingDate();
             this.endingDate = theEvent.getEndingDate();
             this.selectedWeather = theEvent.getDesiredWeather().split("-");
-            check();
         }
     }
 
@@ -216,18 +216,16 @@ public class EventViewController implements Serializable {
         context.getExternalContext().getFlash().setKeepMessages(true);
         if (event_id == null) {
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml" + "?faces-redirect=true");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
             } catch (IOException ex) {
                 Logger.getLogger(EventViewController.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             User user = ejb.getUserById(ejb.getUser().getUserId());
-            List<Event> events = user.getEventList2();
             boolean flag = false;
             boolean isPrivate = this.visibility.contains("private");
-            int eid = Integer.parseInt(event_id);
-            for (Event event : events) {
-                if (event.getEventId().equals(eid)) {
+            for (User oneuser : peopleAlreadyParticipate) {
+                if (oneuser.getUserId().equals(user.getUserId())) {
                     flag = true;
                     break;
                 }
@@ -236,7 +234,7 @@ public class EventViewController implements Serializable {
                 FacesMessage message = new FacesMessage("Sorry", "You are not authorized to view this event");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 try {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml" + "?faces-redirect=true");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
                 } catch (IOException ex) {
                     Logger.getLogger(EventViewController.class.getName()).log(Level.SEVERE, null, ex);
                 }
