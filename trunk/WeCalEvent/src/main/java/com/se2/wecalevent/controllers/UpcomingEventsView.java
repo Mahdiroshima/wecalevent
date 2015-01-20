@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -111,6 +110,7 @@ public class UpcomingEventsView {
                     return;
                 }
             } else {
+                //TODO HANDLE PARSE EXCEPTION HERE
                 int id = Integer.parseInt(user_id);
                 viewUser = ejb.getUserById(id);
                 events = ejb.getEventsOfUser(id);
@@ -161,25 +161,10 @@ public class UpcomingEventsView {
         } else {
             try {
                 Date now = new Date();
-                User user = ejb.getUserById(ejb.getUser().getUserId());
-                List<Event> events = user.getEventList2();
-                boolean flag = false;
-                int eid = selectedEvent.getEventId();
-                for (Event theEvent : events) {
-                    if (theEvent.getEventId().equals(eid)) {
-                        flag = true;
-                        break;
-                    }
-                }
                 if (selectedEvent.getStartingDate().compareTo(now) < 0) {
                     message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Internal error", "Event has passed");
                     FacesContext.getCurrentInstance().addMessage(null, message);
                 }
-                else if (!flag) {
-                    message = new FacesMessage("Sorry", "You are not authorized to update this event");
-                    FacesContext.getCurrentInstance().addMessage(null, message);
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
-                } 
                 else FacesContext.getCurrentInstance().getExternalContext().redirect("viewEvent.xhtml?id=" + selectedEvent.getEventId());
             } catch (IOException ex) {
                 Logger.getLogger(UpcomingEventsView.class.getName()).log(Level.SEVERE, null, ex);

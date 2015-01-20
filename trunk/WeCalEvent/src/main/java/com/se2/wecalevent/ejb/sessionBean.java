@@ -40,12 +40,12 @@ public class sessionBean implements sessionBeanRemote {
         Query query = entityManager.createNamedQuery("User.findByEmail");
         query.setParameter("email", email);
         User loggedin = null;
-         try { 
+        try {
             loggedin = (User) query.getSingleResult();
         } catch (NoResultException e) {
 
         }
-         if (loggedin != null && loggedin.getPass().equals(password)) {
+        if (loggedin != null && loggedin.getPass().equals(password)) {
             user = loggedin;
             return loggedin;
         }
@@ -54,9 +54,11 @@ public class sessionBean implements sessionBeanRemote {
 
     /**
      * This ejb method creates an user in the database with the given parameters
+     *
      * @param email Unique e-mail of the new User for login, mandatory
      * @param password Plain password of the user, mandatory
-     * @param calendar Calendar privacy of the user, public or private, mandatory
+     * @param calendar Calendar privacy of the user, public or private,
+     * mandatory
      * @param name Name of the User, mandatory
      * @param surname Surname of the User, mandatory
      * @return true if create operation is successful, false otherwise
@@ -88,14 +90,18 @@ public class sessionBean implements sessionBeanRemote {
         entityManager.persist(newUser);
         return true;
     }
+
     /**
      * This ejb method creates an event with the given parameters
+     *
      * @param eventName Name of the event, mandatory
      * @param eventDescription Description of the event, mandatory
      * @param eventType Type of the event, outdoor or indoor, mandatory
-     * @param desiredWeather List of desired weather conditions as a string, ex: cloudy-sunny, mandatory
+     * @param desiredWeather List of desired weather conditions as a string, ex:
+     * cloudy-sunny, mandatory
      * @param visibility Privacy of the event, public or private, mandatory
-     * @param locationCity The place in which the event will be hosted, mandatory, required for forecast gathering
+     * @param locationCity The place in which the event will be hosted,
+     * mandatory, required for forecast gathering
      * @param startingDate Starting date of the event
      * @param endingDate Ending date of the event
      * @param invitedList The list of users who are invited
@@ -104,7 +110,7 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public boolean createEvent(String eventName, String eventDescription, String eventType, String desiredWeather,
             String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedList) {
-        if (startingDate.after(endingDate)){
+        if (startingDate.after(endingDate)) {
             return false;
         }
         //Creates an predefined SQL Query, which checks if there is an event which will occur in the given interval
@@ -116,12 +122,13 @@ public class sessionBean implements sessionBeanRemote {
             //if NoResultException is checked, no problem
             samedate = query.getResultList();
             //There is an event in the given interval, return false
-            if (samedate.size() > 0)
+            if (samedate.size() > 0) {
                 return false;
+            }
         } catch (NoResultException e) {
-            
+
         } catch (NonUniqueResultException e) {
-            
+
         }
         //Get weather forecast form the WeatherAPI class
         Weather theWeather = WeatherAPI.getWeatherForecast(startingDate, locationCity);
@@ -145,16 +152,21 @@ public class sessionBean implements sessionBeanRemote {
         entityManager.persist(NewEvent);
         entityManager.flush();
         inviteUsers(NewEvent, invitedList);
+        entityManager.merge(NewEvent);
         return true;
     }
+
     /**
      * This method returns the list of events requested for the user
+     *
      * @param user_id
-     * @return 
+     * @return
      */
     @Override
     public List<Event> getEventsOfUser(int user_id) {
-        if (user == null) return null;
+        if (user == null) {
+            return null;
+        }
         Query query = entityManager.createNamedQuery("User.findByUserId");
         query.setParameter("userId", user_id);
         User theUser = null;
@@ -162,15 +174,15 @@ public class sessionBean implements sessionBeanRemote {
             theUser = (User) query.getSingleResult();
             entityManager.refresh(theUser);
             if (theUser != null) {
-               theUser.getEventList().size();
-               return theUser.getEventList();
+                theUser.getEventList().size();
+                return theUser.getEventList();
             }
         } catch (NoResultException e) {
 
         }
         return new ArrayList<Event>();
     }
-    
+
     @Override
     public User getUserById(int user_id) {
         Query query = entityManager.createNamedQuery("User.findByUserId");
@@ -179,18 +191,19 @@ public class sessionBean implements sessionBeanRemote {
         try {
             theUser = (User) query.getSingleResult();
         } catch (NoResultException e) {
-            
+
         }
         theUser.getEventList().size();
         theUser.getEventList1().size();
         theUser.getEventList2().size();
-        return theUser; 
+        return theUser;
     }
-    
+
     /**
-     * Get method for the User object, this method can be used to check 
-     * whether the user is logged in or not
-     * @return 
+     * Get method for the User object, this method can be used to check whether
+     * the user is logged in or not
+     *
+     * @return
      */
     @Override
     public User getUser() {
@@ -199,8 +212,10 @@ public class sessionBean implements sessionBeanRemote {
         }
         return user;
     }
+
     /**
      * TODO: update javadoc
+     *
      * @param eventId
      * @param eventName
      * @param eventDescription
@@ -210,7 +225,7 @@ public class sessionBean implements sessionBeanRemote {
      * @param locationCity
      * @param startingDate
      * @param endingDate
-     * @return 
+     * @return
      */
     @Override
     public boolean updateEvent(Integer eventId, String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedUsers) {
@@ -226,8 +241,7 @@ public class sessionBean implements sessionBeanRemote {
             //There is an event in the given interval, return false
             if (samedate.size() == 1 && samedate.get(0).getEventId().equals(eventId)) {
                 //no problem
-            }
-            else if (samedate.size() > 0) {
+            } else if (samedate.size() > 0) {
                 return false;
             }
         } catch (NoResultException e) {
@@ -243,23 +257,24 @@ public class sessionBean implements sessionBeanRemote {
         event.setLocationCity(locationCity);
         event.setStartingDate(startingDate);
         event.setEndingDate(endingDate);
-       
+
         entityManager.merge(event);
         entityManager.flush();
         inviteUsers(event, invitedUsers);
         return true;
-             
-    
+
     }
+
     /**
      * TODO: update javadoc
+     *
      * @param userId
      * @param email
      * @param password
      * @param calendar
      * @param name
      * @param surname
-     * @return 
+     * @return
      */
     @Override
     public boolean updateUser(Integer userId, String email, String password, String calendar, String name, String surname) {
@@ -271,7 +286,6 @@ public class sessionBean implements sessionBeanRemote {
             User userExists = null;
             try {
                 userExists = (User) query.getSingleResult();
-                
 
             } catch (NoResultException e) {
 
@@ -289,10 +303,11 @@ public class sessionBean implements sessionBeanRemote {
         entityManager.merge(user);
         entityManager.flush();
         return true;
-           
+
     }
+
     //@Schedule(hour= "0",minute ="*" ,second="10") 
-    public void update12hoursForecast( ) /*throws Exception*/ {
+    public void update12hoursForecast() /*throws Exception*/ {
         //Excute query to get all current event 
         Query query = entityManager.createNamedQuery("Event.findAll");
         //Create list of events
@@ -302,7 +317,7 @@ public class sessionBean implements sessionBeanRemote {
             //Get the starting date of the event
             Date stratingtime = e.getStartingDate();
             //Get the Location of the event 
-            String city = e.getLocationCity() ;
+            String city = e.getLocationCity();
             //Call the Weather Forecast for the City and date 
             Weather weather = WeatherAPI.getWeatherForecast(stratingtime, city);
             //Get the stored weather condition
@@ -317,9 +332,8 @@ public class sessionBean implements sessionBeanRemote {
 
         }
         //throw new Exception("    "
-               // + "Please work"); 
-        
-        
+        // + "Please work"); 
+
     }
 
     @Override
@@ -329,78 +343,92 @@ public class sessionBean implements sessionBeanRemote {
         List<User> result = query.getResultList();
         return result;
     }
-    
+
     @Override
     public boolean inviteUsers(Event event, List<User> users) {
-        if (event.getUserList1() == null) {
-            event.setUserList1(users);
-        }
-        else {
-            event.getUserList1().addAll(users);
-        }
-        entityManager.merge(event);
-        entityManager.flush();
-        if (users != null) {
+        if (users != null && event != null) {
+            if (event.getUserList1() == null) {
+                event.setUserList1(users);
+            } else {
+                event.getUserList1().addAll(users);
+            }
+            entityManager.merge(event);
+            entityManager.flush();
             notifyInvitation(event, users);
+            return true;
         }
-        return true;
+        return false;
     }
-    
+
     @Override
     public boolean notifyInvitation(Event event, List<User> users) {
-        entityManager.refresh(event);
-        for (User user : users) {
-            Notification notification = new Notification();
-            notification.setNotifType(NotificationViewModel.NotificationType.Invitation.getValue());
-            notification.setUserId(user);
-            notification.setNotification("You are invited to the event: " +event.getEventName());
-            notification.setRelatedTo(event);
-            notification.setTs(new Date());
-            entityManager.persist(notification);
+        if (event != null && users != null) {
+            entityManager.refresh(event);
+            for (User theUser : users) {
+                Notification notification = new Notification();
+                notification.setNotifType(NotificationViewModel.NotificationType.Invitation.getValue());
+                notification.setUserId(theUser);
+                notification.setNotification("You are invited to the event: " + event.getEventName());
+                notification.setRelatedTo(event);
+                notification.setTs(new Date());
+                entityManager.persist(notification);
+            }
+            entityManager.flush();
+            return true;
         }
-        entityManager.flush();
-        return true;
+        return false;
     }
-    
+
     @Override
     public boolean notifyParticipant(Event event, List<User> users, String notice) {
-        entityManager.refresh(event);
-        for (User user : users) {
+        if (event != null && users != null) {
+            entityManager.refresh(event);
+            for (User theUser : users) {
+                Notification notification = new Notification();
+                notification.setNotifType(NotificationViewModel.NotificationType.Forecast_change.getValue());
+                notification.setUserId(theUser);
+                notification.setNotification(notice);
+                notification.setRelatedTo(event);
+                notification.setTs(new Date());
+                entityManager.persist(notification);
+            }
+            entityManager.flush();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean notifyOwner(Event event, User theUser, String notice) {
+        if (event != null && theUser != null) {
             Notification notification = new Notification();
-            notification.setNotifType(NotificationViewModel.NotificationType.Forecast_change.getValue());
-            notification.setUserId(user);
+            notification.setNotifType(NotificationViewModel.NotificationType.Postpone_suggestion.getValue());
+            notification.setUserId(theUser);
             notification.setNotification(notice);
             notification.setRelatedTo(event);
             notification.setTs(new Date());
             entityManager.persist(notification);
+            entityManager.flush();
+            return true;
         }
-        entityManager.flush();
-        return true;
+        return false;
     }
-            
-    @Override
-    public boolean notifyOwner(Event event, User user, String notice) {
-        Notification notification = new Notification();
-        notification.setNotifType(NotificationViewModel.NotificationType.Postpone_suggestion.getValue());
-        notification.setUserId(user);
-        notification.setNotification(notice);
-        notification.setRelatedTo(event);
-        notification.setTs(new Date());
-        entityManager.persist(notification);
-        entityManager.flush();
-        return true;
-}
 
     @Override
     public boolean removeEntity(Integer objectId, Class t) {
-        Object object = entityManager.find(t, objectId);
-        entityManager.remove(object);
-        return true;
+        if (objectId != null && t != null) {
+            Object object = entityManager.find(t, objectId);
+            entityManager.remove(object);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public List<Notification> getNotifications() {
         if (user != null) {
+            entityManager.refresh(user);
+            entityManager.merge(user);
             user.getNotificationList().size();
             return user.getNotificationList();
         }
@@ -415,6 +443,7 @@ public class sessionBean implements sessionBeanRemote {
             event.getUserList().add(user);
             notification = entityManager.find(Notification.class, notification.getNotifId());
             entityManager.remove(notification);
+            entityManager.merge(event);
             entityManager.flush();
             return true;
         }
@@ -435,6 +464,7 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public List<User> getParticipantsOfEvent(int event_id) {
         Event event = entityManager.find(Event.class, event_id);
+        entityManager.merge(event);
         event.getUserList().size();
         return event.getUserList();
     }

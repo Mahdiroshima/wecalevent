@@ -14,6 +14,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -276,7 +278,24 @@ public class EventCreationView implements Serializable {
     }
 
     public String editProfile() {
-        return "updateEvent.xhtml?id=" + event_id + "&faces-redirect=true";
+        User user = ejb.getUserById(ejb.getUser().getUserId());
+        List<Event> events = user.getEventList2();
+        boolean flag = false;
+        int eid = Integer.parseInt(event_id);
+        for (Event theEvent : events) {
+            if (theEvent.getEventId().equals(eid)) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) //I can edit the event
+        {
+            return "updateEvent.xhtml?id=" + event_id + "&faces-redirect=true";
+        } else {
+            FacesMessage message = new FacesMessage("Sorry", "You are not authorized to update this event");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "viewEvent.xhtml?id=" + event_id;
+        }
     }
 
     public void check() throws IOException {
