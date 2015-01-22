@@ -16,6 +16,9 @@ import com.se2.wecalevent.viewModels.NotificationViewModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -295,34 +298,8 @@ public class sessionBean implements sessionBeanRemote {
 
     }
 
-    //@Schedule(hour= "0",minute ="*" ,second="10") 
     public void update12hoursForecast() /*throws Exception*/ {
-        //Excute query to get all current event 
-        Query query = entityManager.createNamedQuery("Event.findAll");
-        //Create list of events
-        List<Event> res = query.getResultList();
-        //for each event
-        for (Event e : res) {
-            //Get the starting date of the event
-            Date stratingtime = e.getStartingDate();
-            //Get the Location of the event 
-            String city = e.getLocationCity();
-            //Call the Weather Forecast for the City and date 
-            Weather weather = WeatherAPI.getWeatherForecast(stratingtime, city);
-            //Get the stored weather condition
-            String storedweathercond = weather.getWeatherCondition();
-            //Get the current weather condition
-            String currentlyweathercond = e.getWeatherId().getWeatherCondition();
-            //Compare the stored and the current weather condition if differenet upadate the weather object
-            if (storedweathercond.compareTo(currentlyweathercond) != 0) {
-                //TODO NOTIFICATION
-                e.getWeatherId().setWeatherCondition(storedweathercond);
-            }
-
-        }
-        //throw new Exception("    "
-        // + "Please work"); 
-
+        
     }
 
     @Override
@@ -373,7 +350,6 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public boolean notifyParticipant(Event event, List<User> users, String notice) {
         if (event != null && users != null) {
-            entityManager.refresh(event);
             for (User theUser : users) {
                 Notification notification = new Notification();
                 notification.setNotifType(NotificationViewModel.NotificationType.Forecast_change.getValue());

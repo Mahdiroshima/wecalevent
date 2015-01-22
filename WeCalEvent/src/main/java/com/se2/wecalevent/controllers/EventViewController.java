@@ -216,6 +216,7 @@ public class EventViewController implements Serializable {
         context.getExternalContext().getFlash().setKeepMessages(true);
         if (event_id == null) {
             try {
+                System.out.println("Error comes from here");
                 FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
             } catch (IOException ex) {
                 Logger.getLogger(EventViewController.class.getName()).log(Level.SEVERE, null, ex);
@@ -231,6 +232,7 @@ public class EventViewController implements Serializable {
                 }
             }
             if (!flag || isPrivate) {
+                System.out.println("Error comes from or here: flag: " + flag + " isPrivate: " + isPrivate);
                 FacesMessage message = new FacesMessage("Sorry", "You are not authorized to view this event");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 try {
