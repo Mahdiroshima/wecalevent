@@ -102,7 +102,7 @@ public class WeatherXMLParser {
                     }
                     break;
                 } else {
-                    ch = "uknown";
+                    ch = "unknown";
                 }
 
                 temp++;
