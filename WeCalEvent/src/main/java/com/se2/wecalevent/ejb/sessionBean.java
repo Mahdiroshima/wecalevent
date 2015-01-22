@@ -166,20 +166,10 @@ public class sessionBean implements sessionBeanRemote {
         if (user == null) {
             return null;
         }
-        Query query = entityManager.createNamedQuery("User.findByUserId");
-        query.setParameter("userId", user_id);
-        User theUser = null;
-        try {
-            theUser = (User) query.getSingleResult();
-            entityManager.refresh(theUser);
-            if (theUser != null) {
-                theUser.getEventList().size();
-                return theUser.getEventList();
-            }
-        } catch (NoResultException e) {
-
-        }
-        return new ArrayList<Event>();
+        User theUser = entityManager.find(User.class, user_id);
+        entityManager.merge(user);
+        user.getEventList2().size();
+        return user.getEventList2();
     }
 
     @Override

@@ -73,6 +73,7 @@ public class WeatherXMLParser {
     }
 
     public static String getForecastFrom3hourlyXML(Document document, Date date) {
+        if (document == null) return "unknown";
         NodeList nList = document.getDocumentElement().getElementsByTagName("time");
         int temp = 0;
         String ch = "";
