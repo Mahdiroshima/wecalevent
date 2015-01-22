@@ -66,6 +66,8 @@ public class WeatherAPI {
      */
     public static Weather getWeatherForecast(Date date, String city) {
         Date nowDate = new Date();
+        if (date == null) {date = new Date();
+        } 
         long differenceInMs = date.getTime() - nowDate.getTime();
         //convert milliseconds to days
         int days = (int)differenceInMs / (1000 * 60 * 60 * 24);
