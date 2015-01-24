@@ -33,7 +33,7 @@ public class Scheduler {
     @EJB
     private sessionBeanRemote ejb;
 
-    @Schedule(minute = "*/1", hour = "*")
+    @Schedule(minute = "0", hour = "1,13")
     public void runEveryMinute() {
         log.log(Level.INFO,
                 "running every minute .. now it's: " + new Date().toString());
@@ -53,10 +53,10 @@ public class Scheduler {
             try {
                 weather = WeatherAPI.getWeatherForecast(startingTime, city);
             } catch (NullPointerException exception) {
-                weather = new Weather();
-                weather.setCity(city);
-                weather.setWeatherCondition("unknown");
-                weather.setWeatherDate(startingTime);
+                //initialize the event to the previous forecast
+                //this does not happen, it is written for preserving 
+                //the state of the schedule
+                weather = theEvent.getWeatherId();
             }
             //Get the stored weather condition
             String storedweathercond = weather.getWeatherCondition();

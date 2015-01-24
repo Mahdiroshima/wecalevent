@@ -167,9 +167,6 @@ public class UpcomingEventsView {
                     FacesContext.getCurrentInstance().addMessage(null, message);
                 }
                 else {
-                    if (selectedEvent != null)
-                    System.out.println("I SELECT THIS EVENT: " + selectedEvent.getEventName() + " and this id: " + selectedEvent.getEventId());
-                    else System.out.println("DDDDDDDUUUUUUUUUUUUUUUUUUUFFFFFFFFFFFFFFFFFqqqqqq");
                     FacesContext.getCurrentInstance().getExternalContext().redirect("viewEvent.xhtml?id=" + selectedEvent.getEventId());
                 }
             } catch (IOException ex) {

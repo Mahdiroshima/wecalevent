@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -26,9 +27,10 @@ import org.primefaces.context.RequestContext;
 /**
  *
  * @author Mehdi
+ * @author Mert
  */
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class EventViewController implements Serializable {
 
     @EJB
@@ -184,26 +186,31 @@ public class EventViewController implements Serializable {
         return userList;
     }
 
-    public String delateEvent() {
+    public void deleteEvent() {
         User user = ejb.getUserById(ejb.getUser().getUserId());
         List<Event> events = user.getEventList2();
         boolean flag = false;
         int eid = Integer.parseInt(event_id);
         for (Event theEvent : events) {
             if (theEvent.getEventId().equals(eid)) {
-                ejb.removeEntity(eid, Event.class);
                 flag = true;
                 break;
             }
         }
-        if (!   flag) {
-            FacesMessage message = new FacesMessage("Sorry", "You are not authorized to delate this event");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-        } else {
-            FacesMessage message = new FacesMessage("Your event had been delated");
-            FacesContext.getCurrentInstance().addMessage(null, message);
+        try {
+            if (!flag) {
+                FacesMessage message = new FacesMessage("Sorry", "You are not authorized to delate this event");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                FacesContext.getCurrentInstance().getExternalContext().redirect("viewEvent.xhtml?id=" + eid);
+            } else {
+                ejb.removeEntity(eid, Event.class);
+                FacesMessage message = new FacesMessage("Your event had been delated");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(EventViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return "viewEvent.xhtml?&faces-redirect=true";
     }
 
     public String updateEvent() {
@@ -258,7 +265,7 @@ public class EventViewController implements Serializable {
             }
         }
     }
-    
+
     public String viewUser(Integer user_id) {
         return "home.xhtml?id=" + user_id + "&faces-redirect=true";
     }
