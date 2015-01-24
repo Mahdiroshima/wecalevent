@@ -9,64 +9,71 @@
             .selectRadio label {
                 margin-right: 30px;
             }
+            .ui-panelgrid td, .ui-panelgrid tr
+            {
+                border-style: none !important
+            }
+            .boldFont {
+                font-weight: bold;
+            }
         </style>
         <f:metadata>
             <f:viewParam name="id" value="#{eventViewController.event_id}" />
+            <f:event type="preRenderView" listener="#{userLoginView.controlLogin(true, 'index.xhtml')}"/>
             <f:event type="preRenderView" listener="#{eventViewController.init()}"/>
+            <f:event type="preRenderView" listener="#{eventViewController.check()}"/>
         </f:metadata>
     </ui:define>
     <ui:define name="pageTitle">
         View event
     </ui:define>
     <ui:define name="content">
-        #{userLoginView.controlLogin(true, "index.xhtml")}
-        #{eventViewController.check()}
         <div class="panel panel-default">
             <div class="panel-body">
+                <h:form id="eventDetails" prependId="false">
+                    <p:panel style="width: 60%; min-width: 200px; float:left">
+                        <f:facet name="header">
+                            <h:outputText style="float:left" value="Event Details"></h:outputText>
 
-            </div>
-            <h3>Event details</h3> 
-            <h:form id="eventDetails" prependId="false">
-                <p:commandButton ajax="false" icon="ui-icon-pencil" value="" action="#{eventViewController.updateEvent()}"></p:commandButton>
-                <p:layout style="">
-                    <p:layoutUnit position="west" resizable="true" size="300" minSize="300" maxSize="400">
+                            <p:commandButton ajax="false" icon="ui-icon-pencil" style="float: right; width: 25px; height: 25px" action="#{eventViewController.updateEvent()}"></p:commandButton>
+                        </f:facet>
+
                         <p:outputPanel style="" >
-                            <p:panelGrid columns="2" >
-                                <h:outputText value="Name:" />
+                            <p:panelGrid columns="2">
+                                <h:outputText styleClass="boldFont" value="Name:" />
                                 <h:outputText value="#{eventViewController.eventName}" />
 
-                                <h:outputText value="Description" />
+                                <h:outputText styleClass="boldFont" value="Description" />
                                 <h:outputText value="#{eventViewController.eventDescription   }" />
 
-                                <h:outputText value="Location" />
+                                <h:outputText styleClass="boldFont" value="Location" />
                                 <h:outputText value="#{eventViewController.locationCity}" />
 
-                                <h:outputText value="Visiblity" />
+                                <h:outputText styleClass="boldFont" value="Visiblity" />
                                 <h:outputText value="#{eventViewController.visibility}" />
 
-                                <h:outputText value="Type" />
+                                <h:outputText styleClass="boldFont" value="Type" />
                                 <h:outputText value="#{eventViewController.eventType}" />
 
-                                <h:outputText value="Desired weather" />
+                                <h:outputText styleClass="boldFont" value="Desired weather" />
                                 <h:outputText value="#{eventViewController.desiredWeather}" />
 
-                                <h:outputText value="Starting date" />
+                                <h:outputText styleClass="boldFont" value="Starting date" />
                                 <h:outputText value="#{eventViewController.startingDate}" />
 
-                                <h:outputText value="Ending date" />
+                                <h:outputText styleClass="boldFont" value="Ending date" />
                                 <h:outputText value="#{eventViewController.endingDate}" />
                             </p:panelGrid> 
-                        </p:outputPanel>>
-                    </p:layoutUnit>
-
-                    <p:layoutUnit position="center">
-                        <p:dataList value="#{eventViewController.peopleAlreadyParticipate}" var="user">
-                            <h:outputText value="#{user.name}"></h:outputText>
-
+                        </p:outputPanel>
+                    </p:panel>
+                    <p:panel header="Participants" style="width: 40%; min-width: 200px; float: right; min-height: 303px">
+                        <p:dataList itemType="none" value="#{eventViewController.peopleAlreadyParticipate}" var="user">
+                            <p:commandButton ajax="false" style="float:left; width: 15px; height: 15px; margin-top: 5px; margin-right: 5px" icon="ui-icon-calendar" action="#{eventViewController.viewUser(user.userId)}"></p:commandButton>
+                            <h:outputText value="#{user.name} #{user.surname}"></h:outputText>
                         </p:dataList>
-                    </p:layoutUnit>
-                </p:layout>
-            </h:form>
+                    </p:panel>
+                </h:form>        
+            </div>
         </div>
     </ui:define>>
 </ui:composition>

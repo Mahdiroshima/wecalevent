@@ -159,6 +159,7 @@ public class WeatherAPI {
             if (contentStream != null) {
             }
         }
+        responseBody = responseBody.replaceAll("[^\\x20-\\x7e\\x0A]", "");
         // start building the xml document object
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder;

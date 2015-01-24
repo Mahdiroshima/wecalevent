@@ -115,7 +115,7 @@ public class UpcomingEventsView {
                 int id = Integer.parseInt(user_id);
                 viewUser = ejb.getUserById(id);
                 events = ejb.getEventsOfUser(id);
-                viewSomeOneElse = true;
+                viewSomeOneElse = !viewUser.getUserId().equals(ejb.getUser().getUserId());
             }
             eventModel = new DefaultScheduleModel();
             /**
@@ -166,7 +166,12 @@ public class UpcomingEventsView {
                     message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Internal error", "Event has passed");
                     FacesContext.getCurrentInstance().addMessage(null, message);
                 }
-                else FacesContext.getCurrentInstance().getExternalContext().redirect("viewEvent.xhtml?id=" + selectedEvent.getEventId());
+                else {
+                    if (selectedEvent != null)
+                    System.out.println("I SELECT THIS EVENT: " + selectedEvent.getEventName() + " and this id: " + selectedEvent.getEventId());
+                    else System.out.println("DDDDDDDUUUUUUUUUUUUUUUUUUUFFFFFFFFFFFFFFFFFqqqqqq");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("viewEvent.xhtml?id=" + selectedEvent.getEventId());
+                }
             } catch (IOException ex) {
                 Logger.getLogger(UpcomingEventsView.class.getName()).log(Level.SEVERE, null, ex);
             }

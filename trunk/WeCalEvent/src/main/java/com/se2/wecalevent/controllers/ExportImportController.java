@@ -8,6 +8,7 @@ package com.se2.wecalevent.controllers;
 import com.se2.wecalevent.entities.Event;
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
+import com.se2.wecalevent.util.DateException;
 import com.se2.wecalevent.util.WeatherAPI;
 import com.se2.wecalevent.util.XLSReader;
 import java.io.IOException;
@@ -103,9 +104,14 @@ public class ExportImportController implements Serializable {
             for (Event event : importedEvents) {
                 boolean flag = true;
                 if (WeatherAPI.isCityExists(event.getLocationCity())) {
-                    flag = ejb.createEvent(event.getEventName(), event.getEventDescription(), event.getEventType(),
-                            event.getDesiredWeather(), event.getVisibility(), event.getLocationCity(), 
-                            event.getStartingDate(), event.getEndingDate(), new ArrayList<User>());
+                    try {
+                        flag = ejb.createEvent(event.getEventName(), event.getEventDescription(), event.getEventType(),
+                                event.getDesiredWeather(), event.getVisibility(), event.getLocationCity(),
+                                event.getStartingDate(), event.getEndingDate(), new ArrayList<User>());
+                    } catch (DateException ex) {
+                        Logger.getLogger(ExportImportController.class.getName()).log(Level.SEVERE, null, ex);
+                        flag = false;
+                    }
                 } else {
                     flag = false;
                 }

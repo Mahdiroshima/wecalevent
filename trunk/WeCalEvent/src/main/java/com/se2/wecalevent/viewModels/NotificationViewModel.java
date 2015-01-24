@@ -10,7 +10,6 @@ package com.se2.wecalevent.viewModels;
  *
  * @author Mert
  */
-@Deprecated
 public class NotificationViewModel {
     private NotificationType type;
     public NotificationViewModel(NotificationType type) {

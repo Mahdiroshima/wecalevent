@@ -151,13 +151,9 @@ public class EventViewController implements Serializable {
     }
 
     public void init() {
-        System.out.println("I'M WORKIIIIIIIIIIIIIIING: " + event_id + " :::::::");
         if (event_id != null && ejb != null && ejb.getUser() != null) {
-            System.out.println("I'M WORKIIIIIIIIIIIIIIING also");
-            
             int eid = Integer.parseInt(event_id);
             Event theEvent = ejb.getEventById(eid);
-            System.out.println("I'M WORKIIIIIIIIIIIIIIING also: " + theEvent.getEventName());
             peopleAlreadyParticipate = ejb.getParticipantsOfEvent(eid);
             this.eventName = theEvent.getEventName();
             this.eventDescription = theEvent.getEventDescription();
@@ -174,11 +170,8 @@ public class EventViewController implements Serializable {
     private List<User> getListOfSelectedUsers() {
         List<User> userList = new ArrayList<User>();
         List<String> selList = userLoginView.getSelectedPeople();
-        System.out.println("sellist null mudur???");
         if (selList != null) {
-            System.out.println("size of the sellist: " + selList.size());
             for (String s : selList) {
-                System.out.println("Selected: " + s);
                 int id = Integer.parseInt(s);
                 for (User user : userLoginView.getPeople()) {
                     if (id == user.getUserId()) {
@@ -231,7 +224,7 @@ public class EventViewController implements Serializable {
                     break;
                 }
             }
-            if (!flag || isPrivate) {
+            if (!flag && isPrivate) {
                 System.out.println("Error comes from or here: flag: " + flag + " isPrivate: " + isPrivate);
                 FacesMessage message = new FacesMessage("Sorry", "You are not authorized to view this event");
                 FacesContext.getCurrentInstance().addMessage(null, message);
@@ -242,5 +235,9 @@ public class EventViewController implements Serializable {
                 }
             }
         }
+    }
+    
+    public String viewUser(Integer user_id) {
+        return "home.xhtml?id=" + user_id + "&faces-redirect=true";
     }
 }
