@@ -10,7 +10,7 @@ import com.se2.wecalevent.remote.sessionBeanRemote;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
-import java.util.List;
+import java.util.List; 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import org.primefaces.context.RequestContext;
