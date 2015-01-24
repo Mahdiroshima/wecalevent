@@ -184,6 +184,28 @@ public class EventViewController implements Serializable {
         return userList;
     }
 
+    public String delateEvent() {
+        User user = ejb.getUserById(ejb.getUser().getUserId());
+        List<Event> events = user.getEventList2();
+        boolean flag = false;
+        int eid = Integer.parseInt(event_id);
+        for (Event theEvent : events) {
+            if (theEvent.getEventId().equals(eid)) {
+                ejb.removeEntity(eid, Event.class);
+                flag = true;
+                break;
+            }
+        }
+        if (!   flag) {
+            FacesMessage message = new FacesMessage("Sorry", "You are not authorized to delate this event");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        } else {
+            FacesMessage message = new FacesMessage("Your event had been delated");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
+        return "viewEvent.xhtml?&faces-redirect=true";
+    }
+
     public String updateEvent() {
         User user = ejb.getUserById(ejb.getUser().getUserId());
         List<Event> events = user.getEventList2();
