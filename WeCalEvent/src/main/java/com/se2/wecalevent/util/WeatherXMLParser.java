@@ -40,6 +40,9 @@ public class WeatherXMLParser {
     }
 
     public static String getForecastFromDailyXML(Document document, Date date) {
+        if (document == null) {
+            return "unknown";
+        }
         NodeList nList = document.getDocumentElement().getElementsByTagName("time");
         int temp = 0;
         String ch = "";
@@ -89,7 +92,6 @@ public class WeatherXMLParser {
                 int comp1 = todate.compareTo(date);
                 if (comp<=0 && comp1>0 ) {
                     Element eElement = (Element) nNode;
-                    System.out.println("test");
                     String s = eElement.getElementsByTagName("symbol").item(0).getAttributes().getNamedItem("name").getNodeValue();
                     if (s.contains("cloud")) {
                         ch = "cloudy";

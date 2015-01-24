@@ -8,6 +8,7 @@ package com.se2.wecalevent.controllers;
 import com.se2.wecalevent.entities.Event;
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.remote.sessionBeanRemote;
+import com.se2.wecalevent.util.DateException;
 import com.se2.wecalevent.util.WeatherAPI;
 import java.io.IOException;
 import java.io.Serializable;
@@ -18,8 +19,8 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
@@ -65,8 +66,10 @@ public class EventCreationView implements Serializable {
     }
 
     public void setEvent_id(String event_id) {
-        this.event_id = event_id;
-        init();
+        if (this.event_id == null || !this.event_id.equals(event_id)) {
+            this.event_id = event_id;
+            init();
+        }
     }
 
     public void setUserLoginView(UserLoginView userLoginView) {
@@ -191,6 +194,7 @@ public class EventCreationView implements Serializable {
             }
             userLoginView.setPeople(people);
             userLoginView.setSelectedPeople(new ArrayList<String>());
+            System.out.println("I've reset the selected list");
             for (Event event : events) {
                 if (event.getEventId() == eid) {
                     this.eventName = event.getEventName();
@@ -218,35 +222,47 @@ public class EventCreationView implements Serializable {
     }
 
     public String submit() {
-        boolean status = ejb.createEvent(eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate, getListOfSelectedUsers());
-        FacesMessage message = null;
-        if (status) {
-            userLoginView.setPeople(null);
-            message = new FacesMessage("Hurry !!", "Your event have been created");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            return "home.xhtml?faces-redirect=true";
-        } else {
-            message = new FacesMessage("Sorry", "You event cannot be created :( ");
+        try {
+            boolean status = ejb.createEvent(eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate, getListOfSelectedUsers());
+            FacesMessage message = null;
+            if (status) {
+                userLoginView.setPeople(null);
+                message = new FacesMessage("Hurry !!", "Your event have been created");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                return "home.xhtml?faces-redirect=true";
+            } else {
+                message = new FacesMessage("Sorry", "You event cannot be created :( ");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                return "eventcreation.xhtml";
+            }
+        } catch (DateException ex) {
+            FacesMessage message = new FacesMessage("Sorry", ex.getMessage());
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "eventcreation.xhtml";
         }
     }
 
     public String update() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        context.getExternalContext().getFlash().setKeepMessages(true);
         int eid = Integer.parseInt(event_id);
-        boolean status = ejb.updateEvent(eid, eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate, getListOfSelectedUsers());
-        FacesMessage message = null;
-        if (status) {
-            userLoginView.setPeople(null);
-            message = new FacesMessage("Your event have been updated ");
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.getExternalContext().getFlash().setKeepMessages(true);
+            boolean status = ejb.updateEvent(eid, eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate, getListOfSelectedUsers());
+            FacesMessage message = null;
+            if (status) {
+                userLoginView.setPeople(null);
+                message = new FacesMessage("Your event have been updated ");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                return "home.xhtml?faces-redirect=true";
+            } else {
+                message = new FacesMessage("Sorry, Your event is not updated :( ");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                return "updateEvent.xhtml?id=" + eid;
+            }
+        } catch (DateException ex) {
+            FacesMessage message = new FacesMessage("Sorry", ex.getMessage());
             FacesContext.getCurrentInstance().addMessage(null, message);
-            return "home.xhtml?faces-redirect=true";
-        } else {
-            message = new FacesMessage("Sorry, Your event is not updated :( ");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            return "eventcreation.xhtml";
+            return "updateEvent.xhtml?id=" + eid;
         }
     }
 
@@ -274,11 +290,8 @@ public class EventCreationView implements Serializable {
     private List<User> getListOfSelectedUsers() {
         List<User> userList = new ArrayList<User>();
         List<String> selList = userLoginView.getSelectedPeople();
-        System.out.println("sellist null mudur???");
         if (selList != null) {
-            System.out.println("size of the sellist: " + selList.size());
             for (String s : selList) {
-                System.out.println("Selected: " + s);
                 int id = Integer.parseInt(s);
                 for (User user : userLoginView.getPeople()) {
                     if (id == user.getUserId()) {

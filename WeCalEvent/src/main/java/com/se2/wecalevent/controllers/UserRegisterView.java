@@ -140,7 +140,7 @@ public class UserRegisterView {
 
     @PostConstruct
     public void init() {
-        User user = ejb.getUser();
+        User user = ejb.getUser(); 
         if (user != null && userLoginView.isLoggedIn() == true) {
             this.email = user.getEmail();
             this.name = user.getName();

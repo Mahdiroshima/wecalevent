@@ -10,6 +10,7 @@ import com.se2.wecalevent.entities.Notification;
 import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.entities.Weather;
 import com.se2.wecalevent.remote.sessionBeanRemote;
+import com.se2.wecalevent.util.DateException;
 import com.se2.wecalevent.util.HelperMethods;
 import com.se2.wecalevent.util.WeatherAPI;
 import com.se2.wecalevent.viewModels.NotificationViewModel;
@@ -111,9 +112,12 @@ public class sessionBean implements sessionBeanRemote {
      */
     @Override
     public boolean createEvent(String eventName, String eventDescription, String eventType, String desiredWeather,
-            String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedList) {
+            String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedList) throws DateException {
+        if (startingDate.before(new Date())) {
+            throw new DateException("Your starting date cannot be in the past");
+        }
         if (startingDate.after(endingDate)) {
-            return false;
+            throw new DateException("Your starting date is after the ending date");
         }
         //Creates an predefined SQL Query, which checks if there is an event which will occur in the given interval
         Query query = entityManager.createNamedQuery("Event.findOverlap");
@@ -125,7 +129,7 @@ public class sessionBean implements sessionBeanRemote {
             samedate = query.getResultList();
             //There is an event in the given interval, return false
             if (samedate.size() > 0) {
-                return false;
+                throw new DateException("There is another event between those days");
             }
         } catch (NoResultException e) {
 
@@ -155,6 +159,7 @@ public class sessionBean implements sessionBeanRemote {
         entityManager.flush();
         inviteUsers(NewEvent, invitedList);
         entityManager.merge(NewEvent);
+        entityManager.flush();
         return true;
     }
 
@@ -165,14 +170,16 @@ public class sessionBean implements sessionBeanRemote {
      * @return
      */
     @Override
-    public List<Event> getEventsOfUser(int user_id) {
+    public List<Event> getEventsOfUser(int user_id) { 
         if (user == null) {
-            return null;
+            return null; 
         }
+        entityManager.flush();
         User theUser = entityManager.find(User.class, user_id);
+        entityManager.refresh(theUser);
         entityManager.merge(user);
-        user.getEventList2().size();
-        return user.getEventList2();
+        theUser.getEventList().size();
+        return theUser.getEventList();
     }
 
     @Override
@@ -220,7 +227,10 @@ public class sessionBean implements sessionBeanRemote {
      * @return
      */
     @Override
-    public boolean updateEvent(Integer eventId, String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedUsers) {
+    public boolean updateEvent(Integer eventId, String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedUsers) throws DateException {
+        if (startingDate.after(endingDate)) {
+            throw new DateException("Your starting date is after the ending date");
+        }
         Event event = entityManager.find(Event.class, eventId);
         //Creates an predefined SQL Query, which checks if there is an event which will occur in the given interval
         Query query = entityManager.createNamedQuery("Event.findOverlap");
@@ -234,7 +244,7 @@ public class sessionBean implements sessionBeanRemote {
             if (samedate.size() == 1 && samedate.get(0).getEventId().equals(eventId)) {
                 //no problem
             } else if (samedate.size() > 0) {
-                return false;
+                throw new DateException("There is another event between those days");
             }
         } catch (NoResultException e) {
 
@@ -252,6 +262,7 @@ public class sessionBean implements sessionBeanRemote {
 
         entityManager.merge(event);
         entityManager.flush();
+        System.out.println("Bu kadar user invite ettin: " +  invitedUsers.size());
         inviteUsers(event, invitedUsers);
         return true;
 
