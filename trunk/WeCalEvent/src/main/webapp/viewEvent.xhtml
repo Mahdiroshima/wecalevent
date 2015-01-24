@@ -35,8 +35,14 @@
                         <f:facet name="header">
                             <h:outputText style="float:left" value="Event Details"></h:outputText>
 
-                            <p:commandButton ajax="false" icon="ui-icon-pencil" style="float: right; width: 25px; height: 25px" action="#{eventViewController.updateEvent()}"></p:commandButton>
-                            <p:commandButton ajax="false" icon="ui-icon-trash" style="float: right; width: 25px; height: 25px" action="#{eventViewController.delateEvent()}"></p:commandButton>
+                            <p:commandButton icon="ui-icon-pencil" style="float: right; width: 25px; height: 25px" action="#{eventViewController.updateEvent()}"></p:commandButton>
+                            <p:commandButton icon="ui-icon-trash" style="float: right; width: 25px; height: 25px" actionListener="#{eventViewController.deleteEvent()}">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode" >
+                                <p:commandButton styleClass="ui-confirmdialog-yes" type="button" value="Yes" icon="ui-icon-check"/>
+                                <p:commandButton styleClass="ui-confirmdialog-no" type="button" value="No" icon="ui-icon-close" />
+                            </p:confirmDialog>
                         </f:facet>
 
                         <p:outputPanel style="">

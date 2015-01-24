@@ -225,6 +225,9 @@ public class sessionBean implements sessionBeanRemote {
      */
     @Override
     public boolean updateEvent(Integer eventId, String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedUsers) throws DateException {
+        if (startingDate.before(new Date())) {
+            throw new DateException("Your starting date cannot be in the past");
+        }
         if (startingDate.after(endingDate)) {
             throw new DateException("Your starting date is after the ending date");
         }
@@ -259,7 +262,6 @@ public class sessionBean implements sessionBeanRemote {
 
         entityManager.merge(event);
         entityManager.flush();
-        System.out.println("Bu kadar user invite ettin: " +  invitedUsers.size());
         inviteUsers(event, invitedUsers);
         return true;
 
@@ -394,6 +396,7 @@ public class sessionBean implements sessionBeanRemote {
         if (objectId != null && t != null) {
             Object object = entityManager.find(t, objectId);
             entityManager.remove(object);
+            entityManager.flush();
             return true;
         }
         return false;
