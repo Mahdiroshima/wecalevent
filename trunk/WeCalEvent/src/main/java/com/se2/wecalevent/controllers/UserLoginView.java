@@ -106,9 +106,6 @@ public class UserLoginView {
         password = null;
         loggedIn = theUser != null;
         if (loggedIn) {
-            message = new FacesMessage("Hello", theUser.getName());
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            
             return "home.xhtml?faces-redirect=true";
         }
         else {
