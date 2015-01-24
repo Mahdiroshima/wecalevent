@@ -58,7 +58,7 @@
                                 <!-- Password-->
                                 <label class="control-label" for="password">Password</label>
                                 <div class="controls">
-                                    <p:password placeholder="Password" required="true" requiredMessage="Password must be specified" id="pwd1" match="pwd2" value="#{userRegisterView.password}" class="input-xlarge"/>
+                                    <p:password placeholder="Password" required="true" label="Password" requiredMessage="Password must be specified" id="pwd1" match="pwd2" value="#{userRegisterView.password}" class="input-xlarge"/>
                                     <p class="help-block">Password should be at least 4 characters</p>
                                 </div>
                             </div>
@@ -67,7 +67,7 @@
                                 <!-- Password -->
                                 <label class="control-label"  for="password_confirm">Password (Confirm)</label>
                                 <div class="controls">
-                                    <p:password required="true" placeholder="Password again" requiredMessage="Password must be specified"  id="pwd2" value="#{userRegisterView.passwordAgain}" class="input-xlarge"/>
+                                    <p:password required="true" label="Password (Confirm)" placeholder="Password again" requiredMessage="Password must be specified"  id="pwd2" value="#{userRegisterView.passwordAgain}" class="input-xlarge"/>
                                     <p class="help-block">Please confirm password</p>
                                 </div>
                             </div>
