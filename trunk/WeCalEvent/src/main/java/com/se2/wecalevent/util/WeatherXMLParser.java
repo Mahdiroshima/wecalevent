@@ -36,7 +36,13 @@ public class WeatherXMLParser {
             return true;
         }
     }
-
+/**
+ * This method to get forecast from daily XML file
+ * 
+ * @param document
+ * @param date
+ * @return 
+ */
     public static String getForecastFromDailyXML(Document document, Date date) {
         if (document == null) {
             return "unknown";
@@ -72,7 +78,12 @@ public class WeatherXMLParser {
 
         return ch;
     }
-
+/**
+ *  * This method to get forecast from 3hours XML file
+ * @param document
+ * @param date
+ * @return 
+ */
     public static String getForecastFrom3hourlyXML(Document document, Date date) {
         if (document == null) return "unknown";
         NodeList nList = document.getDocumentElement().getElementsByTagName("time");
