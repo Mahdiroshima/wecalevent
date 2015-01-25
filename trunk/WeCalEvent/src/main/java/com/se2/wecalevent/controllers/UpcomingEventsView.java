@@ -81,7 +81,10 @@ public class UpcomingEventsView {
     public Event getNewParticipantEvent() {
         return newParticipantEvent;
     }
-
+    /**
+     * if new event is added add it to the calendar
+     * @param newParticipantEvent 
+     */
     public void setNewParticipantEvent(Event newParticipantEvent) {
         this.newParticipantEvent = newParticipantEvent;
         //if new event should be added and if I am viewing the calendar of myself
@@ -98,11 +101,14 @@ public class UpcomingEventsView {
      */
     public UpcomingEventsView() {
     }
-
+    /**
+     * initializes the list of events for the calendar
+     */
     @PostConstruct
     public void updateEventList() {
         boolean viewSomeOneElse = false;
         if (ejb != null) {
+            //view your events
             if (user_id == null) {
                 viewUser = ejb.getUser();
                 if (viewUser != null) {
@@ -110,8 +116,8 @@ public class UpcomingEventsView {
                 } else {
                     return;
                 }
-            } else {
-                //TODO HANDLE PARSE EXCEPTION HERE
+            } else { //view someoneelse's calendar
+                //TODO PARSE EXCEPTION MAY OCCUR HERE
                 int id = Integer.parseInt(user_id);
                 viewUser = ejb.getUserById(id);
                 events = ejb.getEventsOfUser(id);
@@ -149,7 +155,11 @@ public class UpcomingEventsView {
             RequestContext.getCurrentInstance().update(":schedule");
         }
     }
-    
+    /**
+     * handles the click event on the calendar view
+     * and redirect to related page after click
+     * @param selectEvent 
+     */
     public void onEventSelect(SelectEvent selectEvent) {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
@@ -162,6 +172,7 @@ public class UpcomingEventsView {
         } else {
             try {
                 Date now = new Date();
+                //if the event is in the past, show a message
                 if (selectedEvent.getStartingDate().compareTo(now) < 0) {
                     message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Internal error", "Event has passed");
                     FacesContext.getCurrentInstance().addMessage(null, message);

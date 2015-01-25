@@ -104,40 +104,48 @@ public class UserRegisterView {
     public void setCalendarVisibility(String calendarVisibility) {
         this.calendarVisibility = calendarVisibility;
     }
-
+    /**
+     * Action method to register a user
+     * @return 
+     */
     public String register() {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
         boolean status = ejb.register(email, password, calendarVisibility, name, surname);
         FacesMessage message = null;
-        if (status) {
+        if (status) { // if registration is succesful show a message
             message = new FacesMessage("Bravo", "You are now registered");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "index.xhtml?faces-redirect=true";
-        } else {
+        } else { // if not show errors and request correction
             message = new FacesMessage("Sorry", "This e-mail has been taken by another user");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "register.xhtml?faces-redirect=true";
         }
     }
-
+    /**
+     * Action method for updating profile
+     * @return 
+     */
     public String updateprofile() {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
         int uid = Integer.parseInt(userID);
         boolean status = ejb.updateUser(uid, email, password, calendarVisibility, name, surname);
         FacesMessage message = null;
-        if (status) {
+        if (status) { // if the opreation is succesful, redirect to home 
             message = new FacesMessage("Your profile is updated");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "home.xhtml?faces-redirect=true";
-        } else {
+        } else { //if not request correction 
             message = new FacesMessage("Sorry", "this email is already taken");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "updateProfile.xhtml?id=" + uid + "&faces-redirect=true";
         }
     }
-
+    /**
+     * It initializes the content of the field at update profile page
+     */
     @PostConstruct
     public void init() {
         User user = ejb.getUser(); 

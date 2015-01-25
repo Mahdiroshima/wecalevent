@@ -94,10 +94,16 @@ public class UserLoginView {
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
     }
+    //initializes allPeople first
     @PostConstruct
     public void init() {
         allPeople = ejb.getAllUsers();
     }
+    
+    /**
+     * action method for login operation
+     * @return 
+     */
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
@@ -105,17 +111,22 @@ public class UserLoginView {
         theUser = ejb.loginUser(email, password);
         password = null;
         loggedIn = theUser != null;
+        //redirect to home page if the creditiantials are correct
         if (loggedIn) {
             return "home.xhtml?faces-redirect=true";
         }
-        else {
+        else { //show a message if login fails
             message = new FacesMessage("Ciao","I'm sorry, can't let you in :(");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "index.xhtml?faces-redirect=true";
         }
         
     }
-    
+    /**
+     * Action method for logout operation
+     * it destroys the current session
+     * @return 
+     */
     public String logout() {
         FacesMessage message = new FacesMessage("Byebye", theUser.getName());
         FacesContext.getCurrentInstance().addMessage(null, message);
@@ -128,7 +139,12 @@ public class UserLoginView {
     public void invalidate() {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
     }
-    
+    /**
+     * this is generic page access control to page for unauthorized views
+     * @param status
+     * @param link
+     * @throws IOException 
+     */
     public void controlLogin(boolean status, String link) throws IOException {
         //if a page is only for not logged in users send false and the redirected link
         //if a page is only for logged in users send true and the redirected link
@@ -138,11 +154,18 @@ public class UserLoginView {
         if (!status && loggedIn)
             context.redirect(link);
     }
-    
+    /**
+     * Action method for profile editting it redirects to update profile page
+     * @return 
+     */
     public String editProfile() {
         return "updateProfile.xhtml?id="+ theUser.getUserId() + "&faces-redirect=true";
     }
-    
+    /**
+     * It returns list of names for auto complate field
+     * @param query
+     * @return 
+     */
     public List<String> completeText(String query) {
         List<String> results = new ArrayList<String>();
         acDict = new Properties();
@@ -157,7 +180,11 @@ public class UserLoginView {
 
         return results;
     }
-    
+    /**
+     * On item select of autocomplete view
+     * it redirects to the calendar of requested user
+     * @param event 
+     */
     public void onItemSelect(SelectEvent event) {
         String key = event.getObject().toString();
         if (key != null) {

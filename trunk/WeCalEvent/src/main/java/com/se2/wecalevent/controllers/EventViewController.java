@@ -16,13 +16,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -150,11 +148,15 @@ public class EventViewController implements Serializable {
     public void setEndingDate(Date endingDate) {
         this.endingDate = endingDate;
     }
-
+    /**
+     * this method is called just after a page load to initialize the view page of event
+     */
     public void init() {
         if (event_id != null && ejb != null && ejb.getUser() != null) {
             int eid = Integer.parseInt(event_id);
+            //get the event from ejb
             Event theEvent = ejb.getEventById(eid);
+            //set fields
             peopleAlreadyParticipate = ejb.getParticipantsOfEvent(eid);
             this.eventName = theEvent.getEventName();
             this.eventDescription = theEvent.getEventDescription();
@@ -167,29 +169,16 @@ public class EventViewController implements Serializable {
             this.selectedWeather = theEvent.getDesiredWeather().split("-");
         }
     }
-
-    private List<User> getListOfSelectedUsers() {
-        List<User> userList = new ArrayList<User>();
-        List<String> selList = userLoginView.getSelectedPeople();
-        if (selList != null) {
-            for (String s : selList) {
-                int id = Integer.parseInt(s);
-                for (User user : userLoginView.getPeople()) {
-                    if (id == user.getUserId()) {
-                        userList.add(user);
-                        break;
-                    }
-                }
-            }
-        }
-        return userList;
-    }
-
+    
+    /**
+     * This action deletes the event and all related notifications 
+     */
     public void deleteEvent() {
         User user = ejb.getUserById(ejb.getUser().getUserId());
         List<Event> events = user.getEventList2();
         boolean flag = false;
         int eid = Integer.parseInt(event_id);
+        //to check whether I can delete the event or not
         for (Event theEvent : events) {
             if (theEvent.getEventId().equals(eid)) {
                 flag = true;
@@ -197,13 +186,13 @@ public class EventViewController implements Serializable {
             }
         }
         try {
-            if (!flag) {
+            if (!flag) { //If I cannot delete the event
                 FacesMessage message = new FacesMessage("Sorry", "You are not authorized to delate this event");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 FacesContext.getCurrentInstance().getExternalContext().redirect("viewEvent.xhtml?id=" + eid);
-            } else {
+            } else { //I can delete and delete it 
                 ejb.removeEntity(eid, Event.class);
-                FacesMessage message = new FacesMessage("Your event had been delated");
+                FacesMessage message = new FacesMessage("Your event have been delated");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
             }
@@ -211,12 +200,17 @@ public class EventViewController implements Serializable {
             Logger.getLogger(EventViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    /**
+     * Action method for updating event
+     * @return 
+     */
     public String updateEvent() {
         User user = ejb.getUserById(ejb.getUser().getUserId());
+        //get events that I've created
         List<Event> events = user.getEventList2();
         boolean flag = false;
         int eid = Integer.parseInt(event_id);
+        //check that the event is inside those events
         for (Event theEvent : events) {
             if (theEvent.getEventId().equals(eid)) {
                 flag = true;
@@ -231,26 +225,34 @@ public class EventViewController implements Serializable {
             return "viewEvent.xhtml?id=" + eid + "&faces-redirect=true";
         }
     }
-
+    /**
+     * To check whether the event can be viewable by the user this method is
+     * called directly from the page
+     *
+     * @throws IOException
+     */
     public void check() {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
-        if (event_id == null) {
+        if (event_id == null) { //if the event is not specified redirect to home
             try {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
             } catch (IOException ex) {
                 Logger.getLogger(EventViewController.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
+            //managed user
             User user = ejb.getUserById(ejb.getUser().getUserId());
             boolean flag = false;
             boolean isPrivate = this.visibility.contains("private");
+            //check the user participates or not
             for (User oneuser : peopleAlreadyParticipate) {
                 if (oneuser.getUserId().equals(user.getUserId())) {
                     flag = true;
                     break;
                 }
             }
+            //if the user cannot see it 
             if (!flag && isPrivate) {
                 FacesMessage message = new FacesMessage("Sorry", "You are not authorized to view this event");
                 FacesContext.getCurrentInstance().addMessage(null, message);
@@ -260,9 +262,14 @@ public class EventViewController implements Serializable {
                     Logger.getLogger(EventViewController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            //else do nothing
         }
     }
-
+    /**
+     * Action method to see a users calendar
+     * @param user_id
+     * @return 
+     */
     public String viewUser(Integer user_id) {
         return "home.xhtml?id=" + user_id + "&faces-redirect=true";
     }
