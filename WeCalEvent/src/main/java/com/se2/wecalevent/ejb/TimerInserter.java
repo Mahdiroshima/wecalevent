@@ -50,7 +50,11 @@ public class TimerInserter {
     private EntityManager entityManager;
 
     private final Logger log = Logger.getLogger(getClass().getName());
-
+/**
+ * This method to get the closest date with the desired weather for the event
+ * @param event
+ * @return Date
+ */
     private Date getClosestPossibleDate(Event event) {
         long duration = event.getEndingDate().getTime() - event.getStartingDate().getTime();
         String[] desiredList = event.getDesiredWeather().split("-");
