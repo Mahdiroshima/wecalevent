@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
+    <ui:define name="title"> Event Update </ui:define>
+    <ui:define name="head">
+        <style>
+            .selectRadio label {
+                margin-right: 30px;
+            }
+            .ui-panelgrid td, .ui-panelgrid tr
+            {
+                border-style: none !important
+            }
+            .boldFont {
+                font-weight: bold;
+            }
+        </style>
+        <f:metadata>
+            <f:viewParam name="id" value="#{eventViewController.event_id}" />
+            <f:event type="preRenderView" listener="#{userLoginView.controlLogin(true, 'index.xhtml')}"/>
+            <f:event type="preRenderView" listener="#{eventViewController.init()}"/>
+            <f:event type="preRenderView" listener="#{eventViewController.check()}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitle">
+        View event
+    </ui:define>
+    <ui:define name="content">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h:form id="eventDetails" prependId="false">
+                    <p:panel style="width: 60%; min-width: 200px; float:left">
+                        <f:facet name="header">
+                            <h:outputText style="float:left" value="Event Details"></h:outputText>
+
+                            <p:commandButton icon="ui-icon-pencil" style="float: right; width: 25px; height: 25px" action="#{eventViewController.updateEvent()}"></p:commandButton>
+                            <p:commandButton icon="ui-icon-trash" style="float: right; width: 25px; height: 25px" actionListener="#{eventViewController.deleteEvent()}">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode" >
+                                <p:commandButton styleClass="ui-confirmdialog-yes" type="button" value="Yes" icon="ui-icon-check"/>
+                                <p:commandButton styleClass="ui-confirmdialog-no" type="button" value="No" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </f:facet>
+
+                        <p:outputPanel style="">
+                            <p:panelGrid columns="2">
+                                <h:outputText styleClass="boldFont" value="Name:" />
+                                <h:outputText value="#{eventViewController.eventName}" />
+
+                                <h:outputText styleClass="boldFont" value="Description" />
+                                <h:outputText value="#{eventViewController.eventDescription   }" />
+
+                                <h:outputText styleClass="boldFont" value="Location" />
+                                <h:outputText value="#{eventViewController.locationCity}" />
+
+                                <h:outputText styleClass="boldFont" value="Visiblity" />
+                                <h:outputText value="#{eventViewController.visibility}" />
+
+                                <h:outputText styleClass="boldFont" value="Type" />
+                                <h:outputText value="#{eventViewController.eventType}" />
+
+                                <h:outputText styleClass="boldFont" value="Desired weather" />
+                                <h:outputText value="#{eventViewController.desiredWeather}" />
+
+                                <h:outputText styleClass="boldFont" value="Starting date" />
+                                <h:outputText value="#{eventViewController.startingDate}">
+                                    <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
+
+                                <h:outputText styleClass="boldFont" value="Ending date" />
+                                <h:outputText value="#{eventViewController.endingDate}" >
+                                    <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
+                            </p:panelGrid> 
+                        </p:outputPanel>
+                    </p:panel>
+                    <p:panel header="Participants" style="width: 40%; min-width: 200px; float: right; min-height: 303px">
+                        <p:dataList itemType="none" value="#{eventViewController.peopleAlreadyParticipate}" var="user">
+                            <p:commandButton ajax="false" style="float:left; width: 15px; height: 15px; margin-top: 5px; margin-right: 5px" icon="ui-icon-calendar" action="#{eventViewController.viewUser(user.userId)}"></p:commandButton>
+                            <h:outputText value="#{user.name} #{user.surname}"></h:outputText>
+                        </p:dataList>
+                    </p:panel>
+                </h:form>        
+            </div>
+        </div>
+    </ui:define>>
+</ui:composition>

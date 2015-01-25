@@ -1,0 +1,111 @@
+\documentclass[12pt,openany]{book}
+
+\usepackage{amsmath,amsthm}
+\usepackage[T2A]{fontenc}
+\usepackage[cp1251]{inputenc}
+%\usepackage[russian]{babel}
+\usepackage{amsfonts}
+\usepackage{latexsym}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage[colorlinks=true, pdfpagemode=none, pdfstartview=FitH, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
+\usepackage[usenames]{color}
+\newcommand{\glossaryentry}[2]{\par #1}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage{geometry} \geometry{verbose,a4paper,tmargin=2cm,bmargin=2cm,lmargin=3cm,rmargin=1.5cm}
+%\makeglossary
+\usepackage{setspace}
+\newcounter{pr}[section]
+
+\newcounter{test}
+\newcommand{\z}{\par\addtocounter{test}{1}%
+\text   {\arabic{test}.} }
+
+
+\newenvironment{probl}{\trivlist\refstepcounter{pr}\item[\hspace{\labelsep}%
+\hspace{\parindent}\thepr]}{\endtrivlist}% \bf влияет только на нумерацию при постановке задач
+\tolerance 500
+\setcounter{section}{0}
+\renewcommand{\thesection}{\arabic{section}}
+\setcounter{secnumdepth}{3}\setcounter{tocdepth}{3}
+\textwidth180mm%115mm%180%120%
+\textheight260mm%178mm%190mm%270%165%
+\oddsidemargin -1.1cm\evensidemargin -1.1cm \topmargin -23mm\footskip 20pt \pagestyle{myheadings} \markboth{} {}
+\begin{document}
+\begin{titlepage} % начало титульной страницы
+\begin{figure}[tbh]
+  \begin{center}
+    \includegraphics[width=50mm]{logo}
+  \end{center}
+\end{figure}
+\begin{center} % включить выравнивание по центру
+\Huge WeCalEvent \\
+
+
+\Huge\textbf { Installation Manual Document\\[0.5cm]
+}
+\Large Software Engineering 2
+\begin{flushleft}\large
+\makebox[55.5em]{Authors:  }\\
+\makebox[60.5em]{Mert Ergun}\\
+\makebox[65.5em]{Mohamed Mehdi Kaabi}\\
+\makebox[62.5em]{Nazrin Javadova}
+
+\end{flushleft}
+\vfill % заполнить всё доступное ниже пространство
+
+\large Milano -- 2014 \\ % вывести логотип LaTeX
+{\large \LaTeX}
+\end{center} % закончить выравнивание по центру
+
+\thispagestyle{empty} % не нумеровать страницу
+\end{titlepage} % конец титульной страницы
+\setcounter{section}{0}
+\renewcommand{\thesection}{\arabic{section}}
+\setcounter{secnumdepth}{3}\setcounter{tocdepth}{3}
+%\begin{document}
+%\input macros.tex
+\pagestyle{plain}
+	
+\newpage
+\tableofcontents
+	
+\newpage
+\section{Introduction}
+\par \qquad It is necessary for the WeCalEvent execution to install GlassFish server, MySQL Database to save data and JDK. 
+\section{Perquisites}
+\par\qquad\textbf{Install JDK 8:}\\
+You can download JDK8 from this link : \\
+\href{http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html}{http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html}
+\par Please, choose the correct version by referring to your operation system (OS, Linux or Windows) and your system (32 bits or 64 bits).
+\par\textbf{Install GlassFish 4.1:}
+\par After a successful installation of JDK, download GlassFish from here: \\
+\href{https://glassfish.java.net/download.html}{https://glassfish.java.net/download.html} and unzip it in a folder.
+\par\textbf{Install MySQL:}\\
+\qquad We need to install Database Server that will be used by our application. Please choose the right version related to your system.\\
+\par\textbf{Install MySQL workbench:}\\
+\qquad Finally, we need to install MySQL workbench: \href{http://www.mysql.com/products/workbench/}{http://www.mysql.com/products/workbench/} to run the data base structure needed for our application. The file will be provide in the ZIP file with our application code source.
+\section{Database 	configuration}
+ -	Open MySQL workbench\\
+ -	File $->$ Open SQL Script $->$ Select the SQL file given with source code $->$ Execute\\
+ -	Make sure Username is root and Password is empty.
+\newpage
+\section{Application deployment}
+\qquad For deploying the application fellow the command in the picture below:
+\begin{figure}[tbh]
+  \begin{center}
+    \includegraphics[width=150mm]{asadmin}
+  \end{center}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

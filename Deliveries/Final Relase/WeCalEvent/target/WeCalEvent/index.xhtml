@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
+    <ui:define name="title"> Main Page </ui:define>
+    <ui:define name="head">
+
+    </ui:define>
+    <ui:define name="pageTitle">
+        Welcome to WeCalEvent - Please login to see content
+    </ui:define>
+    <ui:define name="content">
+        #{userLoginView.controlLogin(false,"home.xhtml")}
+        
+        <div class="row" style="margin-top: 100px">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Please sign in</h2>
+                    </div>
+                    <div class="panel-body">
+                        <h:form role="form">
+                            <fieldset>
+                                <div class="form-group">
+                                    <p:inputText class="form-control" placeholder="E-mail" value="#{userLoginView.email}" type="text"/>
+                                </div>
+                                <div class="form-group">
+                                    <p:inputText class="form-control" placeholder="Password" type="password" value="#{userLoginView.password}"/>
+                                </div>
+                                <p:commandButton update=":growlLogin" class="btn btn-lg btn-info btn-block" ajax="false" value="Login" action="#{userLoginView.login()}"/>
+                            </fieldset>
+                        </h:form>
+                        <br/>
+                        <a href="register.xhtml" class="btn btn-success btn-lg btn-block" style="height: 40px"><span class="glyphicon glyphicon-briefcase"></span> Register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+

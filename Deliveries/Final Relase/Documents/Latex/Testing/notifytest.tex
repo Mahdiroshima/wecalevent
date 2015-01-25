@@ -1,0 +1,103 @@
+\newpage
+\subsection{Notify users}
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & Notify participant each 12 hours about the weather forecast\\
+  \hline
+  Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event must be created.
+              \item The user must be participant of this event.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item Weather forecast changed.
+              \item System sends a notification to all participants' home pages.
+              \item System sends e-mails to each participant to concerned event.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result &  E-mail and notification sent out.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular} \end{center}
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & Notify the participant users one day before \\
+  &the event starting date if the forecast change\\
+  \hline
+  Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event must be created.
+              \item The user must be participant of this event.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item Weather forecast changed.
+              \item System sends a notification to all participants' home pages.
+              \item System sends e-mails to each participant to concerned event.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result &  E-mail and notification sent out.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular} \end{center}
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & Notify event creator three days before event \\
+  & starting date if the forecast change\\
+  \hline
+  Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event must be created.
+              \item The user must be a creator of this event.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item Weather forecast changed.
+              \item System sends a notification to the creator and \\suggest him the closet date with the desired weather.
+              \item System sends e-mails to to the creator and suggest\\ him the closet date with the desired weather.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result &  E-mail and notification sent out.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular} \end{center}

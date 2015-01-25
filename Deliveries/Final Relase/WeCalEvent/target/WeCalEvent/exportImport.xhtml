@@ -1,0 +1,178 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
+    <ui:define name="title"> Event Update </ui:define>
+    <ui:define name="head">
+        <style>
+            .selectRadio label {
+                margin-right: 30px;
+            }
+        </style>
+        <f:metadata>
+            <f:viewParam name="id" value="#{eventCreationView.event_id}" />
+            <f:event type="preRenderView" listener="#{exportImportController.init()}"/>
+        </f:metadata>
+    </ui:define>
+    <ui:define name="pageTitle">
+        Export or Import your events
+    </ui:define>
+    <ui:define name="content">
+        #{userLoginView.controlLogin(true, "index.xhtml")}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <p:panel header="Export Your Events">
+                    <h:form>
+                        <p:dataTable id="tbl" value="#{exportImportController.myEvents}" var="event">
+                            <f:facet name="header">
+                                My Events
+                            </f:facet>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.eventName}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Description"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.eventDescription}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="City"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.locationCity}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Privacy"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.visibility}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Type"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.eventType}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Desired weather"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.desiredWeather}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Starting Date"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.startingDate}">
+                                    <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Ending Date"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.endingDate}">
+                                    <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+                        <p:outputPanel style="height: 50px">
+                            <p:outputPanel style="float: right; margin-top: 10px">    
+                                <h:commandLink id="excel" value="Export" class="btn btn-warning">
+                                    <p:dataExporter type="xls" target="tbl" fileName="events" />
+                                </h:commandLink>
+                            </p:outputPanel>
+                        </p:outputPanel>
+                    </h:form>
+                </p:panel>
+                <p:panel header="Import Your Events" style="height: 600px">
+                    <div class="alert alert-info"><p> Be sure that you follow the bellow format, only xls files are allowed</p></div>
+                    <h:form>
+                        <p:graphicImage name="img/tutor.PNG" style="margin-bottom: 20px"/>
+                        <p:fileUpload update=":growlLogin :importEventsForm" fileUploadListener="#{exportImportController.handleFileUpload}" mode="advanced"></p:fileUpload>
+                    </h:form>
+                    <h:form id="importEventsForm" prependId="false" style="height: 150px">
+                        <p:dataTable id="tbl2" value="#{exportImportController.importedEvents}" var="event">
+                            <f:facet name="header">
+                                New Events
+                            </f:facet>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.eventName}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Description"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.eventDescription}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="City"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.locationCity}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Privacy"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.visibility}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Type"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.eventType}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Desired Weather"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.desiredWeather}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Starting Date"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.startingDate}">
+                                    <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Ending Date"></h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{event.endingDate}">
+                                    <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Status"></h:outputText>
+                                </f:facet>
+                                <p:outputPanel rendered="#{exportImportController.result != null}">
+                                    <p:outputPanel rendered="#{exportImportController.checkStatus(event)}">
+                                        <span class="glyphicon glyphicon-ok"></span>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{!exportImportController.checkStatus(event)}">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </p:outputPanel>
+                                </p:outputPanel>
+                            </p:column>
+                        </p:dataTable>
+                        <p:outputPanel style="float: right; margin-top: 10px">    
+                            <p:commandButton disabled="#{exportImportController.alreadyImported}" value="Import" ajax="true" actionListener="#{exportImportController.importEvents()}" update=":importEventsForm"></p:commandButton>
+                        </p:outputPanel>
+                    </h:form>
+                </p:panel>
+            </div>
+        </div>
+    </ui:define>>
+</ui:composition>

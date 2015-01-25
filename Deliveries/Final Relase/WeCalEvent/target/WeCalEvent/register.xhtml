@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" template="layout/mainLayout.xhtml">
+    <ui:define name="title"> Register </ui:define>
+    <ui:define name="head">
+        <style>
+            .selectRadio label {
+                margin-right: 30px;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        #{userLoginView.controlLogin(false, "home.xhtml")}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h:form class="form-horizontal">
+                    <fieldset>
+                        <div id="legend">
+                            <legend class="">Register</legend>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"  for="email">E-mail</label>
+                            <div class="controls">
+                                <p:inputText required="true" requiredMessage="E-mail must be specified" type="text" value="#{userRegisterView.email}" placeholder="E-mail" class="input-xlarge"/>
+                                <p class="help-block">Your e-mail is also required for sending you notifications about the event </p>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label"  for="name">Name</label>
+                            <div class="controls">
+                                <p:inputText required="true" requiredMessage="Name must be specified" type="text" value="#{userRegisterView.name}" placeholder="Name" class="input-xlarge"/>
+                                <p class="help-block"></p>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <!-- Username -->
+                            <label class="control-label"  for="surname">Surname</label>
+                            <div class="controls">
+                                <p:inputText required="true" requiredMessage="Surname must be specified" type="text" value="#{userRegisterView.surname}" placeholder="Surname" class="input-xlarge"/>
+                                <p class="help-block"></p>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="calendar">Calendar Visibility</label>
+                            <div class="controls selectRadio">
+                                <p:selectOneRadio required="true" requiredMessage="Calendar visibility must be specified" id="calendar" value="#{userRegisterView.calendarVisibility}">
+                                    <f:selectItem itemLabel="Public" itemValue="public" />
+                                    <f:selectItem itemLabel="Private" itemValue="private" />
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                        <h:panelGrid columns="1" id="matchGrid" cellpadding="5">  
+                            <div class="control-group">
+                                <!-- Password-->
+                                <label class="control-label" for="password">Password</label>
+                                <div class="controls">
+                                    <p:password placeholder="Password" required="true" label="Password" requiredMessage="Password must be specified" id="pwd1" match="pwd2" value="#{userRegisterView.password}" class="input-xlarge"/>
+                                    <p class="help-block">Password should be at least 4 characters</p>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <!-- Password -->
+                                <label class="control-label"  for="password_confirm">Password (Confirm)</label>
+                                <div class="controls">
+                                    <p:password required="true" label="Password (Confirm)" placeholder="Password again" requiredMessage="Password must be specified"  id="pwd2" value="#{userRegisterView.passwordAgain}" class="input-xlarge"/>
+                                    <p class="help-block">Please confirm password</p>
+                                </div>
+                            </div>
+                        </h:panelGrid>
+
+                        <div class="control-group">
+                            <!-- Button -->
+                            <div class="controls">
+                                <p:commandButton ajax="false" value="Register" action="#{userRegisterView.register()}" class="btn btn-success"></p:commandButton>
+                            </div>
+                        </div>
+                    </fieldset>
+                </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+</ui:composition>

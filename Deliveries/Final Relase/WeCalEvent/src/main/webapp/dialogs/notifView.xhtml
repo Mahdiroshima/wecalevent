@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Notification - #{notificationView.selectedNotification.relatedTo.eventName}</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:outputLabel value="#{notificationView.selectedNotification.notification}"></p:outputLabel>
+            <p:fieldset legend="Details" toggleable="true" style="margin-top: 10px"> 
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Description:"></p:outputLabel>
+                    <h:outputText value="#{notificationView.selectedNotification.relatedTo.eventDescription}"></h:outputText>    
+                    <p:outputLabel value="Type:"></p:outputLabel>
+                    <h:outputText value="#{notificationView.selectedNotification.relatedTo.eventType}"></h:outputText>    
+                    <p:outputLabel value="Location:"></p:outputLabel>
+                    <h:outputText value="#{notificationView.selectedNotification.relatedTo.locationCity}"></h:outputText>
+                    <p:outputLabel value="Forecast:"></p:outputLabel>
+                    <h:outputText value="#{notificationView.selectedNotification.relatedTo.weatherId.weatherCondition}"></h:outputText>
+                    <p:outputLabel value="Between:"></p:outputLabel>
+                    <p:outputPanel>
+                        <h:outputText value="#{notificationView.selectedNotification.relatedTo.startingDate}">
+                            <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" /></h:outputText> -
+                        <h:outputText value="#{notificationView.selectedNotification.relatedTo.endingDate}">
+                            <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" /></h:outputText>
+                    </p:outputPanel>
+                </p:panelGrid>
+
+            </p:fieldset>
+            <p:outputPanel rendered="#{notificationView.selectedNotification.notifType == 0}" style="float: right; margin-top: 10px">    
+                <p:commandButton icon="ui-icon-circle-check" value="Accept" ajax="false" process="@this" actionListener="#{notificationView.acceptInvitation()}"></p:commandButton>
+                <p:commandButton icon="ui-icon-circle-close" value="Reject" ajax="false" process="@this" actionListener="#{notificationView.rejectInvitation()}"></p:commandButton>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{notificationView.selectedNotification.notifType != 0}" style="float: right; margin-top: 10px">    
+                <p:commandButton icon="ui-icon-circle-check" value="OK, delete" ajax="false" process="@this" actionListener="#{notificationView.deleteNotification()}"></p:commandButton>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

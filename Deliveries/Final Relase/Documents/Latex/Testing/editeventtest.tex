@@ -1,0 +1,395 @@
+\newpage
+\subsection {Update an event}
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & Updating event with all fields filled in right\\
+  \hline
+  Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The user must be logged in.
+              \item The event must be created.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event creator clicks on an event.
+              \item The system loads event view page with existing information.
+              \item The user clicks on "Update Event" button.
+              \item The event creator updates the event information.
+              \item The user clicks on "Update" button.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result & The event should be updated and its\\
+  & information in calendar should change.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular} \end{center}
+
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & Updating event with wrong location name \\
+  \hline
+  Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The user must be logged in.
+              \item The event must be created.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+             \item The event creator clicks on an event.
+              \item The system loads event view page with existing information.
+              \item The user clicks on "Update Event" button.
+              \item The event creator updates the event information.
+              \item The user clicks on "Update" button.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result & The event should not be created and a\\
+  & notification about wrong location name should appear. \\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular} \end{center}
+
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & Updating event with right location name \\
+  \hline
+  Actors Involved & System, User\\
+   \hline
+  Precondition & The user must be logged in\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+             \item The event creator clicks on an event.
+              \item The system loads event view page with existing information.
+              \item The user clicks on "Update Event" button.
+              \item The event creator updates the event information.
+              \item The user clicks on "Update" button.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result & The system checks for the location and a\\
+  & notification about right location name should appear. \\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular}\end{center}
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & The event ends before it starts\\
+  \hline
+  Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The user must be logged in.
+              \item The event must be created.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event creator clicks on an event.
+              \item The system loads event view page with existing information.
+              \item The user clicks on "Update Event" button.
+              \item The event creator updates the event information.
+              \item The user clicks on "Update" button.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result & The event should not be updated.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular}\end{center}
+
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & The event starts when another event didn't finish yet\\
+  \hline
+  Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The user must be logged in.
+              \item The event must be created.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event creator clicks on an event.
+              \item The system loads event view page with existing information.
+              \item The user clicks on "Update Event" button.
+              \item The event creator updates the event information.
+              \item The user clicks on "Update" button.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result & The event should not be updated.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular}\end{center}
+
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & The event ends after another event stats\\
+  \hline
+   Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The user must be logged in.
+              \item The event must be created.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event creator clicks on an event.
+              \item The system loads event view page with existing information.
+              \item The user clicks on "Update Event" button.
+              \item The event creator updates the event information.
+              \item The user clicks on "Update" button.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result & The event should not be updated.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular}\end{center}
+
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & Two events start and end at the same time\\
+  \hline
+   Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The user must be logged in.
+              \item The event must be created.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event creator clicks on an event.
+              \item The system loads event view page with existing information.
+              \item The user clicks on "Update Event" button.
+              \item The event creator updates the event information.
+              \item The user clicks on "Update" button.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result & The event should not be updated.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular}\end{center}
+
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & The event starts and ends when another event is going\\
+  \hline
+   Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The user must be logged in.
+              \item The event must be created.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event creator clicks on an event.
+              \item The system loads event view page with existing information.
+              \item The user clicks on "Update Event" button.
+              \item The event creator updates the event information.
+              \item The user clicks on "Update" button.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result & The event should not be updated.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular}\end{center}
+
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & The event starts in the past\\
+  \hline
+  Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The user must be logged in.
+              \item The event must be created.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event creator clicks on an event.
+              \item The system loads event view page with existing information.
+              \item The user clicks on "Update Event" button.
+              \item The event creator updates the event information.
+              \item The user clicks on "Update" button.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result & The event should not be updated and notification\\
+  & that event can't be created should appear.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular}\end{center}
+
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & Updating event with some or all fields not filled in\\
+  \hline
+  Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The user must be logged in.
+              \item The event must be created.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event creator clicks on an event.
+              \item The system loads event view page with existing information.
+              \item The user clicks on "Update Event" button.
+              \item The event creator updates the event information.
+              \item The user clicks on "Update" button.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result & The event should not be updated and notification\\
+  & that event can't be created should appear.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular}\end{center}
+
+
+\begin{center} \begin{tabular}{|l|l|}
+  \hline
+  Test Case ID & TC \z\\
+  \hline
+  Test Case Description & Inviting user while Updating an event \\
+  \hline
+  Actors Involved & System, User\\
+   \hline
+  Precondition & \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The user must be logged in.
+              \item The event must be created.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}\\
+  \hline
+  Main path &   \begin{minipage}{5in}
+    \vskip 4pt
+            \begin{itemize}
+              \item The event creator clicks on an event.
+              \item The system loads event view page with existing information.
+              \item The user clicks on "Update Event" button.
+              \item The event creator updates the event information.
+              \item The user clicks on "Update" button.
+            \end{itemize}
+    \vskip 4pt
+  \end{minipage}  \\
+  \hline
+  Expected result & The event should be updated and invited\\
+  & user should get a notification about invitation.\\
+  \hline
+  Conclusion & Successful\\
+  \hline
+\end{tabular}\end{center}
