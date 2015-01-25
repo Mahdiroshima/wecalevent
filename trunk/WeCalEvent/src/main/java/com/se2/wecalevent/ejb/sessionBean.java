@@ -42,6 +42,7 @@ public class sessionBean implements sessionBeanRemote {
 
     @Override
     public User loginUser(String email, String password) {
+        // Create a predefined query to check the e-mail exists or not
         Query query = entityManager.createNamedQuery("User.findByEmail");
         query.setParameter("email", email);
         User loggedin = null;
@@ -50,6 +51,8 @@ public class sessionBean implements sessionBeanRemote {
         } catch (NoResultException e) {
 
         }
+        //If the query return a user and the Passwor is correct 
+        //user will be logged in
         if (loggedin != null && loggedin.getPass().equals(password)) {
             user = entityManager.find(User.class, loggedin.getUserId());
             return user;
@@ -115,9 +118,11 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public boolean createEvent(String eventName, String eventDescription, String eventType, String desiredWeather,
             String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedList) throws DateException {
+        //Check if the starting date of the event is in the past
         if (startingDate.before(new Date())) {
             throw new DateException("Your starting date cannot be in the past");
         }
+        //Check if the event ends before its starts
         if (startingDate.after(endingDate)) {
             throw new DateException("Your starting date is after the ending date");
         }
@@ -159,9 +164,11 @@ public class sessionBean implements sessionBeanRemote {
         //Save the event to the database
         entityManager.persist(NewEvent);
         entityManager.flush();
-        inviteUsers(NewEvent, invitedList);
+        //Save the Ivited people
+        inviteUsers(NewEvent, invitedList);        
         entityManager.merge(NewEvent);
         entityManager.flush();
+        //Create timer for the new event for Notification about forecast
         timerInserter.createTimer(NewEvent);
         return true;
     }
@@ -185,6 +192,12 @@ public class sessionBean implements sessionBeanRemote {
         return theUser.getEventList();
     }
 
+    /**
+     * This method is to look for user by his ID 
+     * 
+     * @param user_id
+     * @return  user
+     */
     @Override
     public User getUserById(int user_id) {
         Query query = entityManager.createNamedQuery("User.findByUserId");
@@ -231,9 +244,11 @@ public class sessionBean implements sessionBeanRemote {
      */
     @Override
     public boolean updateEvent(Integer eventId, String eventName, String eventDescription, String eventType, String desiredWeather, String visibility, String locationCity, Date startingDate, Date endingDate, List<User> invitedUsers) throws DateException {
+        //Check if the the satrting date of the event is not in  past 
         if (startingDate.before(new Date())) {
             throw new DateException("Your starting date cannot be in the past");
         }
+        //check if the ending date of the event is not in before the starting date
         if (startingDate.after(endingDate)) {
             throw new DateException("Your starting date is after the ending date");
         }
@@ -257,6 +272,7 @@ public class sessionBean implements sessionBeanRemote {
         } catch (NonUniqueResultException e) {
 
         }
+        //Update event informations
         event.setEventName(eventName);
         event.setEventDescription(eventDescription);
         event.setEventType(eventType);
@@ -265,10 +281,11 @@ public class sessionBean implements sessionBeanRemote {
         event.setLocationCity(locationCity);
         event.setStartingDate(startingDate);
         event.setEndingDate(endingDate);
-
         entityManager.merge(event);
         entityManager.flush();
+        //Update the list of invited users
         inviteUsers(event, invitedUsers);
+        //Create timer for the updated event
         timerInserter.createTimer(event);
         return true;
 
@@ -304,6 +321,7 @@ public class sessionBean implements sessionBeanRemote {
                 return false;
             }
         }
+        //Update the user informations
         user.setEmail(email);
         user.setPass(password);
         user.setCalendar(calendar);
@@ -314,11 +332,10 @@ public class sessionBean implements sessionBeanRemote {
         return true;
 
     }
-
-    public void update12hoursForecast() /*throws Exception*/ {
-
-    }
-
+/**
+ * Get all the users
+ * @return list of users
+ */
     @Override
     public List<User> getAllUsers() {
         Query query = entityManager.createNamedQuery("User.findAll");
@@ -330,6 +347,7 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public boolean inviteUsers(Event event, List<User> users) {
         if (users != null && event != null) {
+            //Set the list of invited users
             if (event.getUserList1() == null) {
                 event.setUserList1(users);
             } else {
@@ -337,6 +355,7 @@ public class sessionBean implements sessionBeanRemote {
             }
             entityManager.merge(event);
             entityManager.flush();
+            //Send notification to all invited list 
             notifyInvitation(event, users);
             return true;
         }
@@ -348,13 +367,16 @@ public class sessionBean implements sessionBeanRemote {
         if (event != null && users != null) {
             entityManager.refresh(event);
             for (User theUser : users) {
+                //Set notification information in the database 
                 Notification notification = new Notification();
                 notification.setNotifType(NotificationViewModel.NotificationType.Invitation.getValue());
                 notification.setUserId(theUser);
                 notification.setNotification("You are invited to the event: " + event.getEventName());
                 notification.setRelatedTo(event);
                 notification.setTs(new Date());
+                //Save in the data base
                 entityManager.persist(notification);
+                //Send an email to the invited users
                 String content = "You're invited to this event: " + event.getEventName()
                         + " which will start on: " + event.getStartingDate().toString();
                 EmailAPI.sendEmail(theUser.getEmail(), "Your are invited, " + theUser.getName() + "!", content);
@@ -369,13 +391,16 @@ public class sessionBean implements sessionBeanRemote {
     public boolean notifyParticipant(Event event, List<User> users, String notice) {
         if (event != null && users != null) {
             for (User theUser : users) {
+                //Set notification informayion 
                 Notification notification = new Notification();
                 notification.setNotifType(NotificationViewModel.NotificationType.Forecast_change.getValue());
                 notification.setUserId(theUser);
                 notification.setNotification(notice);
                 notification.setRelatedTo(event);
                 notification.setTs(new Date());
+                //save in database 
                 entityManager.persist(notification);
+                //send an email with notifcation about a forecast related to an event
                 EmailAPI.sendEmail(theUser.getEmail(), "New notification about: " + event.getEventName(), notice);
             }
             entityManager.flush();
@@ -387,14 +412,17 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public boolean notifyOwner(Event event, User theUser, String notice) {
         if (event != null && theUser != null) {
+            //Set notification information 
             Notification notification = new Notification();
             notification.setNotifType(NotificationViewModel.NotificationType.Postpone_suggestion.getValue());
             notification.setUserId(theUser);
             notification.setNotification(notice);
             notification.setRelatedTo(event);
             notification.setTs(new Date());
+            //Save information in database
             entityManager.persist(notification);
             entityManager.flush();
+            //Notifiy the owner by email
             EmailAPI.sendEmail(theUser.getEmail(), "New notification about: " + event.getEventName(), notice);
             return true;
         }
@@ -403,6 +431,7 @@ public class sessionBean implements sessionBeanRemote {
 
     @Override
     public boolean removeEntity(Integer objectId, Class t) {
+        //Generic method to delete entity from database
         if (objectId != null && t != null) {
             Object object = entityManager.find(t, objectId);
             entityManager.remove(object);
@@ -411,9 +440,13 @@ public class sessionBean implements sessionBeanRemote {
         }
         return false;
     }
-
+    /**
+     * Method to get user notificatio list
+     * @return 
+     */
     @Override
     public List<Notification> getNotifications() {
+        
         if (user != null) {
             entityManager.merge(user);
             user.getNotificationList().size();
@@ -421,7 +454,11 @@ public class sessionBean implements sessionBeanRemote {
         }
         return null;
     }
-
+/**
+ * Methode related to user accept to participate to an event
+ * @param notification
+ * @return 
+ */
     @Override
     public boolean acceptInvitation(Notification notification) {
         if (user != null) {
@@ -436,7 +473,11 @@ public class sessionBean implements sessionBeanRemote {
         }
         return false;
     }
-
+/**
+ * Methode related to user decline to partcipate to event
+ * @param notification
+ * @return 
+ */
     @Override
     public boolean rejectInvitation(Notification notification) {
         if (user != null) {
@@ -447,7 +488,11 @@ public class sessionBean implements sessionBeanRemote {
         }
         return false;
     }
-
+/**
+ * Methode to get the list of participant to an event
+ * @param event_id
+ * @return 
+ */
     @Override
     public List<User> getParticipantsOfEvent(int event_id) {
         Event event = entityManager.find(Event.class, event_id);
@@ -455,7 +500,11 @@ public class sessionBean implements sessionBeanRemote {
         event.getUserList().size();
         return event.getUserList();
     }
-
+/**
+ * Method to search for an event by Event ID
+ * @param id
+ * @return 
+ */
     @Override
     public Event getEventById(Integer id) {
         if (id != null) {
@@ -464,6 +513,10 @@ public class sessionBean implements sessionBeanRemote {
         return null;
     }
 
+    /**
+     * Methode to logout from application
+     * @return 
+     */
     @Override
     public boolean logout() {
         this.user = null;

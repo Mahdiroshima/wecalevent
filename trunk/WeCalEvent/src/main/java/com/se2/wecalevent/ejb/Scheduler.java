@@ -32,9 +32,9 @@ public class Scheduler {
 
     @EJB
     private sessionBeanRemote ejb;
-
+//This method will check weather forecast each 12 hours and notify participant about any changes. 
     @Schedule(minute = "0", hour = "1,13")
-    public void runEveryMinute() {
+    public void runEvery12hours() {
         log.log(Level.INFO,
                 "running every minute .. now it's: " + new Date().toString());
         //Excute query to get all current event 
@@ -43,6 +43,7 @@ public class Scheduler {
         List<Event> res = query.getResultList();
         //for each event
         for (Event e : res) {
+            // Get event by ID
             Event theEvent = entityManager.find(Event.class, e.getEventId());
             //Get the starting date of the event
             Date startingTime = e.getStartingDate();
@@ -51,6 +52,7 @@ public class Scheduler {
             //Call the Weather Forecast for the City and date 
             Weather weather = null;
             try {
+                //Get weather forecast of the event 
                 weather = WeatherAPI.getWeatherForecast(startingTime, city);
             } catch (NullPointerException exception) {
                 //initialize the event to the previous forecast
@@ -62,16 +64,22 @@ public class Scheduler {
             String storedweathercond = weather.getWeatherCondition();
             //Get the current weather condition
             String currentlyweathercond = theEvent.getWeatherId().getWeatherCondition();
-            //Compare the stored and the current weather condition if differenet upadate the weather object
+            //Compare the stored and the current weather condition 
+            //if differenet upadate the weather object
             if (storedweathercond.compareTo(currentlyweathercond) != 0) {
                 //Send a notification:
                 String notice = "The weather forecast for the event: " + theEvent.getEventName()
                         + " has changed to " + storedweathercond + " from " + currentlyweathercond;
                 theEvent.getUserList().size();
+                //Call NotifyParticipant method
                 ejb.notifyParticipant(theEvent, theEvent.getUserList(), notice);
-                theEvent.getWeatherId();
+                //Get the WeatherID related to the event
+                theEvent.getWeatherId(); 
+                //Get the old weather condition
                 theEvent.getWeatherId().getWeatherCondition();
+                //Set the new weather condition
                 theEvent.getWeatherId().setWeatherCondition(storedweathercond);
+                //Set updates
                 entityManager.merge(theEvent);
                 entityManager.flush();
             }
