@@ -48,7 +48,10 @@ public class ExportImportController implements Serializable {
     private List<Event> importedEvents;
     private boolean[] result;
     private boolean alreadyImported = false;
-
+    /**
+     * The action method that calls the export import page
+     * @return 
+     */
     public String exportImport() {
         return "exportImport.xhtml?faces-redirect=true";
     }
@@ -84,8 +87,9 @@ public class ExportImportController implements Serializable {
     public void setResult(boolean[] result) {
         this.result = result;
     }
-
-    
+    /**
+     * It refreshes the list of events to import
+     */
     public void init() {
         if (ejb != null) {
             int user_id = ejb.getUser().getUserId();
@@ -96,7 +100,9 @@ public class ExportImportController implements Serializable {
     public void exportEvents() {
 
     }
-
+    /**
+     * This method creates new events provided by user as a
+     */
     public void importEvents() {
         if (importedEvents != null) {
             result = new boolean[importedEvents.size()];
@@ -105,6 +111,7 @@ public class ExportImportController implements Serializable {
                 boolean flag = true;
                 if (WeatherAPI.isCityExists(event.getLocationCity())) {
                     try {
+                        //try to create the event
                         flag = ejb.createEvent(event.getEventName(), event.getEventDescription(), event.getEventType(),
                                 event.getDesiredWeather(), event.getVisibility(), event.getLocationCity(),
                                 event.getStartingDate(), event.getEndingDate(), new ArrayList<User>());
@@ -117,14 +124,20 @@ public class ExportImportController implements Serializable {
                 }
                 result[i++] = flag;
             }
+            //to prevent re-import events
             alreadyImported = true;
         }
     }
-
+    /**
+     * listener method that is called after each upload file event
+     * @param event 
+     */
     public void handleFileUpload(FileUploadEvent event) {
         try {
+            //allow re-import
             alreadyImported = false;
             result = null;
+            //read the file
             importedEvents = XLSReader.readXLS(event.getFile().getInputstream());
             FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
             FacesContext.getCurrentInstance().addMessage(null, message);
@@ -132,7 +145,11 @@ public class ExportImportController implements Serializable {
             Logger.getLogger(ExportImportController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+    /**
+     * Check the event is created or not to show a check or cross on the page
+     * @param event
+     * @return 
+     */
     public boolean checkStatus(Event event) {
         int index = 0;
         for (Event theEvent: importedEvents) {

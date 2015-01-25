@@ -39,12 +39,17 @@ public class NotificationView implements Serializable {
             notifications = ejb.getNotifications();
         }
     }
-    
+    /**
+     * open a dialog for a notification
+     * @param notification 
+     */
     public void viewNotification(Notification notification) {
         selectedNotification = notification;
         RequestContext.getCurrentInstance().openDialog("dialogs/notifView");
     }
-    
+    /**
+     * accepts an invitation and removes the notification
+     */
     public void acceptInvitation() {
         if (selectedNotification != null) {
             ejb.acceptInvitation(selectedNotification);
@@ -54,7 +59,9 @@ public class NotificationView implements Serializable {
         selectedNotification = null;
         RequestContext.getCurrentInstance().update(":notifPanell");
     }
-    
+    /**
+     * rejects the invitation and removes the notification
+     */
     public void rejectInvitation() {
         if (selectedNotification != null) {
             ejb.rejectInvitation(selectedNotification);
@@ -65,6 +72,9 @@ public class NotificationView implements Serializable {
         RequestContext.getCurrentInstance().update(":notifPanell");
     }
     
+    /**
+     * It deletes a viewed the notification
+     */
     public void deleteNotification() {
         if (selectedNotification != null) {
             ejb.removeEntity(selectedNotification.getNotifId(), Notification.class);

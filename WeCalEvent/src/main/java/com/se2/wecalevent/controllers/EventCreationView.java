@@ -153,7 +153,9 @@ public class EventCreationView implements Serializable {
     public void setEndingDate(Date endingDate) {
         this.endingDate = endingDate;
     }
-
+    /**
+     * This methodes initializes the content of the page which is called
+     */
     @PostConstruct
     public void init() {
         //This is when a user wants to create an event
@@ -170,17 +172,22 @@ public class EventCreationView implements Serializable {
                 myIndex++;
             }
             people.remove(myIndex);
+            //people list is a user list which is stored at
+            //userloginView at sessionscope
             userLoginView.setPeople(people);
             userLoginView.setSelectedPeople(new ArrayList<String>());
         } //This is the case when a user view an event or edit one
         else if (event_id != null && ejb != null && ejb.getUser() != null) {
             int uid = ejb.getUser().getUserId();
+            //Get all events that this user attends
             List<Event> events = ejb.getEventsOfUser(uid);
             int eid = Integer.parseInt(event_id);
             List<User> people = ejb.getAllUsers();
+            //people who participate this event
             peopleAlreadyParticipate = ejb.getParticipantsOfEvent(eid);
             int sizePeople = people.size();
             int sizeParticipate = peopleAlreadyParticipate.size();
+            //Remove people who are already accepted the invitation
             for (int i = 0; i < sizePeople; i++) {
                 User currentOne = people.get(i);
                 for (int j = 0; j < sizeParticipate; j++) {
@@ -192,10 +199,12 @@ public class EventCreationView implements Serializable {
                     }
                 }
             }
+            //people list is a user list which is stored at
+            //userloginView at sessionscope
             userLoginView.setPeople(people);
             userLoginView.setSelectedPeople(new ArrayList<String>());
             for (Event event : events) {
-                if (event.getEventId() == eid) {
+                if (event.getEventId() == eid) { //I'm looking for this event to set the details
                     this.eventName = event.getEventName();
                     this.eventDescription = event.getEventDescription();
                     this.eventType = event.getEventType();
@@ -211,36 +220,48 @@ public class EventCreationView implements Serializable {
 
         }
     }
-
+    /**
+     * Action method that opens the dialog to invite people
+     */
     public void viewPeople() {
         RequestContext.getCurrentInstance().openDialog("dialogs/invitePeople");
     }
-
+    /**
+     * This method close the invitePeople dialog 
+     */
     public void save() {
         RequestContext.getCurrentInstance().closeDialog("dialogs/invitePeople");
     }
-
+    /**
+     * Action method that submits the information related to event creation
+     * It redirects to home if the operation is succesful
+     * @return String to navigate after event creation
+     */
     public String submit() {
         try {
             boolean status = ejb.createEvent(eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate, getListOfSelectedUsers());
             FacesMessage message = null;
-            if (status) {
+            if (status) { //if the operation is succesful
                 userLoginView.setPeople(null);
                 message = new FacesMessage("Hurry !!", "Your event have been created");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 return "home.xhtml?faces-redirect=true";
-            } else {
+            } else { //if the operation is not succesful
                 message = new FacesMessage("Sorry", "You event cannot be created :( ");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 return "eventcreation.xhtml";
             }
-        } catch (DateException ex) {
+        } catch (DateException ex) {//If there is something wrong with dates show a message related to it
             FacesMessage message = new FacesMessage("Sorry", ex.getMessage());
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "eventcreation.xhtml";
         }
     }
-
+    /**
+     * Action method for updating events
+     * @return the page name that is going to be navigated
+     */
+    
     public String update() {
         int eid = Integer.parseInt(event_id);
         try {
@@ -248,23 +269,26 @@ public class EventCreationView implements Serializable {
             context.getExternalContext().getFlash().setKeepMessages(true);
             boolean status = ejb.updateEvent(eid, eventName, eventDescription, eventType, desiredWeather, visibility, locationCity, startingDate, endingDate, getListOfSelectedUsers());
             FacesMessage message = null;
-            if (status) {
+            if (status) { //if the operation is succesful
                 userLoginView.setPeople(null);
                 message = new FacesMessage("Your event have been updated ");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 return "home.xhtml?faces-redirect=true";
-            } else {
+            } else { //if the operation is not succesful
                 message = new FacesMessage("Sorry, Your event is not updated :( ");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 return "updateEvent.xhtml?id=" + eid;
             }
-        } catch (DateException ex) {
+        } catch (DateException ex) { //If there is something wrong with dates show a message related to it
             FacesMessage message = new FacesMessage("Sorry", ex.getMessage());
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "updateEvent.xhtml?id=" + eid;
         }
     }
-
+    /**
+     * This methods handles the key event for checking the existence of 
+     * place that user enters while updating an event or creating an event
+     */
     public void handleKeyEvent() {
         try {
             Thread.sleep(1000);                 //1000 milliseconds is one second.
@@ -276,7 +300,7 @@ public class EventCreationView implements Serializable {
         }
         FacesMessage message = null;
         boolean status = WeatherAPI.isCityExists(locationCity);
-        if (status) {
+        if (status) { 
             message = new FacesMessage(FacesMessage.SEVERITY_INFO, "", locationCity + " is OK.");
         } else {
             message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", locationCity + " doesn't exist, try again");
@@ -285,13 +309,17 @@ public class EventCreationView implements Serializable {
 
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
-
+    /**
+     * This is a helper method for creating and updating an event 
+     * @return 
+     */
     private List<User> getListOfSelectedUsers() {
         List<User> userList = new ArrayList<User>();
         List<String> selList = userLoginView.getSelectedPeople();
         if (selList != null) {
             for (String s : selList) {
                 int id = Integer.parseInt(s);
+                //find the user from people
                 for (User user : userLoginView.getPeople()) {
                     if (id == user.getUserId()) {
                         userList.add(user);
@@ -302,12 +330,16 @@ public class EventCreationView implements Serializable {
         }
         return userList;
     }
-
+    /**
+     * Action method for updateding an event
+     * @return 
+     */
     public String updateEvent() {
         User user = ejb.getUserById(ejb.getUser().getUserId());
         List<Event> events = user.getEventList2();
         boolean flag = false;
         int eid = Integer.parseInt(event_id);
+        //travers the events and see that I've created this event or not
         for (Event theEvent : events) {
             if (theEvent.getEventId().equals(eid)) {
                 flag = true;
@@ -316,20 +348,26 @@ public class EventCreationView implements Serializable {
         }
         if (flag) { // I can edit the event
             return "updateEvent.xhtml?id=" + event_id + "&faces-redirect=true";
-        } else {
+        } else { // I cannot edit the event show a message
             FacesMessage message = new FacesMessage("Sorry", "You are not authorized to update this event");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "viewEvent.xhtml?id=" + eid + "&faces-redirect=true";
         }
     }
-
+    /**
+     * To check whether the event can be editable by the user
+     * this method is called directly from the page
+     * @throws IOException 
+     */
     public void check() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true);
         if (event_id == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
         } else {
+            //managed user
             User user = ejb.getUserById(ejb.getUser().getUserId());
+            //the events that I've created
             List<Event> events = user.getEventList2();
             boolean flag = false;
             int eid = Integer.parseInt(event_id);
@@ -339,7 +377,7 @@ public class EventCreationView implements Serializable {
                     break;
                 }
             }
-            if (flag == false) {
+            if (flag == false) { //I'm not able to update the event
                 FacesMessage message = new FacesMessage("Sorry", "You are not authorized to update this event");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
