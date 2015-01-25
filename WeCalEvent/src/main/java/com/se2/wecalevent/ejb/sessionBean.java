@@ -11,12 +11,14 @@ import com.se2.wecalevent.entities.User;
 import com.se2.wecalevent.entities.Weather;
 import com.se2.wecalevent.remote.sessionBeanRemote;
 import com.se2.wecalevent.util.DateException;
+import com.se2.wecalevent.util.EmailAPI;
 import com.se2.wecalevent.util.HelperMethods;
 import com.se2.wecalevent.util.WeatherAPI;
 import com.se2.wecalevent.viewModels.NotificationViewModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -35,6 +37,9 @@ public class sessionBean implements sessionBeanRemote {
     private EntityManager entityManager;
     private User user;
 
+    @EJB
+    private TimerInserter timerInserter;
+
     @Override
     public User loginUser(String email, String password) {
         Query query = entityManager.createNamedQuery("User.findByEmail");
@@ -47,7 +52,7 @@ public class sessionBean implements sessionBeanRemote {
         }
         if (loggedin != null && loggedin.getPass().equals(password)) {
             user = entityManager.find(User.class, loggedin.getUserId());
-            return user; 
+            return user;
         }
         return null;
     }
@@ -157,6 +162,7 @@ public class sessionBean implements sessionBeanRemote {
         inviteUsers(NewEvent, invitedList);
         entityManager.merge(NewEvent);
         entityManager.flush();
+        timerInserter.createTimer(NewEvent);
         return true;
     }
 
@@ -167,9 +173,9 @@ public class sessionBean implements sessionBeanRemote {
      * @return
      */
     @Override
-    public List<Event> getEventsOfUser(int user_id) { 
+    public List<Event> getEventsOfUser(int user_id) {
         if (user == null) {
-            return null; 
+            return null;
         }
         entityManager.flush();
         User theUser = entityManager.find(User.class, user_id);
@@ -263,6 +269,7 @@ public class sessionBean implements sessionBeanRemote {
         entityManager.merge(event);
         entityManager.flush();
         inviteUsers(event, invitedUsers);
+        timerInserter.createTimer(event);
         return true;
 
     }
@@ -309,7 +316,7 @@ public class sessionBean implements sessionBeanRemote {
     }
 
     public void update12hoursForecast() /*throws Exception*/ {
-        
+
     }
 
     @Override
@@ -323,7 +330,6 @@ public class sessionBean implements sessionBeanRemote {
     @Override
     public boolean inviteUsers(Event event, List<User> users) {
         if (users != null && event != null) {
-            System.out.println("Invite users to this event: " + event.getEventName() + "user count: " + users.size());
             if (event.getUserList1() == null) {
                 event.setUserList1(users);
             } else {
@@ -349,7 +355,9 @@ public class sessionBean implements sessionBeanRemote {
                 notification.setRelatedTo(event);
                 notification.setTs(new Date());
                 entityManager.persist(notification);
-                System.out.println("Create notif for this event: " + event.getEventName() + "user name: " + theUser.getName());
+                String content = "You're invited to this event: " + event.getEventName()
+                        + " which will start on: " + event.getStartingDate().toString();
+                EmailAPI.sendEmail(theUser.getEmail(), "Your are invited, " + theUser.getName() + "!", content);
             }
             entityManager.flush();
             return true;
@@ -368,6 +376,7 @@ public class sessionBean implements sessionBeanRemote {
                 notification.setRelatedTo(event);
                 notification.setTs(new Date());
                 entityManager.persist(notification);
+                EmailAPI.sendEmail(theUser.getEmail(), "New notification about: " + event.getEventName(), notice);
             }
             entityManager.flush();
             return true;
@@ -386,6 +395,7 @@ public class sessionBean implements sessionBeanRemote {
             notification.setTs(new Date());
             entityManager.persist(notification);
             entityManager.flush();
+            EmailAPI.sendEmail(theUser.getEmail(), "New notification about: " + event.getEventName(), notice);
             return true;
         }
         return false;

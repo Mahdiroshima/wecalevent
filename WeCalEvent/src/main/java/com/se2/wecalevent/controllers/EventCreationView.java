@@ -48,7 +48,6 @@ public class EventCreationView implements Serializable {
     private String[] selectedWeather;
     private String event_id;
     private List<User> peopleAlreadyParticipate = new ArrayList<User>();
-    private boolean valid = false;
 
     public List<User> getPeopleAlreadyParticipate() {
         return peopleAlreadyParticipate;
@@ -195,7 +194,6 @@ public class EventCreationView implements Serializable {
             }
             userLoginView.setPeople(people);
             userLoginView.setSelectedPeople(new ArrayList<String>());
-            System.out.println("I've reset the selected list");
             for (Event event : events) {
                 if (event.getEventId() == eid) {
                     this.eventName = event.getEventName();
@@ -273,13 +271,12 @@ public class EventCreationView implements Serializable {
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
-        if (locationCity == null || valid) {
+        if (locationCity == null) {
             return;
         }
         FacesMessage message = null;
         boolean status = WeatherAPI.isCityExists(locationCity);
         if (status) {
-            valid = true;
             message = new FacesMessage(FacesMessage.SEVERITY_INFO, "", locationCity + " is OK.");
         } else {
             message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", locationCity + " doesn't exist, try again");

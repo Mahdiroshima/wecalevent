@@ -102,6 +102,9 @@ public class TimerInserter {
      * @return
      */
     private void executeOwnerNotification(Event event) {
+        if (event == null || event.getEventId() == null) {
+            return;
+        }
         User owner = event.getCreatorId();
         Event managedEvent = entityManager.find(Event.class, event.getEventId());
         Date startingTime = managedEvent.getStartingDate();
@@ -112,10 +115,7 @@ public class TimerInserter {
         try {
             weather = WeatherAPI.getWeatherForecast(startingTime, city);
         } catch (NullPointerException exception) {
-            weather = new Weather();
-            weather.setCity(city);
-            weather.setWeatherCondition("unknown");
-            weather.setWeatherDate(startingTime);
+            weather = managedEvent.getWeatherId();
         }
         //Get the stored weather condition
         String currentWeather = weather.getWeatherCondition();
@@ -123,7 +123,7 @@ public class TimerInserter {
         String desiredWeather = (String) managedEvent.getDesiredWeather();
         managedEvent.getWeatherId();
         managedEvent.getWeatherId().getWeatherCondition();
-        managedEvent.getWeatherId().setWeatherCondition(desiredWeather);
+        managedEvent.getWeatherId().setWeatherCondition(currentWeather);
         if (managedEvent.getEventType().contains("outdoor")) {
             String[] desiredList = desiredWeather.split("-");
             boolean flag = false;
@@ -150,10 +150,15 @@ public class TimerInserter {
     }
 
     /**
+     * This method creates notifications for participant users if the weather
+     * forecast is updated
      *
      * @return
      */
     private void executeParticipateNotification(Event event) {
+        if (event == null || event.getEventId() == null) {
+            return;
+        }
         Event managedEvent = entityManager.find(Event.class, event.getEventId());
         Date startingTime = managedEvent.getStartingDate();
         //Get the Location of the event 
@@ -163,10 +168,7 @@ public class TimerInserter {
         try {
             weather = WeatherAPI.getWeatherForecast(startingTime, city);
         } catch (NullPointerException exception) {
-            weather = new Weather();
-            weather.setCity(city);
-            weather.setWeatherCondition("unknown");
-            weather.setWeatherDate(startingTime);
+            weather = managedEvent.getWeatherId();
         }
         //Get the stored weather condition
         String currentWeather = weather.getWeatherCondition();
@@ -174,13 +176,13 @@ public class TimerInserter {
         String desiredWeather = (String) managedEvent.getDesiredWeather();
         managedEvent.getWeatherId();
         managedEvent.getWeatherId().getWeatherCondition();
-        managedEvent.getWeatherId().setWeatherCondition(desiredWeather);
+        managedEvent.getWeatherId().setWeatherCondition(currentWeather);
         if (managedEvent.getEventType().contains("outdoor")) {
             String[] desiredList = desiredWeather.split("-");
             boolean flag = false;
             for (String desired : desiredList) {
                 if (desired != null && desired.length() > 1) {
-                    if (desired.equals(currentWeather)) {
+                    if (desired.equalsIgnoreCase(currentWeather)) {
                         flag = true;
                         break;
                     }
@@ -193,7 +195,6 @@ public class TimerInserter {
                         + " is " + currentWeather + " and it is not in your desired weather list";
                 managedEvent.getUserList().size();
                 ejb.notifyParticipant(managedEvent, managedEvent.getUserList(), notice);
-
             }
         }
         entityManager.merge(managedEvent);
@@ -207,27 +208,22 @@ public class TimerInserter {
         //Create list of events
         List<Event> res = query.getResultList();
         //for each event
-        /*for (Event event : res) {
-            Date theDate = (Date) event.getStartingDate().clone();
-            theDate.setTime(theDate.getTime() - 1000 * 60 * 60 * 24);
-//            Testing purposes
-//            Date theDate = new Date();
-//            theDate.setTime(theDate.getTime() + 1000*60);
-
-            if (new Date().compareTo(theDate) < 0) {
-                // it is okey to executeParticipateNotification
-                timerService.createIntervalTimer(theDate, 1000 * 60 * 60, new TimerConfig(
-                        event, false));
-            }
-            theDate.setTime(theDate.getTime() - 1000 * 60 * 60 * 48);
-        }*/
+        for (Event event : res) {
+            createTimer(event);
+        }
 
     }
 
     @Timeout
     public void handleTimer(final Timer timer) {
+        log.info("timer received");
         if (timer.getInfo() instanceof Event) {
+
             Event event = (Event) timer.getInfo();
+            if (!checkEventTimeIsUpToDate(event)) {
+                timer.cancel();
+                return;
+            }
             log.info("timer received - contained message is: " + event.getEventName());
             Date startingDate = event.getStartingDate();
             long differenceInMS = startingDate.getTime() - new Date().getTime();
@@ -236,10 +232,8 @@ public class TimerInserter {
             } else if (differenceInMS > 0 && differenceInMS < 1000 * 60 * 60 * 96) {
                 this.executeOwnerNotification(event);
             }
-        } else {
-            log.info("timer received for user - contained message is: something else: " + timer.getInfo().toString());
+            timer.cancel();
         }
-        timer.cancel();
     }
 
     private boolean checkExistingEvent(Date closestDate, long duration) {
@@ -263,5 +257,57 @@ public class TimerInserter {
 
         }
         return true;
+    }
+
+    public void createTimer(Event event) {
+        Date theDate = (Date) event.getStartingDate().clone();
+        theDate.setTime(theDate.getTime() - 1000 * 60 * 60 * 24);
+//            Testing purposes
+//            Date theDate = new Date();
+//            theDate.setTime(theDate.getTime() + 1000*60);
+        if (new Date().before(theDate)) {
+            // it is okey to executeParticipateNotification
+            timerService.createCalendarTimer(createScheduleExpression(theDate),
+                    new TimerConfig(event, false));
+            log.info("timer created for " + theDate.toString() + " the event: " + event.getEventName());
+        }
+        theDate.setTime(theDate.getTime() - 1000 * 60 * 60 * 48);
+        if (new Date().before(theDate)) {
+            // it is okey to executeParticipateNotification
+            timerService.createCalendarTimer(createScheduleExpression(theDate),
+                    new TimerConfig(event, false));
+            log.info("timer created for " + theDate.toString() + " the event: " + event.getEventName());
+        }
+    }
+    /**
+     * This method checks wheter the timer is still valid or not
+     * @param event
+     * @return 
+     */
+    private boolean checkEventTimeIsUpToDate(Event event) {
+        Date theDate = (Date) event.getStartingDate().clone();
+        theDate.setTime(theDate.getTime() - 1000 * 60 * 60 * 24);
+        long delta = 1000 * 120;//2 minutes
+        Date x1 = new Date();
+        x1.setTime(x1.getTime() - delta);
+        Date x2 = new Date();
+        x2.setTime(x2.getTime() + delta);
+        boolean case1 = theDate.getTime() > x1.getTime()
+                && theDate.getTime() < x2.getTime();
+        theDate.setTime(theDate.getTime() - 1000 * 60 * 60 * 48);
+        boolean case2 = theDate.getTime() > x1.getTime()
+                && theDate.getTime() < x2.getTime();
+        return case1 || case2;
+    }
+    
+    private ScheduleExpression createScheduleExpression(Date date) {
+        ScheduleExpression s = new ScheduleExpression();
+        s.hour(date.getHours());
+        s.minute(date.getMinutes());
+        s.second(date.getSeconds());
+        s.dayOfMonth(date.getDate());
+        s.month(date.getMonth() + 1);
+        s.year(date.getYear() + 1900);
+        return s;
     }
 }
