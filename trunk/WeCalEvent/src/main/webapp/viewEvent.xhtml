@@ -66,10 +66,14 @@
                                 <h:outputText value="#{eventViewController.desiredWeather}" />
 
                                 <h:outputText styleClass="boldFont" value="Starting date" />
-                                <h:outputText value="#{eventViewController.startingDate}" />
+                                <h:outputText value="#{eventViewController.startingDate}">
+                                    <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
 
                                 <h:outputText styleClass="boldFont" value="Ending date" />
-                                <h:outputText value="#{eventViewController.endingDate}" />
+                                <h:outputText value="#{eventViewController.endingDate}" >
+                                    <f:convertDateTime timeZone="GMT+1" pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
                             </p:panelGrid> 
                         </p:outputPanel>
                     </p:panel>

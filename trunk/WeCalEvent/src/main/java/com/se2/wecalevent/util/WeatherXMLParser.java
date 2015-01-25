@@ -9,8 +9,6 @@ import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -57,7 +55,7 @@ public class WeatherXMLParser {
                 if (s.contains("cloud")) {
                     ch = "cloudy";
                 } else if ((s.contains("clear"))) {
-                    ch = "sunny";
+                    ch = "clear";
                 } else if ((s.contains("rain"))) {
                     ch = "rainy";
                 } else {
@@ -96,7 +94,7 @@ public class WeatherXMLParser {
                     if (s.contains("cloud")) {
                         ch = "cloudy";
                     } else if ((s.contains("clear"))) {
-                        ch = "sunny";
+                        ch = "clear";
                     } else if ((s.contains("rain"))) {
                         ch = "rainy";
                     } else {

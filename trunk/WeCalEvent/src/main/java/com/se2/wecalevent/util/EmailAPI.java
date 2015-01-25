@@ -50,7 +50,7 @@ public class EmailAPI {
         props.put("mail.smtp.port", "465");
 
         // Create a session with the above creditiantials
-        Session session = Session.getDefaultInstance(props,
+        Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(username, password);
