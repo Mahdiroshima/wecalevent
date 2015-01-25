@@ -12,6 +12,7 @@
         </style>
         <f:metadata>
             <f:viewParam name="id" value="#{eventCreationView.event_id}" />
+            <f:event type="preRenderView" listener="#{exportImportController.init()}"/>
         </f:metadata>
     </ui:define>
     <ui:define name="pageTitle">

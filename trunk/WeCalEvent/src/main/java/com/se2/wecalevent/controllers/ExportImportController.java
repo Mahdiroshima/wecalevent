@@ -85,7 +85,7 @@ public class ExportImportController implements Serializable {
         this.result = result;
     }
 
-    @PostConstruct
+    
     public void init() {
         if (ejb != null) {
             int user_id = ejb.getUser().getUserId();
