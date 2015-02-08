@@ -1,0 +1,7 @@
+We forgot to include working hours in the document.
+
+Here you can find working hours of each for this document.
+
+Mert: 8h
+Mehdi: 8h
+Nazrin: 10h
