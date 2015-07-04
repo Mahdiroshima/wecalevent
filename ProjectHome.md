@@ -1,0 +1,2 @@
+WeCalEvent is a platform where users are able to create and manage their events and invite other users. The system alerts the event creator 3 days before the event day in case of weather condition alteration and suggests him the closest day with suitable weather.
+All event participants will be notified in case of weather forecast alteration a day before the event. This platform is sufficient for users who look forward to schedule their events according weather conditions.
